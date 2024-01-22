@@ -1,0 +1,177 @@
+{% extends 'baseweb.html' %}
+{% load widget_tweaks %}
+{% load jalali_tags %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/css/tablestyle.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | لیست بخش های
+{{mylearn.title}}
+{% endblock %}
+
+
+{% block content %}
+
+
+
+
+
+
+
+
+
+<section class="connect-wallet-area pt-130 pb-120">
+    <div class="container">
+        <div class="connect-wallet-wrapper">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                    <div class="box-card-single box-card-wallet mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/img/learn.png' %}" alt="learn">
+                            </div>
+                             <h4 class="box-card-title">
+                                     تعداد بخش های {{mylearn.title}}
+
+                                 <strong class="text-danger">
+                                     {{count_section}}
+                                 </strong>
+
+
+                        عدد
+                        می باشد
+
+
+                                </h4>
+
+
+
+
+                <div class="col-lg-12">
+                    {% for section in sections %}
+                                 <div class="faq-tab-contents mb-0 wow fadeInUp">
+                                    <div class="tab-content" id="nav-tabContent">
+                                        <div class="tab-pane fade active show"
+                                             id="tab-nav{{section.id}}" role="tabpanel"
+                                             aria-labelledby="nav-tab{{section.id}}">
+                                            <div class="about-info-wrapper mb-30">
+                                                <div class="accordion accordion-general">
+                                                    <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading{{section.id}}">
+                                       <button class="accordion-button" type="button"
+                                               data-bs-toggle="collapse"
+                                          data-bs-target="#collapse{{section.id}}" aria-expanded="true"
+                                          aria-controls="collapse{{section.id}}">
+                                           {{section.title}}
+
+                                       </button>
+                                        {% if user == mylearn.user %}
+                                 <a href="{% url 'add-lesson-web-web' section.pk %}"
+                                    class="btn btn-sm btn-success " style="margin:0 10px;">افزودن
+                                     درس</a>
+{% endif %}
+                                    </h2>
+                                    <div id="collapse{{section.id}}" class="accordion-collapse collapse show"
+                                       aria-labelledby="heading{{section.id}}" data-bs-parent="#accordionExample">
+                                       <div class="accordion-body">
+                                        {% for lesson in section.lessons.all %}
+                                          <div class="row">
+                                          <div class="col-12">
+                                           <div
+                                                   class="activity-wrapper-action-single-custom pos-rel">
+                                            <div class="activity-3dots-menu">
+                                                <a href="{% url 'lesson-single-web' lesson.pk %}" class="show-lesson ">نمایش محتوا</a>
+
+
+                                            </div>
+                                            <div class="activity-meta-text">
+                                                <div class="text-dark">
+                                                    <a href="{% url 'lesson-single-web' lesson.pk %}">
+                                                        {{lesson.title}}
+                                                </a>
+                                                   </div>
+                                            </div>
+                                           </div>
+                                           </div>
+                                           </div>
+                                        {% endfor %}
+
+                                       </div>
+                                    </div>
+                                 </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                 </div>
+                    {% endfor %}
+
+
+               </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
+
+
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+
+
+{% endblock %}

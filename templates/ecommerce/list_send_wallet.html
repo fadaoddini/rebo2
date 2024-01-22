@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load jalali_tags %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/css/tablestyle.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | لیست انتقالی های من
+{% endblock %}
+{% block content %}
+<style>
+     #example1 td{
+    padding :5px 15px;
+    }
+</style>
+<div class="inner-body">
+
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h2 class="main-content-title tx-24 mg-b-5 ">
+                کیف پول ربو
+
+            </h2>
+            <p>
+                لیست انتقالی های من
+            </p>
+        </div>
+        <div class="d-flex">
+            <div class="justify-content-center">
+                <a href="{% url 'add-wallet-by-user' pk=user.pk %}" class="btn btn-success my-2 btn-icon-text ml-2">
+                    شارژ کیف پول (ریال)
+
+                </a>
+                <p class="btn btn-white btn-icon-text my-2 ml-2">
+
+                    موجودی کیف پول شما :
+                    <strong class="tx-18">
+                        {{balance}}
+                    </strong>
+
+
+                    ریال
+
+
+                </p>
+                <a href="{% url 'send-wallet-by-user' pk=user.pk %}" class="btn btn-danger my-2 btn-icon-text">
+                    انتقال اعتبار (ریال)
+
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- End Page Header -->
+
+    <!-- row -->
+    <div class="row row-sm">
+        <div class="col-md-12 col-lg-12 col-xl-12">
+            <div class="card custom-card transcation-crypto">
+                <div class="card-header border-bottom-0">
+                    <div class="main-content-label">تاریخچه انتقالی های شما</div>
+                    <p class="d-block tx-12 mb-0 mt-2 text-muted">
+
+                        تعداد انتقالی های شما
+                        {{transaction_count}}
+                        عدد
+                        می باشد که جزئیات آن در جدول زیر قرار گرفته است.
+                        سابقه انتقالی ها به شما نشان می دهد که شما در چه زمانی و چه مبلغی را به چه کسی
+                        <span class="text-danger">
+
+                                        ارسال
+                                    </span>
+
+
+                        یا چه مبلغی را از چه کسی
+
+                        <span class="text-success">
+                                        دریافت
+
+                                     </span>
+
+
+                        نموده اید.
+
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table" id="example1">
+                            <thead>
+                            <tr>
+                                <th class="wd-1"></th>
+                                <th>تراکنش</th>
+                                <th>تاریخ</th>
+                                <th>ارسال کننده</th>
+                                <th>دریافت کننده</th>
+                                <th>مبلغ (ریال)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                           {% for transaction in transaction_list %}
+                            <tr class="border-bottom">
+
+                                <td>
+															<span class="crypto-icon bg-danger-transparent ml-3 my-auto">
+																<i class="fe fe-arrow-down-left text-danger"></i>
+															</span>
+                                </td>
+                                <td class="font-weight-bold"># {{transaction.id}}</td>
+                                <td>{{transaction.created_time|to_jalali:'%Y/%m/%d | %H:%M:%S'}}</td>
+                                <td>{{request.user.info.name}} {{request.user.info.family}}</td>
+                                <td>{{transaction.received_name}}</td>
+                                <td class="text-danger font-weight-bold">
+                                    {{transaction.amount}}
+                                    -
+                                </td>
+
+
+
+
+
+
+
+                            </tr>
+
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Row End -->
+        </div>
+    </div>
+    <!-- Row End -->
+
+
+</div>
+
+
+{% endblock %}
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+
+{% endblock %}

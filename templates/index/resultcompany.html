@@ -1,0 +1,33 @@
+{% if not info.is_active %}
+<div class="col-lg-6 col-md-12">
+    <div class="card custom-card bg-dark">
+        <div class="card-body">
+            <div>
+                <h6 class="main-content-label mb-1 text-warning">ثبت درخواست شرکت شما با موفقیت انجام شده است...</h6>
+                <p class="card-sub-title text-white">
+                    اطلاعات شرکت شما هنوز توسط کارشناسان ربو بررسی نشده است، بزودی نتیجه به شما اطلاع داده خواهد شد
+
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% else %}
+
+<div class="col-lg-12 col-md-12">
+    <div class="card custom-card bg-dark">
+        <div class="card-body">
+            <div>
+                <h6 class="main-content-label mb-1 text-warning">ثبت درخواست شرکت شما با موفقیت انجام شده است...</h6>
+                <p class="card-sub-title text-white">
+                    اطلاعات شرکت شما هنوز توسط کارشناسان ربو بررسی نشده است، بزودی نتیجه به شما اطلاع داده خواهد شد
+
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endif %}

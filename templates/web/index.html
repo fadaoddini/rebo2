@@ -1,0 +1,274 @@
+{% extends 'baseweb.html' %}
+{% load category_tag %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+
+{% endblock %}
+{% block title %}
+ربو | مرکز خرید و فروش خرما
+{% endblock %}
+
+
+{% block content %}
+<section class=" artworks-area artworks-area-bg pt-75 ">
+    <div class="container">
+        <div class=" creator-cover-img  pos-rel wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+
+            <img style="width:100%" src="{% static 'web/assets/images/reboslider1.jpg' %}" alt="rebo">
+        </div>
+    </div>
+
+</section>
+
+
+<!-- artwork area start  -->
+<section class="artworks-area artworks-area-bg pt-10 pb-100">
+    <div class="container">
+
+
+        {% include 'web/core/menusearch.html' %}
+
+
+        <div class="row wow fadeInUp">
+            {% for product in page_obj%}
+
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                <div class="art-item-single mb-30">
+                    <div class="art-item-wraper">
+                        <div class="art-item-inner">
+                            <div class="art-item-img pos-rel">
+                                <div class="art-action">
+                                    <button class="art-action-like"><i class="flaticon-heart"></i></button>
+
+                                    <div class="art-action-collection"><i class="flaticon-plus-sign"></i></div>
+                                </div>
+
+                                {% if product.get_time %}
+                                <a href="{% url 'product-detail' product.pk %}" class="place-bid">پیشنهاد دهید</a>
+                                {% else %}
+                                <a href="#" class="place-bid">پایان اعتبار</a>
+                                {%endif %}
+                                <a href="{% url 'product-detail' product.pk %}">
+                                    {% if product.images.first.image.url %}
+
+
+                                    <img height="200" alt="{{ product.product_type }}"
+                                         src="{{ product.images.first.image.url }}">
+
+                                    {% else %}
+
+                                    <img src="{% static 'web/assets/img/img/noimg.png' %}"
+                                    alt="تصویر موجود نیست! ">
+                                    {%endif %}
+
+                                </a>
+                            </div>
+                            <div class="art-item-content pos-rel">
+                                <div class="auction-time-and-btn">
+
+                                    <div class="art-auction-ends in-art-item"
+                                         data-countdown="{{ product.expire_time|date:'Y/m/d'}}">
+                                    </div>
+                                </div>
+                                <div class="art-3dots-menu">
+                                    <div class="art-3dots-action">
+                                        <ul>
+                                            <li><a href="#"><i class="fal fa-share-alt"></i>اشتراک</a>
+                                            </li>
+                                            <li><a href="#"><i class="fal fa-flag-alt"></i>گزارش</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <button class="art-3dots-icon"><i class="fal fa-ellipsis-v"></i></button>
+                                </div>
+                                <div class="artist">
+                                    <div class="profile-img pos-rel">
+                                        <a href="creator-profile.html">
+                                            {% if product.sell_buy == 1 %}
+                                            <img src="{% static 'web/assets/img/img/farmer.png' %}" alt="فروشنده">
+                                            {% else %}
+                                            <img src="{% static 'web/assets/img/img/buyer.png' %}" alt="خریدار">
+                                            {% endif %}
+                                        </a>
+                                        <div class="profile-verification verified">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                    </div>
+                                    <div class="artist-id">{{ product.user.last_name }}</div>
+                                </div>
+
+
+                                <h4 class="art-name"><a href="{% url 'product-detail' product.pk %}">
+                                    {{ product.product_type }}</a></h4>
+                                <div class="art-meta-info">
+                                    <div class="art-meta-item">
+                                        <div class="art-meta-type">قیمت پایه</div>
+                                        <div class="art-price">
+                                            {{ product.price|intcomma }} (ریال)
+
+                                        </div>
+                                    </div>
+                                    <div class="art-activity-btn">
+                                        <a href="activity.html" class="art-activity">
+
+                                            {{product.bids.count}}
+
+                                            پیشنهاد</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor%}
+            {% include 'web/paginations.html' %}
+        </div>
+    </div>
+</section>
+<!-- artwork area end  -->
+
+
+<section class="live-auction-area pt-80 pb-100">
+    <div class="container">
+        <div class="row wow fadeInUp">
+            <div class="col-lg-8">
+                <div class="section-title1 pos-rel">
+                    <div class="live-blink"></div>
+                    <h2 class="section-main-title1 mb-40 pl-35">وبلاگ ربو</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row wow fadeInUp">
+            <div class="col-lg-12">
+                <div class="auction-wrapper pos-rel">
+                    <div class="swiper-container auction-active">
+                        <div class="swiper-wrapper">
+
+                            {% for blog in blogs|slice:":12" %}
+                            <div class="swiper-slide">
+                                <div class="art-item-single mb-30">
+                                    <div class="art-item-wraper">
+                                        <div class="art-item-inner">
+                                            <div class="art-item-img pos-rel">
+                                                <div class="tag-featured"><i class="fas fa-star"></i>ویژه</div>
+                                                <div class="art-action">
+                                                    <button class="art-action-like"><i class="flaticon-heart"></i>
+                                                    </button>
+                                                    <div class="art-action-like-count">2.5k+</div>
+                                                    <div class="art-action-collection"><i
+                                                            class="flaticon-plus-sign"></i></div>
+                                                </div>
+                                                <a href="{% url 'blog-single-web' pk=blog.pk %}">
+                                                    {% if blog.image %}
+                                                    <img src="{{ blog.image.url }}"
+                                                         alt="{{ blog.title }}">
+                                                    {% else %}
+                                                    <img src="{% static 'web/assets/images/nopic.jpg' %}"
+                                                         alt="{{ blog.title }}">
+                                                    {% endif %}
+
+                                                </a>
+                                            </div>
+                                            <div class="art-item-content pos-rel">
+
+                                                <div class="art-3dots-menu">
+                                                    <div class="art-3dots-action">
+                                                        <ul>
+                                                            <li><a href="#"><i class="fal fa-share-alt"></i>اشتراک</a>
+                                                            </li>
+                                                            <li><a href="#"><i class="fal fa-flag-alt"></i>گزارش</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <button class="art-3dots-icon"><i class="fal fa-ellipsis-v"></i>
+                                                    </button>
+                                                </div>
+
+                                                <div class="artist">
+                                                    <div class="profile-img pos-rel">
+                                                        <a href="{% url 'blog-single-web' pk=blog.pk %}">
+                                                             {% if blog.user.image %}
+                                                                <img src="{{ blog.user.image.url }}" alt="{{ blog.user.last_name }}">
+                                                            {% else %}
+                                                                <img src="{% static 'web/assets/img/profile/profile2.jpg' %}" alt="profile-img">
+                                                            {% endif %}
+                                                        </a>
+                                                        <div class="profile-verification verified">
+                                                            <i class="fas fa-check"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="art-meta-type">نویسنده : {{ blog.user.last_name }}
+                                                    </div>
+                                                </div>
+                                                <h4 class="art-name"><a href="{% url 'blog-single-web' pk=blog.pk %}">{{ blog.title }}</a>
+                                                </h4>
+
+                                                <div class="art-activity-btn">
+                                                    <a href="{% url 'blog-single-web' pk=blog.pk %}" class="place-bid">بیشتر بخوانید</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                    <div class="auction-nav">
+                        <div class="auction-button-prev square-nav-btn"><i class="fal fa-long-arrow-right"></i></div>
+                        <div class="auction-button-next square-nav-btn"><i class="fal fa-long-arrow-left"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
+
+
+{% block javas %}
+<script>
+    const swiper = new Swiper('.swiper-container', {
+  // Default parameters
+  slidesPerView: 5,
+  spaceBetween: 20,
+  // Responsive breakpoints
+  breakpoints: {
+     // when window width is <= 320px
+     320: {
+      slidesPerView: 1,
+      spaceBetween: 20
+     },
+     // when window width is <= 480px
+     480: {
+      slidesPerView: 2,
+      spaceBetween: 20
+     },
+     // when window width is <= 940px
+     940: {
+      slidesPerView: 3,
+      spaceBetween: 30
+     },
+     // when window width is <= 1100px
+     1100: {
+      slidesPerView: 5,
+      spaceBetween: 20
+     }
+    },
+    direction: 'horizontal',
+    loop: true,
+    allowTouchMove: false,
+    speed: 600,
+    navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+    }
+})
+
+</script>
+{% endblock %}

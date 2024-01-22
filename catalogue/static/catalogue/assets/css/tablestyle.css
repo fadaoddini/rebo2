@@ -1,0 +1,76 @@
+.form-control1{
+
+
+            height: auto;
+            border: none;
+            color: #939393;
+            font-size: 14px;
+            letter-spacing: 1px;
+            height: calc(1.4em + 2px);
+
+            width: 100%;
+            text-align: center;
+        }
+        table {
+            text-align:center;
+            table-layout : fixed;
+            width:100%;
+        }
+        .verticalTableHeader {
+            text-align:center;
+            vertical-align:middle;
+            white-space:nowrap;
+            g-origin:50% 50%;
+            -webkit-transform: rotate(90deg);
+            -moz-transform: rotate(90deg);
+            -ms-transform: rotate(90deg);
+            -o-transform: rotate(90deg);
+            transform: rotate(90deg);
+
+        }
+        .verticalTableHeader p {
+
+
+        }
+        .verticalTableHeader p:before{
+            content:'';
+            width:0;
+            display:inline-block;
+            vertical-align:middle;
+        }
+        .zirdaste{
+            display: none;
+        }
+        .nist{
+            display: none;
+        }
+
+        .hast{
+            display: block;
+        }
+        .bg-bg{
+
+            background-color: rgba(255, 198, 40, 0.2);
+        }
+
+        td.active{
+
+            font-weight:bolder;
+
+            border: 2px solid #ff0000;
+            height:60px;
+            background-color: #d4d2ed;
+
+        }
+        tr:nth-of-type(2n+1){
+            background-color: rgba(175, 175, 175, 0.42);
+        }
+
+
+        .textClass{
+            font-weight:bold;
+        }
+
+        input:focus {
+            outline: none;
+        }

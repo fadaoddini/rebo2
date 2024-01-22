@@ -1,0 +1,150 @@
+{% extends 'baseweb.html' %}
+{% load widget_tweaks %}
+{% load jalali_tags %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/css/tablestyle.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | لیست آموزش های من
+{% endblock %}
+
+
+{% block content %}
+
+<section class="connect-wallet-area pt-130 pb-120">
+    <div class="container">
+        <div class="connect-wallet-wrapper">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                    <div class="box-card-single box-card-wallet mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/img/learn.png' %}" alt="learn">
+                            </div>
+                             <h4 class="box-card-title">
+                                     تعداد آموزش های شما
+
+                                 <strong class="text-danger">
+                                     {{count_learning}}
+                                 </strong>
+
+
+                        عدد
+                        می باشد
+
+
+                                </h4>
+
+
+                             <div class="table-responsive">
+                         <table class="table" id="example1">
+                            <thead>
+                            <tr>
+                                <th style="width:50px"></th>
+                                <th>عنوان</th>
+                                <th>مبلغ (ریال)</th>
+                                <th>مرتبط با</th>
+
+
+                                <th>وضعیت</th>
+                                <th style="width:300px">عملیات</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for learn in learns %}
+
+
+                            <tr class="border-bottom">
+
+
+
+                                <td>
+															<span class="crypto-icon bg-danger-transparent ml-3 my-auto">
+																<img width="30" src="{{ learn.image.url }}" alt="{{ learn.title }}">
+
+															</span>
+                                </td>
+                                <td class="font-weight-bold">{{ learn.title }}</td>
+                                <td>{{ learn.price }}</td>
+                                <td class="text-danger font-weight-bold">
+                                    {{ learn.type.title }}
+                                </td>
+
+                                 <td>{% if learn.is_active %}
+                                 تایید شده
+
+                                     {% else %}
+                                     <small class="text-danger">
+فاقد اعتبار
+
+                                     </small>
+
+                                     {% endif %}
+
+                                 </td>
+                                 <td>
+                                     <a href="{% url 'section-web-web' learn.pk %}" class="btn btn-sm btn-warning">نمایش بخش ها</a>
+
+                                 <a href="{% url 'add-section-web-web' learn.pk %}" class="btn btn-sm btn-success">افزودن بخش</a>
+                                 </td>
+
+
+
+
+                            </tr>
+
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
+
+
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+
+
+{% endblock %}

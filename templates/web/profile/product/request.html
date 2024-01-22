@@ -1,0 +1,47 @@
+{% extends 'web/profile/base.html' %}
+{% load widget_tweaks %}
+{% load category_tag %}
+{% load jalali_tags %}
+{% load humanize %}
+{% load static %}
+
+{% block title %}
+ربو | مدیریت درخواست ها
+{% endblock %}
+
+{% block content %}
+<div class="row">
+
+<div class="col-xl-5 col-lg-5 col-md-6">
+                    <div class="box-card-single box-card-wallet wallet-fortmatic mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/img/request.png' %}" alt="wallet-img">
+                            </div>
+                            <h4 class="box-card-title">لیست درخواست های من</h4>
+                            <p>تمامی درخواست هایی که شما در ربو قرار داده اید
+                            </p>
+                            <div class="box-card-btn">
+                                <a href="{% url 'profile-request' %}" class="fill-btn">نمایش</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<div class="col-xl-7 col-lg-7 col-md-6">
+                    <div class="box-card-single box-card-wallet wallet-torus mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/img/addreq.png' %}" alt="wallet-img">
+                            </div>
+                            <h4 class="box-card-title">افزودن درخواست جدید</h4>
+                            <p>
+                                درخواست جدید را برای خرید قرار دهید
+                            </p>
+                            <div class="box-card-btn">
+                                <a href="{% url 'add-req-web-web' pk=user.pk %}" class="fill-btn">افزودن</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+</div>
+{% endblock %}

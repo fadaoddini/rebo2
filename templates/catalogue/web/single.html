@@ -1,0 +1,337 @@
+{% extends 'baseweb.html' %}
+{% load widget_tweaks %}
+{% load jalali_tags %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/css/tablestyle.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | {{ product.product_type }}
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- art-details area start  -->
+<section class="art-details-area pt-130 pb-3">
+    <div class="container">
+        <div class="art-details-wrapper">
+            <div class="row">
+                <div class="col-xl-6 col-lg-5">
+                    <div class="art-item-img pos-rel art-details-img wow fadeInUp">
+                         {% if product.images.first.image.url %}
+
+                            <a class="image-popups" href="{{ product.images.first.image.url }}">
+                                <img style="max-height: fit-content;" alt="{{ product.product_type }}"
+                                         src="{{ product.images.first.image.url }}">
+                            </a>
+
+                        {% else %}
+
+                                    <img style="max-height: fit-content;" src="{% static 'web/assets/img/img/noimg.png' %}"
+                                    alt="تصویر موجود نیست! ">
+                        {%endif %}
+
+
+                        <div class="created-by">
+
+                        </div>
+                        <div class="creator mb-30">
+                            <div class="profile-img pos-rel">
+                                <a href="creator-profile.html">
+                                    {% if product.sell_buy == 1 %}
+                                    <img src="{% static 'web/assets/img/img/farmer.png' %}" alt="فروشنده">
+                                    {% else %}
+                                    <img src="{% static 'web/assets/img/img/buyer.png' %}" alt="خریدار">
+                                    {% endif %}
+
+                                </a>
+                                <div class="profile-verification verified">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="creator-name-id">
+                                <h4 class="artist-name"><a href="creator-profile.html"> {{product.user.last_name}}</a></h4>
+                                <div class="artist-id"> {% if product.sell_buy == 1 %}
+                                    فروشنده
+
+                                    {% else %}
+                                    خریدار
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="art-name-details">
+                            <h4 class="art-name mb-25">{{ product.weight }}
+                                کیلوگرم
+                                {{ product.product_type}}</h4>
+                            <p>
+                                {{ product.description }}
+
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-xl-6 col-lg-7">
+                    <div class="art-details-content wow fadeInUp">
+
+                        <div class="artist-meta-info art-details-meta-info">
+                            <div class="art-meta-item artist-meta-item-border">
+
+                                <div class="art-meta-type">قیمت پایه</div>
+                                <div class="art-price">
+
+                                    {{ product.price|intcomma }}
+
+                                    ریال
+                                </div>
+                                <div class="art-meta-notice">
+                                    بالاترین پیشنهاد :
+
+                                    {% if product.topprice != None %}
+                                            {{ product.topprice|intcomma }} (ریال)
+                                            {% else %}
+                                    <span class="text-danger">
+                                        {% if top_bid_price is None %}
+                                            بدون پیشنهاد
+{% else %}
+                                        {{top_bid_price.price|intcomma}}
+                                        ریال
+                                         {% endif %}
+                                    </span>
+                                            {% endif %}
+
+
+
+                                </div>
+                            </div>
+
+                            <div class="art-meta-item">
+                                <div class="art-meta-type">پایان مزایده</div>
+                                <div class="art-auction-ends" data-countdown="{{ product.expire_time|date:'Y/m/d'}}">
+                                </div>
+                                <div class="art-meta-notice">بشتابید!</div>
+                            </div>
+                        </div>
+                        <div class="art-details-action mt-50 mb-50 ">
+                            {% if user.is_authenticated %}
+                            {% if product.user == user%}
+                            <p class="place-bid w-100 text-center">محصول برای شماست</p>
+                            {% else %}
+                                {% if result_show %}
+                                    <p>قیمت پیشنهادی شما پذیرفته شده است و نمی توانید تغیرات اعمال نمائید</p>
+                                {% else %}
+                                    <form class=" w-100" method="post" action="{% url 'form-add-bid-web' product.upc %}">
+                                        {% csrf_token %}
+
+                                            <div class="single-input-unit">
+                                                <label class="form-label">
+                                                    قیمت پیشنهادی خود را به ازای هر کیلو گرم به ریال وارد نمائید
+                                                </label>
+                                                <input type="number" class="form-control" name="price" id="price" value="{{product.price}}">
+                                            </div>
+
+
+                                        <button id="upload-btn" class="fill-btn w-100" type="submit">پیشنهاد دهید</button>
+                                    </form>
+                                {% endif%}
+                            {% endif%}
+                            {% else %}
+                            <p class="place-bid w-100 text-center">لطفا برای دسترسی به این قسمت وارد شوید</p>
+                            {% endif%}
+
+
+                        </div>
+                        <div class="art-details-information">
+                            <div class="art-information-tab-nav mb-20">
+                                <nav>
+                                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                        <button class="nav-link active" id="nav-bid-tab" data-bs-toggle="tab"
+                                                data-bs-target="#tab-nav1" type="button" role="tab"
+                                                aria-selected="true">
+                                       <span class="profile-nav-button">مزایده ثبت شده
+                                       </span>
+                                        </button>
+                                        <button class="nav-link" id="nav-info-tab" data-bs-toggle="tab"
+                                                data-bs-target="#tab-nav2" type="button" role="tab"
+                                                aria-selected="false">
+                                       <span class="profile-nav-button">اطلاعات تکمیلی
+                                       </span>
+                                        </button>
+
+                                    </div>
+                                </nav>
+                            </div>
+                            <div class="art-information-tab-contents mb-0">
+                                <div class="tab-content" id="nav-tabContent">
+                                    <div class="tab-pane fade active show" id="tab-nav1" role="tabpanel"
+                                         aria-labelledby="nav-bid-tab">
+                                        <div class="placed-bids-wrapper">
+
+
+                                            {% for bid in bids%}
+
+                                            <div class="single-bid">
+                                                <div class="creator">
+                                                    <div class="profile-img pos-rel">
+                                                        <a href="#">
+                                                            {% if bid.user.image %}
+                                                            <img src="{{bid.user.image.url}}" alt="profile-img">
+                                                            {% else %}
+                                                            <img src="{% static 'web/assets/img/profile/profile2.jpg' %}" alt="profile-img">
+                                                            {%endif %}
+                                                        </a>
+                                                    </div>
+                                                    <div class="creator-name-id">
+                                                        <h4 class="artist-name"><a
+                                                                href="creator-profile.html">{{bid.user.last_name}}</a>
+                                                        </h4>
+                                                        <div class="artist-id">{{bid.user.info.name}}</div>
+                                                        <div class="bid-date-time">
+                                                            {% if bid.result%}
+                                                            <div class="bid-date">
+                                                                {% if user.is_authenticated %}
+                            {% if product.user == user%}
+
+                                                                <a href="tel:{{bid.user.mobile}}">تماس بگیرید</a>
+{% endif%}
+                                                                {% endif%}
+                                                            </div>
+                                                            {% endif%}
+                                                           <!-- <div class="bid-time">9:58 صبح</div>-->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="bid-pricing">
+                                                    <div class="bid-status">
+
+                                                        وضعیت :
+                                                        {% if bid.result%}
+                                                        <span class="accepted">قبول شده</span>
+                                                        {% else %}
+                                                        <span class="pending">در حال بررسی</span>
+                                                        {% endif%}
+
+
+                                                    </div>
+                                                    <div class="bid-price">{{bid.price|intcomma}} ریال </div>
+                                                    <div class="bid-price-dollar">به ازای هر کیلو</div>
+
+                                                </div>
+                                                {% if product.user == user%}
+                                                 {% if bid.result == False%}
+                                                <div class="row w-100">
+                                                <div class="col-6">
+                                                    <form class=" w-100" method="post" action="{% url 'form-bid-ok' bid.pk %}">
+                                                        {% csrf_token %}
+                                                     <button class="fill-btn w-100" type="submit">تائید می کنم</button>
+                                                    </form>
+                                                </div>
+                                                <!--<div class="col-6">
+                                                    <form class=" w-100" method="post" action="{% url 'form-bid-no' bid.pk %}">
+                                                        {% csrf_token %}
+                                                     <button class="fill-btn-lightred w-100" type="submit">رد می کنم</button>
+                                                        </form>
+                                                </div>-->
+                                                </div>
+
+                                                    {% endif%}
+                                                    {% endif%}
+                                            </div>
+
+
+                                            {% endfor%}
+
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="tab-nav2" role="tabpanel"
+                                         aria-labelledby="nav-info-tab">
+                                        <div class="art-info-wrapper">
+                                            <ul>
+                                                <li><span class="art-info-title">نوع خرما</span>{{product.product_type}}
+                                                </li>
+                                                <li><span class="art-info-title">نوع معامله</span>
+                                                {% if product.sell_buy == 1%}
+                                                     خرید از فروشنده
+                                                    (
+                                                    <span class="text-danger">
+                                                       {{product.user.info.name}}
+                                                        {{product.user.info.family}}
+                                                    </span>
+                                                    )
+
+                                                {% else %}
+                                                    شما در حال پیشنهاد دادن به خریدار هستید
+                                                {% endif %}
+
+                                                </li>
+                                                <li><span class="art-info-title">گارانتی</span>
+                                                {% if product.warranty%}
+                                                    دارد
+                                                {% else %}
+                                                    ندارد
+                                                {% endif %}
+                                                </li>
+
+                                                <li>
+                                                    <span class="art-info-title">نتایج کارشناسی محصول</span>
+                                                    بزودی
+                                                </li>
+                                                <li><span class="art-info-title">آدرس تحویل بار</span>
+                                                   بزودی
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- art-details area end  -->
+
+
+<!-- learning start -->
+{% include 'catalogue/web/learning.html' %}
+<!-- learning finished  -->
+
+
+{% endblock %}
+
+
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+
+{% endblock %}

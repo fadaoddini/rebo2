@@ -1,0 +1,95 @@
+{% load widget_tweaks %}
+{% if not info.is_active %}
+<div class="col-lg-6 col-md-12">
+    <div class="card custom-card">
+        <div class="card-body">
+            <div>
+                <h6 class="main-content-label mb-1">ثبت نام شرکت</h6>
+                <p class="text-muted card-sub-title">اگر دارای شرکت یا سردخانه هستید ثبت نام کنید و از مزایای
+                    این بخش استفاده نمائید</p>
+            </div>
+            <div class="">
+                <a class="btn ripple btn-main-primary" data-target="#modaldemo2" data-toggle="modal" href="#">ثبت
+                    نام</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+
+<div class="col-lg-12 col-md-12">
+    <div class="card custom-card">
+        <div class="card-body">
+            <div>
+                <h6 class="main-content-label mb-1">ثبت نام شرکت</h6>
+                <p class="text-muted card-sub-title">اگر دارای شرکت یا سردخانه هستید ثبت نام کنید و از مزایای
+                    این بخش استفاده نمائید</p>
+            </div>
+            <div class="">
+                <a class="btn ripple btn-main-primary" data-target="#modaldemo2" data-toggle="modal" href="#">ثبت
+                    نام</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+<div class="modal" id="modaldemo2">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <button aria-label="بستن" class="close pos-absolute t-15 r-20 tx-26" data-dismiss="modal"
+                        type="button"><span aria-hidden="true">×</span></button>
+                <h5 class="modal-title mb-4 text-center">ثبت نام شرکت من</h5>
+                <div class="alert alert-warning mb-4 text-center">
+                    در صورتی که شرکت یا سردخانه خود را در این سامانه ثبت کنید به مواردی از قبیل سامانه انبارداری و
+                    سامانه حقوق و دستمزد دسترسی پیدا خواهید کرد ، هزینه ثبت نام شرکت در سامانه ربو بصورت ماهیانه می باشد
+                    و طبق تعرفه در سامانه ربو خواهد بود. شایان ذکر است با ثبت نام در این سامانه شما به تمام قوانین
+                    سامانه ربو متعهد می باشید و ملزم به رعایت آن قوانین هستید .
+
+                </div>
+                <form method="post" action="{% url 'create-company' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row row-sm">
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>نام شرکت / نام سردخانه</label>
+                                 {% render_field form_company.name class="form-control" placeholder="نام شرکت / نام سردخانه"  %}
+
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>تصویر مدرک</label>
+                                <div class="input-group file-browser">
+
+                                    <input type="text" class="form-control border-left-0 browse-file"
+                                           placeholder="انتخاب کنید" readonly="">
+                                    <label class="input-group-btn mb-0">
+                                            <span class="btn btn-primary">
+
+                                                انتخاب
+
+                                             {% render_field form_company.image style="display: none;"  %}
+
+                                            </span>
+                                    </label>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <button class="btn ripple btn-primary btn-block">ثبت نام</button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>

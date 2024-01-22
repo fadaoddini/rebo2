@@ -1,0 +1,119 @@
+{% extends 'baseweb.html' %}
+{% load category_tag %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+
+{% endblock %}
+{% block title %}
+ربو | کیف پول
+{% endblock %}
+
+
+{% block content %}
+
+<section class="connect-wallet-area pt-130 pb-120">
+    <div class="container">
+        <div class="connect-wallet-wrapper">
+            <div class="row">
+                <div class="col-xl-8 col-lg-8 col-md-6">
+                    <div class="box-card-single box-card-wallet mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/wallet/wallet.png' %}" alt="wallet-img">
+                            </div>
+                            <h4 class="box-card-title">موجودی شما :
+
+                                <strong class="tx-18 ">
+                                    {{balance|intcomma}}
+                                </strong>
+                                ریال</h4>
+                            <p>برای افزایش موجودی کیف پول خود می توانید از این محل اقدام نمائید.
+
+                              توجه داشته باشید که تنها از طریق کارت تائید شده در سامانه می توانید اقدام به شارژ نمائید.
+                           </p>
+                            <div class="box-card-btn">
+                                <a href="{% url 'add-wallet-by-user-web' pk=user.pk %}" class="fill-btn-lightblue">شارژ کنید</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-6">
+                    <div class="box-card-single box-card-wallet wallet-metamask mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/wallet/wallet1.png' %}" alt="wallet-img">
+                            </div>
+                            <h4 class="box-card-title">انتقال اعتبار</h4>
+                            <p>برای انتقال اعتبار خود به دیگران می توانید از این قسمت اقدام کنید.
+                            </p>
+                            <div class="box-card-btn">
+                                <a href="{% url 'send-wallet-by-user-web' pk=user.pk %}" class="fill-btn-orange">انتقال اعتبار</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-lg-4 col-md-6">
+                    <div class="box-card-single box-card-wallet wallet-fortmatic mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/wallet/wallet2.png' %}" alt="wallet-img">
+                            </div>
+                            <h4 class="box-card-title">لیست تراکنش ها</h4>
+                            <p>گزارش کلیه تراکنش های شما در این قسمت بایگانی می شود.
+                            </p>
+                            <div class="box-card-btn">
+                                <a href="{% url 'get-wallet-user-web' pk=user.pk %}" class="fill-btn">نمایش</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-6">
+                    <div class="box-card-single box-card-wallet wallet-torus mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/wallet/wallet3.png' %}" alt="wallet-img">
+                            </div>
+                            <h4 class="box-card-title">لیست انتقالی ها</h4>
+                            <p>گزارش انتقال اعتبار به دیگران توسط شما در این قسمت بایگانی می شود.
+                            </p>
+                            <div class="box-card-btn">
+                                <a href="{% url 'list-send-wallet-user-web' pk=user.pk %}" class="fill-btn">نمایش</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-6">
+                    <div class="box-card-single box-card-wallet wallet-bitski mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/wallet/wallet4.png' %}" alt="wallet-img">
+                            </div>
+                            <h4 class="box-card-title">لیست دریافتی ها</h4>
+                            <p>گزارش دریافتی های شما از دیگران در این قسمت بایگانی می شود.
+                            </p>
+                            <div class="box-card-btn">
+                                <a href="{% url 'list-received-wallet-user-web' pk=user.pk %}" class="fill-btn-lightred">نمایش</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="wallet-wrapper-note text-center wow fadeInUp">
+                <div class="note">برای اتصال کیف پول سوالی دارید؟ <a class="text-btn" href="contact.html">تماس با
+                    پشتیبانی </a> یا
+                    برای توضیحات تکمیلی <a class="text-btn" href="faq.html">سوالات متداول</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+
+{% block javas %}
+
+{% endblock %}

@@ -1,0 +1,406 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load jalali_tags %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+<!-- Internal Owl Carousel css-->
+<link href="{% static 'catalogue/assets/plugins/owl-carousel/owl.carousel.css' %}" rel="stylesheet">
+
+<!-- Multislider css -->
+<link href="{% static 'catalogue/assets/plugins/multislider/multislider.css' %}" rel="stylesheet">
+{% endblock %}
+{% block title %}
+ربو | بازار فروشندگان
+{% endblock %}
+{% block content %}
+
+<div class="inner-body">
+    <div class="row row-sm">
+
+
+        <div class="col-md-12 col-lg-12 col-xl-12">
+            <div class="card custom-card transcation-crypto">
+                <div class="card-body">
+                    <div class="d-sm-flex mb-0">
+                        <div class="">
+                            <p class="tx-13 text-muted mb-2">نمودار قیمت فروش
+                             <span id="product_type_name">
+                                   {{product_type.title}}
+                                </span>
+
+                            </p>
+                            <p>تعداد قابل فروش<span class="text-success tx-15 mr-2">
+                                <span id="bazar_count">
+                                    {{bazar_count}}
+                                </span>
+
+
+                            </span></p>
+                        </div>
+                        <div class="mr-auto">
+                            <ul class="nav nav-tabs crypto-btc-usd border-0" id="charts" role="tablist">
+                                <li class="nav-item border-0 mr-3">
+                                    <a onclick="create_chart_top(1,{{product_type.pk}})" class="nav-link w-100  border-0 active" data-toggle="tab" href="#chart-tab" role="tab"
+                                       aria-controls="chart-tab" aria-selected="true">یک روز گذشته</a>
+                                </li>
+                                <li class="nav-item border-0 mr-3">
+                                    <a onclick="create_chart_top(7,{{product_type.pk}})" class="nav-link w-100  border-0 " data-toggle="tab" href="#chart2-tab" role="tab"
+                                       aria-controls="chart2-tab" aria-selected="false">هفت روز گذشته</a>
+                                </li>
+                                <li class="nav-item border-0 mr-3">
+                                    <a onclick="create_chart_top(30,{{product_type.pk}})" class="nav-link w-100  border-0 " data-toggle="tab" href="#chart3-tab" role="tab"
+                                       aria-controls="chart3-tab" aria-selected="false">سی روز گذشته</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-9 col-xl-10 col-md-8">
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="chart-tab" role="tabpanel"
+                                     aria-labelledby="chart-tab">
+                                    <div class="chart-wrapper">
+                                        <div class="chartjs-wrapper-demo">
+                                            <canvas id="onedayprice1"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="chart2-tab" role="tabpanel" aria-labelledby="chart2-tab">
+                                    <div class="chart-wrapper">
+                                        <div class="chartjs-wrapper-demo">
+                                            <canvas id="onedayprice7"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="chart3-tab" role="tabpanel" aria-labelledby="chart3-tab">
+                                    <div class="chart-wrapper">
+                                        <div class="chartjs-wrapper-demo">
+                                            <canvas id="onedayprice30"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-xl-2 col-md-4">
+                            <div class="card bg-light custom-card">
+                                <div class="card-body">
+                                    <span class="text-muted tx-13">بالاترین قیمت
+                                    <span id="price_max">
+                                         {{price_max}}
+                                    </span>
+                                        ریال
+                                    </span>
+
+                                </div>
+                            </div>
+                            <div class="card bg-light custom-card">
+                                <div class="card-body">
+                                    <span class="text-muted tx-13">میانگین قیمت
+                                    <span id="price_avg">
+                                         {{price_avg}}
+                                    </span>
+
+                                        ریال
+                                    </span>
+
+                                </div>
+                            </div>
+                            <div class="card bg-light custom-card mb-0">
+                                <div class="card-body">
+                                     <span class="text-muted tx-13">پایین ترین قیمت
+                                    <span id="price_min">
+                                         {{price_min}}
+                                    </span>
+                                        ریال
+                                    </span>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-12 col-lg-12 col-xl-12">
+           <div class="card custom-card overflow-hidden">
+                <div class="card-body">
+                    <div>
+                        <h6 class="main-content-label mb-1">
+                            بازار
+                            {{product_type.title}}
+                        </h6>
+                    </div>
+                    <div class="table-responsive">
+									<table class="table table-striped table-bordered text-nowrap" id="example2">
+										<thead>
+										<tr>
+
+											<th>فروشنده</th>
+
+											<th>قیمت (ریال)</th>
+											<th>وزن (کیلوگرم)</th>
+											<th>نوع محصول</th>
+											<th>تاریخ ثبت</th>
+											<th>گارانتی</th>
+											<th>عملیات</th>
+											<th>توضیحات : </th>
+										</tr>
+										</thead>
+										<tbody>
+										{% for product in bazars%}
+
+										<tr>
+
+											<td>{{product.user.first_name}} {{product.user.last_name}}</td>
+
+											<td>{{ product.price }}</td>
+											<td>{{ product.weight }}</td>
+
+											<td>{{ product.product_type.title }}</td>
+											<td>{{ product.modified_time|to_jalali:'%Y/%m/%d | %H:%M:%S'}}</td>
+											<td>{% if product.warranty == False %}
+												<span class="badge badge-danger">
+													ندارد
+												</span>
+												{% else %}
+												<span class="badge badge-success">
+													دارد
+												</span>
+												{% endif %}</td>
+
+                                            <td>
+                                                {% if product.user != request.user %}
+                                    <a href="#">
+                                        <span class="badge badge-primary nav-link-badge">
+                                        <i class="si si-fire" data-toggle="tooltip" title=""
+                                           data-original-title="پیشنهاد خرید شما"></i>
+                                    </span>
+
+                                    </a>
+                                    <a href="#">
+                                    <span class="badge badge-info nav-link-badge">
+                                        <i class="si si-speech" data-toggle="tooltip" title=""
+                                           data-original-title="گفتگو با فروشنده"></i>
+                                    </span>
+                                    </a>
+                                    <a href="#">
+                                        <span class="badge badge-success nav-link-badge">
+                                            <i class="si si-star" data-toggle="tooltip" title=""
+                                               data-original-title="افزودن به علاقه مندی"></i>
+                                        </span>
+                                    </a>
+                                    {% if product.warranty == False %}
+                                    <a href="#">
+                                        <span class="badge badge-warning nav-link-badge">
+                                            <i class="si si-umbrella" data-toggle="tooltip" title=""
+                                               data-original-title="درخواست ضمانت محصول"></i>
+                                        </span>
+                                    </a>
+                                                {% endif %}
+                                                {% else %}
+
+                                               <a href="#">
+                                        <span class="badge badge-primary nav-link-badge">
+                                        ویرایش
+                                    </span>
+
+                                    </a>
+                                                <a href="#">
+                                        <span class="badge badge-danger nav-link-badge">
+                                         انصراف از فروش
+                                    </span>
+
+                                    </a>
+
+                                {% endif %}
+                                </td>
+											<td>
+												<br>
+												{{ product.description }}
+												<hr>
+
+												<h6 class="font-weight-bold">
+													این محصول دارای تصاویر زیر می باشد
+												</h6>
+
+												{% for image in product.images.all %}
+												<a href="#" class="image"><img width="100" src="{{ image.image.url }}"></a>
+												{% endfor %}
+												<hr>
+
+												<h6 class="font-weight-bold">
+													این محصول دارای ویژگی های زیر می باشد
+												</h6>
+
+												<table class=" text-center w-100">
+													<thead>
+													<tr class="bg-dark">
+														<td class="text-white">ویژگی</td>
+														<td class="text-white">مقدار</td>
+													</tr>
+													</thead>
+													<tbody>
+													{% for attr in product.attrs.all %}
+													<tr>
+														<td>{{attr.attr.title}}</td>
+														<td>{{attr.value.value}}</td>
+													</tr>
+													{% endfor %}
+
+
+													</tbody>
+												</table>
+												<hr>
+
+
+
+											</td>
+										</tr>
+										{% endfor %}
+
+										</tbody>
+									</table>
+								</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+<!-- Internal Owl Carousel js-->
+<script src="{% static 'catalogue/assets/plugins/owl-carousel/owl.carousel-rtl.js' %}"></script>
+
+<!-- Multislider js -->
+<script src="{% static 'catalogue/assets/plugins/multislider/multislider-rtl.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/carousel-rtl.js' %}"></script>
+
+
+<script>
+
+
+create_chart_top(1,{{product_type.pk}});
+
+function create_chart_top(day,pk){
+    $.ajax({
+        url:"{% url 'create-chart-top' %}",
+        type:"POST",
+        data: {
+        day: day,
+        pk: pk
+        },
+        success:function (data) {
+
+            if(data.msg) {
+            labels_x = [];
+            info_chart = [];
+                $.each(data.msg, function (index, val) {
+                    price_all = val['price'];
+                    info_chart.push(price_all);
+                    weight_all = val['weight']+' کیلوگرم ';
+                    labels_x.push(weight_all);
+
+
+                    })
+
+
+
+    var esm = "onedayprice"+day;
+    var element = document.getElementById(esm);
+    element.height = 300;
+    new Chart(element, {
+
+        type: "line",
+        data: {
+            labels: labels_x,
+            datasets: [{
+                label: "خرمای مضافتی",
+                borderColor: "rgba(113, 76, 190, 0.9)",
+                borderWidth: "1",
+                backgroundColor: "rgba(113, 76, 190, 0.5)",
+                data: info_chart
+            }]
+        },
+        options: {
+            responsive: !0,
+            maintainAspectRatio: !1,
+            tooltips: {mode: "index", intersect: !1},
+            hover: {mode: "nearest", intersect: !0},
+            scales: {
+                xAxes: [{ticks: {fontColor: "#77778e"}, gridLines: {color: "rgba(119, 119, 142, 0.2)"}}],
+                yAxes: [{
+                    ticks: {beginAtZero: !0, fontColor: "#77778e"},
+                    gridLines: {color: "rgba(119, 119, 142, 0.2)"}
+                }]
+            },
+            legend: {labels: {fontColor: "#77778e"}}
+        }
+
+    });
+
+
+
+
+            }else{
+                alert("2")
+            }
+
+            if(data.result_amar) {
+            $('#price_avg').html('');
+            $('#price_max').html('');
+            $('#price_min').html('');
+            $('#bazar_count').html('');
+            $('#product_type_name').html('');
+
+            $('#price_avg').html(data.result_amar[0]);
+
+            $('#price_max').html(data.result_amar[1]);
+
+            $('#price_min').html(data.result_amar[2]);
+            $('#bazar_count').html(data.result_amar[3]);
+            $('#product_type_name').html(data.result_amar[4]);
+            }
+
+
+
+
+        }
+    })
+}
+
+
+
+
+
+</script>
+
+{% endblock %}

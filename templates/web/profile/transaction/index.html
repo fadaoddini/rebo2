@@ -1,0 +1,95 @@
+{% extends 'web/profile/base.html' %}
+{% load widget_tweaks %}
+{% load category_tag %}
+{% load jalali_tags %}
+{% load humanize %}
+{% load static %}
+
+{% block content %}
+
+<div class="tab-pane fade active show" id="tab-nav5" role="tabpanel" aria-labelledby="nav-bid-tab">
+                                <div class="bids-items-wrapper mb-30">
+                                    <div class="placed-bids-wrapper">
+
+                                         {% for transaction in page_obj_wallet %}
+                                            <div class="single-bid">
+                                            <div class="creator">
+                                                <div class="profile-img pos-rel">
+                                                    {% if transaction.transaction_type == 1 %}
+                                                    <a href="creator-profile.html">
+                                                        <img
+                                                            src="{% static 'web/assets/img/wallet/recived_money.png' %}"
+                                                            alt="{{transaction.amount}}">
+                                                    </a>
+                                                    {% else %}
+                                                     <a href="creator-profile.html">
+                                                        <img
+                                                            src="{% static 'web/assets/img/wallet/send_money.png' %}"
+                                                            alt="{{transaction.amount}}">
+                                                    </a>
+
+                                                    {% endif %}
+
+                                                </div>
+                                                <div class="creator-name-id">
+                                                    <h4 class="artist-name"><a href="creator-profile.html">
+                                                      {{transaction.user.last_name}}
+                                                    </a>
+                                                    </h4>
+                                                    <div class="artist-id">{{transaction.created_time|to_jalali:'%Y/%m/%d | %H:%M:%S'}}</div>
+
+                                                </div>
+                                            </div>
+                                            <div class="bid-items-and-price">
+
+                                                <div class="bid-pricing">
+                                                    <div class="bid-status">وضعیت : <span class="accepted">پذیرش</span>
+                                                    </div>
+                                                    <div class="bid-price">{{transaction.amount}} ریال</div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="row wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                                    <div class="col-12">
+                                        <div class="basic-pagination mt-20 mb-30">
+                                            <ul>
+                                                <li>
+                                                    {% if page_obj_wallet.has_previous %}
+                                                    <a class="prev page-numbers"
+                                                       href="?page={{ page_obj_wallet.previous_page_number }}">
+                                                        <i class="fal fa-angle-right"></i>
+                                                    </a>
+                                                    {% endif %}
+                                                </li>
+                                                {% for pg in paginator_wallet.page_range %}
+                                                    {% if page_obj_wallet.number == pg %}
+                                                    <li>
+                                                        <span aria-current="page" class="page-numbers current">{{ page_obj_wallet.number }}</span>
+                                                    </li>
+
+                                                    {% elif pg > page_obj_wallet.number|add:'-4' and pg < page_obj_wallet.number|add:'4' %}
+
+                                                    <li><a class="page-numbers" href="?page={{pg}}">{{pg}}</a></li>
+                                                    {% endif %}
+                                                {% endfor %}
+
+
+                                                <li>
+                                                    {% if page_obj_wallet.has_next %}
+                                                    <a class="next page-numbers"
+                                                       href="?page={{ page_obj_wallet.next_page_number }}">
+                                                        <i class="fal fa-angle-left"></i>
+                                                    </a>
+                                                    {% endif %}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+ {% endblock %}

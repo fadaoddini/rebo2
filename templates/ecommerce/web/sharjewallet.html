@@ -1,0 +1,110 @@
+{% extends 'baseweb.html' %}
+{% load category_tag %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+
+{% endblock %}
+{% block title %}
+ربو | شارژ کیف پول
+{% endblock %}
+
+
+{% block content %}
+
+<section class="connect-wallet-area pt-130 pb-120">
+    <div class="container">
+        <div class="connect-wallet-wrapper">
+            <div class="row">
+                <div class="col-xl-8 col-lg-8 col-md-6">
+                    <div class="box-card-single box-card-wallet mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/wallet/wallet4.png' %}" alt="wallet-img">
+                            </div>
+                            <h4 class="box-card-title">مبلغ را به ریال وارد نمائید
+
+
+                                </h4>
+                            <small class="text-danger">
+                                توجه داشته باشید که به مبلغ فوق طبق محاسبات زرین پال و تعرفه بانکی مالیات نیز اضافه می گردد
+                            </small>
+                             <form class="mt-5" method="post" action="{% url 'add-money-by-user' pk=user.pk %}">
+                        {% csrf_token %}
+
+                            <div class="row row-sm">
+                                <div class="col-lg-12 form-group">
+
+
+                                    <input id="price" class="form-control" name="price" type="number" value="">
+                                </div>
+                                <p  id="result_farsi">
+
+                                بعد از وارد کردن مبلغ به درگاه بانکی انتقال پیدا می کنید.
+                                    قابل ذکر است این فرایند بصورت امن صورت می گیرد
+                                    و درگاه واسط بانکی ما درگاه زرین پال می باشد.
+                           </p>
+
+
+                            </div>
+
+
+                                          <button class="fill-btn-lightblue" type="submit">پرداخت</button>
+                    </form>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-6">
+                    <div class="box-card-single box-card-wallet wallet-metamask mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/wallet/wallet.png' %}" alt="wallet-img">
+                            </div>
+                            <h4 class="box-card-title">موجودی شما :
+
+                                <strong class="tx-18 ">
+                                    {{balance|intcomma}}
+                                </strong>
+                                ریال</h4>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+
+{% block javas %}
+<script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+<script>
+$("#price").on("keyup",function () {
+var price = $('#price').val();
+
+   $.ajax({
+    url:"{% url 'number-to-farsi-ajax' %}",
+    type:"POST",
+    data: {
+        price: price
+    },
+    success:function (data) {
+        if(data.msg) {
+            tarjome = data.msg;
+            $("#result_farsi").html(tarjome+" ریال ")
+        }else{
+            $("#result_farsi").html("متاسفانه جوابی ثبت نشد")
+        }
+    }
+})
+            })
+
+</script>
+{% endblock %}

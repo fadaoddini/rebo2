@@ -1,0 +1,265 @@
+{% load static %}
+{% load mylocation_tag %}
+{% my_locations request.user as mylocations%}
+{% type_name as mytypes%}
+<div class="sidemenu-logo">
+    <a class="main-logo" href="{% url 'index' %}">
+        <img src="{% static 'index/img/logo.png' %}"
+             class="header-brand-img desktop-logo" alt="لوگو"/>
+        <img src="{% static 'index/img/logo.png' %}"
+             class="header-brand-img icon-logo" alt="لوگو">
+        <img src="{% static 'index/img/logo.png' %}"
+             class="header-brand-img desktop-logo theme-logo" alt="لوگو">
+        <img src="{% static 'index/img/logo.png' %}"
+             class="header-brand-img icon-logo theme-logo" alt="لوگو"/>
+    </a>
+</div>
+<div class="main-sidebar-body ">
+    <ul class="nav">
+        {% if user.is_staff %}
+        <li class="nav-item">
+            <a class="nav-link " href="{% url 'admin:index' %}">
+                <span class="shape1"></span>
+                <span class="shape2"></span>
+                <i class="ti-lock sidemenu-icon"></i>
+                <span class="sidemenu-label">مدیریت</span>
+            </a>
+        </li>
+        {% endif %}
+
+        <li class="nav-item ">
+            <a class="nav-link" href="{% url 'index' %}">
+                <span class="shape1"></span>
+                <span class="shape2"></span>
+                <i class="ti-home sidemenu-icon"></i>
+                <span class="sidemenu-label">صفحه اصلی</span>
+            </a>
+        </li>
+
+        {% if user.info.is_active %}
+        <li class="nav-item">
+            <a class="nav-link with-sub" href="#">
+                <span class="shape1"></span>
+                <span class="shape2"></span>
+                <i class="ti-ink-pen sidemenu-icon"></i>
+                <span class="sidemenu-label">آموزشگاه</span>
+                <i class="angle fe fe-chevron-left"></i>
+            </a>
+            <ul class="nav-sub">
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'learn-web' %}">همه آموزش ها</a>
+                </li>
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'add-learn-web' %}">افزودن آموزش</a>
+                </li>
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'add-section-web' %}">افزودن بخش</a>
+                </li>
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'add-lesson-web' %}">افزودن درس</a>
+                </li>
+
+            </ul>
+        </li>
+       <!-- <li class="nav-item">
+            <a class="nav-link with-sub" href="#">
+                <span class="shape1"></span>
+                <span class="shape2"></span>
+                <i class="ti-help-alt sidemenu-icon"></i>
+                <span class="sidemenu-label">قانون شناسی</span>
+                <i class="angle fe fe-chevron-left"></i>
+            </a>
+            <ul class="nav-sub">
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="#">همه قوانین</a>
+                </li>
+                     <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="#">قوانین اشخاص</a>
+                </li>
+                 <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="#">قوانین شرکت ها</a>
+                </li>
+                 <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="#">قوانین کشاورزی</a>
+                </li>
+                 <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="#">قوانین صادرات</a>
+                </li>
+
+
+
+            </ul>
+        </li>-->
+        <li class="nav-item">
+            <a class="nav-link with-sub" href="#">
+                <span class="shape1"></span>
+                <span class="shape2"></span>
+                <i class="ti-wallet sidemenu-icon"></i>
+                <span class="sidemenu-label">کیف پول</span>
+                <i class="angle fe fe-chevron-left"></i>
+            </a>
+            <ul class="nav-sub">
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'add-wallet-by-user' pk=user.pk %}">شارژ کیف پول</a>
+                </li>
+
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'send-wallet-by-user' pk=user.pk %}">انتقال اعتبار</a>
+                </li>
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'get-wallet-user' pk=user.pk %}">لیست تراکنش های من</a>
+                </li>
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'list-send-wallet-user' pk=user.pk %}">لیست انتقالی های من</a>
+                </li>
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'list-received-wallet-user' pk=user.pk %}">لیست دریافتی های من</a>
+                </li>
+
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link with-sub" href="#">
+                <span class="shape1"></span>
+                <span class="shape2"></span>
+                <i class="ti-briefcase sidemenu-icon"></i>
+                <span class="sidemenu-label">تجارت الکترونیک</span>
+                <i class="angle fe fe-chevron-left"></i>
+            </a>
+            <ul class="nav-sub">
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'add_product' pk=user.pk %}">ثبت فروش محصول</a>
+                </li>
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'add_request' pk=user.pk %}">ثبت درخواست خرید</a>
+                </li>
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'my_product_list' pk=user.pk %}">لیست محصولات من</a>
+                </li>
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'my_request_list' pk=user.pk %}">لیست درخواست های خرید من</a>
+                </li>
+<!--                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="cryptobuysell.html">گزارش فعالیت من</a>
+                </li>-->
+            </ul>
+
+        </li>
+
+
+         <li class="nav-item">
+            <a class="nav-link with-sub" href="#">
+                <span class="shape1"></span>
+                <span class="shape2"></span>
+                <i class="ti-shopping-cart-full sidemenu-icon"></i>
+                <span class="sidemenu-label">بازار</span>
+                <i class="angle fe fe-chevron-left"></i>
+            </a>
+            <ul class="nav-sub">
+                {% for type in mytypes%}
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'bazar-sell' pk=type.pk %}">بازار
+                    {{type.title}}
+                    </a>
+                </li>
+                {% endfor %}
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'bazar-buy' %}">بازار خریداران</a>
+                </li>
+
+            </ul>
+
+        </li>
+
+
+
+        {% endif %}
+
+
+        {% if user.company.is_active %}
+        <li class="nav-header"><span class="nav-label">برنامه های شرکتی</span></li>
+
+        <li class="nav-item">
+            <a class="nav-link with-sub" href="#">
+                <span class="shape1"></span>
+                <span class="shape2"></span>
+                <i class="ti-crown sidemenu-icon"></i>
+                <span class="sidemenu-label">شرکت من</span>
+                <i class="angle fe fe-chevron-left"></i>
+            </a>
+            <ul class="nav-sub">
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'location-list' %}">شعبه ها</a>
+                </li>
+
+            </ul>
+
+        </li>
+
+       <!-- <li class="nav-item">
+            <a class="nav-link" href="widgets.html">
+                <span class="shape1"></span>
+                <span class="shape2"></span>
+                <i class="ti-server sidemenu-icon"></i>
+                <span class="sidemenu-label">سامانه انبارداری</span>
+            </a>
+        </li>-->
+        <li class="nav-item">
+            <a class="nav-link with-sub" href="#">
+                <span class="shape1"></span>
+                <span class="shape2"></span>
+                <i class="ti-agenda sidemenu-icon"></i>
+                <span class="sidemenu-label">حقوق و دستمزد</span>
+                <i class="angle fe fe-chevron-left"></i>
+            </a>
+            <ul class="nav-sub">
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'setting-hoghoogh' %}">تنظیمات اولیه</a>
+                </li>
+                <hr>
+                {% for mylocation in mylocations%}
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'listprice' pk=mylocation.pk %}"> مدیریت آیتم های
+                        {{mylocation.name}}</a>
+                </li>
+                 <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'create-staff' pk=mylocation.pk %}"> افزودن نیرو های
+                        {{mylocation.name}}</a>
+                </li>
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'staff-list' pk=mylocation.pk %}"> مدیریت نیرو های
+                        {{mylocation.name}}</a>
+                </li>
+                <li class="nav-sub-item">
+                    <a onclick="return confirm('بروزرسانی شود؟')" class="nav-sub-link" href="{% url 'taeed-all-hoghoogh' pk=mylocation.pk %}"> تائید لیست حقوقی
+                        {{mylocation.name}}</a>
+                </li>
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'archive-all-hoghoogh' pk=mylocation.pk %}"> لیست حقوق این ماه
+                        {{mylocation.name}}</a>
+                </li>
+                <li class="nav-sub-item">
+                    <a class="nav-sub-link" href="{% url 'archive-all-hoghoogh-all' pk=mylocation.pk %}"> آرشیو کامل حقوق
+                        {{mylocation.name}}</a>
+                </li>
+                <li class="nav-sub-item">
+                    <a onclick="return confirm('آیا مطمئن هستید؟ اطلاعات این ماه حذف می شوند و در آرشیو ذخیره می گردند...')" class="text-danger nav-sub-link" href="{% url 'archive-location-hoghoogh' pk=mylocation.pk %}">آرشیو کردن حقوق
+                        {{mylocation.name}}</a>
+                </li>
+                <hr>
+                {% endfor %}
+
+
+
+            </ul>
+
+        </li>
+        {% else %}
+
+        فاقد شرکت
+
+        {% endif %}
+
+
+    </ul>
+</div>

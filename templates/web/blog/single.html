@@ -1,0 +1,99 @@
+{% extends 'baseweb.html' %}
+{% load widget_tweaks %}
+{% load jalali_tags %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/css/tablestyle.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | {{ blog.title }}
+{% endblock %}
+
+
+{% block content %}
+
+
+<section class="art-details-area pt-130 pb-100">
+    <div class="container">
+        <div class="art-details-wrapper">
+            <div class="row">
+                <div class="col-xl-4 col-lg-4">
+                    <div class="art-item-img pos-rel art-details-img wow fadeInUp"
+                         style="visibility: visible; animation-name: fadeInUp;">
+                        <a class="image-popups" href="{{ blog.image.url }}">
+                            <img style="max-height:fit-content" alt="{{ blog.title }}"
+                                 src="{{ blog.image.url }}">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xl-8 col-lg-8">
+                    <div class="art-details-content wow fadeInUp"
+                         style="visibility: visible; animation-name: fadeInUp;">
+                        <div class="created-by">نویسنده</div>
+                        <div class="creator mb-30">
+                            <div class="profile-img pos-rel">
+                                {% if blog.user.image %}
+                                <a href="#">
+                                    <img alt="{{ blog.user.last_name }}" src="{{ blog.user.image.url }}">
+                                </a>
+                                {% else %}
+                                    <img src="{% static 'web/assets/img/profile/profile2.jpg' %}" alt="profile-img">
+                                {% endif %}
+                                <div class="profile-verification verified">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="creator-name-id">
+                                <h4 class="artist-name"><a href="#">
+                                    {{ blog.user.info.family}}</a></h4>
+                                <div class="artist-id">{{ blog.user.info.name }}</div>
+                            </div>
+                        </div>
+                        <div class="art-name-details">
+                            <h4 class="art-name mb-25">{{ blog.title }}</h4>
+                            <p>
+                                {{ blog.description }}
+
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
+
+
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+
+{% endblock %}

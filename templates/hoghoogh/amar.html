@@ -1,0 +1,350 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/css/tablestyle.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | محاسبه حقوق
+{% endblock %}
+{% block content %}
+<style>
+
+
+</style>
+<div class="inner-body">
+
+
+    <div class="row row-sm">
+        <div class="col-xl-12 col-lg-12 col-md-12">
+            <div class="card custom-card">
+                <div class="card-body">
+                    <div>
+                        <h6 class="main-content-label mb-1">محاسبه حقوق
+                            ماه
+                            {{month}}
+                            در سال
+                            {{year}}
+
+                            برای
+
+                            {{staff_choose.name}} {{staff_choose.family}}
+
+                        </h6>
+
+                    </div>
+
+
+
+
+
+                    <hr>
+
+                    <form class="mt-5" method="post" action="{% url 'add-amar' pk=staff_choose.pk %}">
+                        {% csrf_token %}
+
+                        <input type="hidden" name="year" value="{{year}}">
+                        <input type="hidden" name="month" value="{{month}}">
+<div class="">
+                            <div class="row row-sm">
+                                <div class="col-lg-3 form-group">
+                                    <label class="form-label">
+                                        مساعده به ریال : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_hoghoogh_first.mosaede class="form-control" %}
+                                </div>
+                                <div class="col-lg-3 form-group">
+                                    <label class="form-label">
+                                        وام به ریال : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_hoghoogh_first.vam class="form-control" %}
+                                </div>
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        تشویقی به ریال : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_hoghoogh_first.tashvighi class="form-control" %}
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <table border="1" id="navigate" class="tblnavigate ">
+                            <tr>
+                                <td class="verticalTableHeader" style="width: 130px; height:130px; background:#fcc;">
+                                    <p>
+                                        تاریخ
+                                    </p>
+                                </td>
+                                {% for test in list_price %}
+
+                                <input name="name[{{test.pk}}]" type="hidden" value="{{test.name}}">
+
+                                <td style=" background:none;" class="verticalTableHeader  "><p>{{test.name}}</p></td>
+
+                                {% endfor %}
+
+
+                            </tr>
+
+
+                            {% for bb in time_range%}
+
+                            <tr>
+                                {% if bb < 10 %}
+                                <td class=" text-center">
+                                    <input name="tarikh[{{bb}}]" type="text" value="{{year}}/{{month}}/0{{bb}}"
+                                           class="has-persian-datepicker form-control1" style="background: none;"
+                                           readonly>
+                                </td>
+                                {% else %}
+                                <td class=" text-center">
+                                    <input name="tarikh[{{bb}}]" type="text" value="{{year}}/{{month}}/{{bb}}"
+                                           class="has-persian-datepicker form-control1" style="background: none;"
+                                           readonly>
+                                </td>
+
+                                {% endif %}
+
+
+                                {% for test in list_price %}
+
+                                <td>
+                                    <input name="tedad[{{bb}}][{{test.pk}}]" type="text" class="form-control1"
+                                           placeholder="تعداد" value="0"
+                                           style="background: none;">
+                                </td>
+
+                                {% endfor %}
+
+
+                            </tr>
+                            {% endfor %}
+
+<tr>
+                                <td class="verticalTableHeader" style="width: 130px; height:130px; background:#fcc;">
+                                    <p>
+                                        تاریخ
+                                    </p>
+                                </td>
+                                {% for test in list_price %}
+
+                                <input name="name[{{test.pk}}]" type="hidden" value="{{test.name}}">
+
+                                <td style=" background:none;" class="verticalTableHeader  "><p>{{test.name}}</p></td>
+
+                                {% endfor %}
+
+
+                            </tr>
+                        </table>
+
+                        <button class="btn ripple btn-success btn-block mt-2" type="submit">افزودن</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row row-sm">
+        <div class="col-lg-12">
+            <div class="card custom-card overflow-hidden">
+                <div class="card-body">
+                    <div>
+                        <h6 class="main-content-label mb-1">ویرایش حقوق
+                            ماه
+                            {{month}}
+                            در سال
+                            {{year}}
+
+                            برای
+
+                            {{staff_choose.name}} {{staff_choose.family}}
+
+                            در
+
+                            {{location.name}}
+                        </h6>
+                        <p class="text-muted card-sub-title">
+
+                            می توانید بصورت کلی تغییرات را روی تعداد آیتم های مورد نظر اعمال نمایید بعد از تغییر روی
+                            دکمه ویرایش کلیک کنید
+
+                        </p>
+                    </div>
+                    <div class="table-responsive">
+                        <form method="post" action="{% url 'edit-amar' pk=staff_choose.pk %}">
+                            {% csrf_token %}
+
+                            <button class="btn ripple btn-main-primary btn-block mb-2" type="submit">ویرایش</button>
+                            <table id="exportexample"
+                                   class="table table-bordered border-t0 key-buttons text-nowrap w-100">
+                                <thead>
+                                <tr>
+                                    <th>تاریخ</th>
+                                    <th>عنوان</th>
+                                    <th>تعداد</th>
+                                    <th>عملیات</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for test in amarexist %}
+                                <tr>
+                                    <td>{{test.tarikh}}</td>
+                                    <td>{{test.name}}</td>
+                                    <td><input name="{{test.id}}" type="text" class="form-control1 text-center"
+                                               value="{{test.tedad}}"
+                                               style="background:#fbf6dbbd; color: palevioletred;"></td>
+                                    <td><a onclick="return confirm('آیا این آیتم حذف شود');"
+                                           href="{% url 'delete-edit-amar' pk=test.id  %}"
+                                           class="btn btn-sm btn-danger">
+                                        حذف
+                                    </a></td>
+
+                                </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+
+<script>
+    var active = 0;
+    //$('.tblnavigate td').each(function(idx){$(this).html(idx);});
+    rePosition();
+
+    $(document).keydown(function(e) {
+        var inp = String.fromCharCode(e.keyCode);
+        if ((!(/[a-zA-Z0-9-_ ]/.test(inp) || e.keyCode == 96)) && e.keyCode != 8){
+            reCalculate(e);
+            rePosition();
+            // if key is an arrow key, don't type the test input.
+            // if it is any other key (a, b, c, etc)
+            // edit the text
+            if (e.keyCode > 36 && e.keyCode < 41) {
+                return false;
+            }
+        }
+    });
+    //$( ".tblnavigate" ).on( "mousedown", function( event ) {
+    $('td').click(function() {
+        active = $('table td').index(this);
+        rePosition();
+    });
+
+
+    function reCalculate(e) {
+        var rows = $('.tblnavigate tbody tr').length;
+        var columns = $('.tblnavigate tbody tr:eq(0) td').length;
+        var temp;
+
+        if (e.keyCode == 39) { //move left or wrap
+            temp = active;
+            while (temp > 0) {
+                temp = temp - 1;
+                // only advance if there is an input field in the td
+                if ($('.tblnavigate tbody tr td').eq(temp).find('input').length != 0) {
+                    active = temp;
+                    break;
+                }
+            }
+        }
+        if (e.keyCode == 38) { // move up
+            temp = active;
+            while (temp - columns >= 0) {
+                temp = temp - columns;
+                // only advance if there is an input field in the td
+                if ($('.tblnavigate tbody tr td').eq(temp).find('input').length != 0) {
+                    active = temp;
+                    break;
+                }
+            }
+        }
+        if (e.keyCode == 37) { // move right or wrap
+            temp = active;
+            while (temp < (columns * rows) - 1) {
+                temp = temp + 1;
+                // only advance if there is an input field in the td
+                if ($('.tblnavigate tbody tr td').eq(temp).find('input').length != 0) {
+                    active = temp;
+                    break;
+                }
+            }
+        }
+        if (e.keyCode == 40) { // move down
+            temp = active;
+            while (temp + columns <= (rows * columns) - 1) {
+                temp = temp + columns;
+                // only advance if there is an input field in the td
+                if ($('.tblnavigate tbody tr td').eq(temp).find('input').length != 0) {
+                    active = temp;
+                    break;
+                }
+            }
+        }
+    }
+
+    function rePosition() {
+        console.log(active);
+        $('.active').removeClass('active');
+        $('.tblnavigate tbody tr td').eq(active).addClass('active');
+        $('.tblnavigate tbody tr td').find('input').removeClass('textClass');
+        $('.tblnavigate tbody tr td').eq(active).find('input').addClass('textClass');
+        $('.tblnavigate tbody tr td').eq(active).find('input').select();
+        var input = $('.tblnavigate tbody tr td').eq(active).find('input').focus();
+        scrollInView();
+    }
+
+    function scrollInView() {
+        var target = $('.tblnavigate tbody tr td:eq(' + active + ')');
+        if (target.length) {
+            var top = target.offset().top;
+
+            $('html,body').stop().animate({
+                scrollTop: top - 100
+            }, 400);
+            return false;
+        }
+    }
+
+</script>
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/css/tablestyle.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | شارژ کیف پول
+{% endblock %}
+{% block content %}
+
+<div class="inner-body">
+
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h2 class="main-content-title tx-24 mg-b-5 mr-4">
+                کیف پول ربو
+
+            </h2>
+
+        </div>
+        <div class="d-flex">
+            <div class="justify-content-center">
+
+                <p class="btn btn-white btn-icon-text my-2 ml-2">
+
+                    موجودی کیف پول شما :
+                    <strong class="tx-18">
+                        {{balance}}
+                    </strong>
+
+
+                    ریال
+
+
+                </p>
+
+            </div>
+        </div>
+    </div>
+    <!-- End Page Header -->
+
+    <!-- row -->
+    <div class="row row-sm">
+        <div class="col-xl-12 col-lg-12 col-md-12">
+            <div class="card custom-card">
+                <div class="card-body">
+                    <div>
+                        <h6 class="main-content-label mb-1">
+                      شارژ ریالی کیف پول ربو
+                        </h6>
+
+                    </div>
+
+
+                    <hr>
+
+                    <form class="mt-5" method="post" action="{% url 'add-money-by-user' pk=user.pk %}">
+                        {% csrf_token %}
+
+
+                        <div class="">
+                            <div class="row row-sm">
+                                <div class="col-lg-3 form-group">
+                                    <label class="form-label">
+                                        مبلغ دلخواه به ریال : <span class="tx-danger">*</span>
+                                    </label>
+
+                                    <input class="form-control" name="price" type="number" value="">
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+                        <button class="btn ripple btn-success btn-block mt-2" type="submit">پرداخت</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Row End -->
+
+
+</div>
+
+
+{% endblock %}
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+
+{% endblock %}

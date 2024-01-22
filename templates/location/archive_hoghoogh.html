@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | آرشیو حقوق
+{% endblock %}
+{% block content %}
+<div class="inner-body">
+
+
+    <div class="row row-sm">
+        <div class="col-lg-12">
+            <div class="card custom-card overflow-hidden">
+                <div class="card-body">
+                    <div>
+                      مجموع حقوق قابل پرداخت
+
+                        <span class="text-danger">
+                            {{sum_pay_all}}
+                        </span>
+
+                        ریال می باشد
+
+                    </div>
+                    <div class="table-responsive">
+                        <table id="exportexample" class="table table-bordered border-t0 key-buttons text-nowrap w-100">
+                            <thead>
+                            <tr>
+                                <th>کد انحصاری</th>
+                                <th>سال</th>
+                                <th>ماه</th>
+                                <th>نام و نام خانودگی</th>
+                                <th>درآمد کارگاهی</th>
+                                <th>درآمد ناخالص</th>
+                                <th>اضافه کار</th>
+                                <th>مساعده</th>
+                                <th>تعداد روز فعال</th>
+                                <th>مبلغ بیمه</th>
+                                <th>کارایی</th>
+                                <th>آمار</th>
+                                <th>مبلغ تشویقی</th>
+                                <th>حق سرپرستی</th>
+
+                                <th>قابل پرداخت</th>
+                                <th>شماره حساب</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in hoghooghs%}
+                            <tr>
+                                <td>{{ item.pk }}</td>
+                                <td>{{ item.year }}</td>
+                                <td>{{ item.month }}</td>
+                                <td>{{ item.staff.name }} {{ item.staff.family }}</td>
+                                <td>{{ item.sum_calculate }}</td>
+                                <td>{{ item.sum_all }}</td>
+                                <td>{{ item.tashvighi }}</td>
+                                <td>{{ item.mosaede }}</td>
+                                <td>{{ item.days }}</td>
+                                <td>{{ item.bime }}</td>
+                                <td>{{ item.karaee }}</td>
+                                <td>
+                                    <a href="#" class="btn ripple btn-primary btn-sm">جزئیات آماری</a>
+                                </td>
+                                <td>{{ item.pele_price }}</td>
+                                <td>{{ item.sarparasti }}</td>
+                                <td>{{ item.total_pay }}</td>
+                                <td>{{ item.staff.card_number }}</td>
+
+
+
+                            </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+{% endblock %}

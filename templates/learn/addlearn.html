@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/fileuploads/css/fileupload.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | افزودن آموزش
+{% endblock %}
+{% block content %}
+<div class="inner-body">
+
+    <div class="row row-sm">
+        <div class="col-xl-12 col-lg-12 col-md-12">
+            <div class="card custom-card">
+                <div class="card-body">
+                    <div>
+                        <h6 class="main-content-label mb-1">افزودن آموزش
+
+                        </h6>
+
+                    </div>
+                    <form method="post" action="{% url 'add-learn-web' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="">
+                            <div class="row row-sm">
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-9">
+                                            <div class="row  bg-light rounded pt-3">
+                                                <div class="col-lg-4 form-group">
+                                                    <label class="form-label">
+                                                        نام مدرس : <span class="tx-danger">*</span>
+                                                    </label>
+                                                    {% render_field form_learn.auther class="form-control" %}
+                                                </div>
+                                                <div class="col-lg-8 form-group">
+                                                    <label class="form-label">
+                                                        کلمه کلیدی مرتبط با آموزش را مشخص کنید : <span class="tx-danger">*</span>
+                                                    </label>
+                                                    {% render_field form_learn.type class="form-control" %}
+                                                </div>
+                                                <div class="col-lg-4 form-group">
+                                                    <label class="form-label">
+                                                        عنوان آموزش :
+                                                    </label>
+                                                    {% render_field form_learn.title class="form-control" %}
+                                                </div>
+                                                <div class="col-lg-4 form-group">
+                                                    <label class="form-label">
+                                                        قیمت آموزش (ریال) :
+                                                    </label>
+                                                    {% render_field form_learn.price class="form-control" %}
+                                                </div>
+
+                                                <div class="col-lg-4 form-group">
+                                                    <label class="form-label">
+                                                        دسته بندی آموزش را انتخاب نمائید
+                                                    </label>
+                                                    {% render_field form_learn.category class="form-control" %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="row">
+
+
+                                                <div class="col-lg-12 form-group">
+                                                    <label class="form-label">
+                                                        تصویر مربوط به آموزش <span class="tx-danger">*</span>
+                                                    </label>
+                                                    {% render_field form_learn.image class="dropify" %}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <button class="btn ripple btn-main-primary btn-block" type="submit">افزودن</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock %}
+{% block javas %}
+
+
+<!-- Internal Jquery-Ui js-->
+<script src="{% static 'catalogue/assets/plugins/jquery-ui/ui/widgets/datepicker.js' %}"></script>
+
+<!-- Internal Jquery.maskedinput js-->
+<script src="{% static 'catalogue/assets/plugins/jquery.maskedinput/jquery.maskedinput.js' %}"></script>
+
+<!-- Internal Specturm-colorpicker js-->
+<script src="{% static 'catalogue/assets/plugins/spectrum-colorpicker/spectrum.js' %}"></script>
+
+<!-- Internal Ion-rangeslider js-->
+<script src="{% static 'catalogue/assets/plugins/ion-rangeslider/js/ion.rangeSlider.min.js' %}"></script>
+
+<!-- Internal Form-elements js-->
+<script src="{% static 'catalogue/assets/js/form-elements.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+<!-- Internal Fileuploads js-->
+<script src="{% static 'catalogue/assets/plugins/fileuploads/js/fileupload.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/fileuploads/js/file-upload.js' %}"></script>
+
+
+{% endblock %}

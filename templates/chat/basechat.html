@@ -1,0 +1,96 @@
+{% load static %}
+{% load setting_tag %}
+{% get_setting as setting %}
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+
+<meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta name="description" content="{{setting.description}}">
+    <meta name="author" content="محمدسعید فداالدینی">
+    <meta name="keywords"
+          content="{{setting.title}}">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ setting.favicon.url }}" type="image/png">
+    <!-- Title -->
+    <title>{{ setting.title }}</title>
+    <!-- Bootstrap css-->
+    <link rel="stylesheet"
+          href="{% static 'chat/assets/plugins/bootstrap/css/bootstrap.min.css' %}">
+    <!-- Icons index-->
+    <link rel="stylesheet" href="{% static 'chat/assets/plugins/web-fonts/icons.css' %}">
+    <link rel="stylesheet" href="{% static 'chat/assets/plugins/web-fonts/font-awesome/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'chat/assets/plugins/web-fonts/plugin.css' %}">
+
+
+    <!-- Style css-->
+    <link rel="stylesheet" href="{% static 'chat/assets/css-rtl/style/style.css' %}">
+    <link rel="stylesheet" href="{% static 'chat/assets/css-rtl/skins.css' %}">
+    <link rel="stylesheet" href="{% static 'chat/assets/css-rtl/dark-style.css' %}">
+    <link rel="stylesheet" href="{% static 'chat/assets/css-rtl/colors/default.css' %}">
+
+
+    <!-- Color css-->
+    <link href="{% static 'chat/assets/css-rtl/colors/color.css' %}" id="theme" rel="stylesheet" type="text/css"
+          media="all">
+
+  <!-- Select2 css -->
+  <link href="{% static 'chat/assets/plugins/select2/css/select2.min.css' %}" rel="stylesheet">
+
+
+</head>
+
+<body class="main-body leftmenu">
+
+
+<!-- Loader -->
+<div id="global-loader">
+    <img src="{% static 'chat/assets/img/loader.svg' %}" class="loader-img" alt="Loader">
+</div>
+<!-- End Loader -->
+
+<div class="page">
+	<!-- Main Content-->
+	<div class="main-content side-content pt-0">
+		<div class="container-fluid">
+			<div class="inner-body">
+              {% block headchat %} {% endblock %}
+              {% block chat %} {% endblock %}
+
+
+			</div>
+		</div>
+	</div>
+	<!-- End Main Content-->
+</div>
+
+
+<!-- Jquery js-->
+<script src="{% static 'chat/assets/plugins/jquery/jquery.min.js' %}"></script>
+
+<!-- Bootstrap js-->
+<script src="{% static 'chat/assets/plugins/bootstrap/js/popper.min.js' %}"></script>
+<script src="{% static 'chat/assets/plugins/bootstrap/js/bootstrap-rtl.js' %}"></script>
+
+<!-- Select2 js-->
+<script src="{% static 'chat/assets/plugins/select2/js/select2.min.js' %}"></script>
+<!-- Internal Chat js-->
+<script src="{% static 'chat/assets/js/chat.js' %}"></script>
+<!-- Custom js -->
+<script src="{% static 'chat/assets/js/custom.js' %}"></script>
+
+<!-- Switcher js -->
+<script src="{% static 'chat/assets/switcher/js/switcher-rtl.js' %}"></script>
+<!-- Perfect-scrollbar js -->
+<script src="{% static 'chat/assets/plugins/perfect-scrollbar/perfect-scrollbar.min-rtl.js' %}"></script>
+
+<script src="{% static 'chat/js/reconnecting-websocket.js' %}"></script>
+{% block script_chat %} {% endblock %}
+</body>
+</html>

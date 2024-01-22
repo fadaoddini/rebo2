@@ -1,0 +1,245 @@
+{% extends 'chat/basechat.html' %}
+{% load static %}
+{% load jalali_tags %}
+{% block titlelogin %}
+{{ setting.title }} | گفتگو
+{% endblock %}
+
+{% block headchat %}
+
+
+				<!-- Page Header -->
+				<div class="page-header">
+					<div>
+						<a href="{% url 'index' %}" class="logo">
+                            <img width="100" src="{{ setting.logo.url }}" alt="{{ setting.title }}">
+                        </a>
+					</div>
+
+				</div>
+				<!-- End Page Header -->
+{% endblock %}
+
+{% block chat %}
+<!-- Row -->
+<div class="row row-sm">
+					<div class="col-sm-12 col-md-12 col-lg-5 col-xl-4">
+						<div class="card custom-card">
+							<div class="main-content-app pt-0">
+
+
+								<div class="main-content-left main-content-left-chat">
+
+									<nav class=" main-nav-line-chat ">
+
+										<a class="nav-link" data-bs-toggle="tab"
+										   href="#ChatCalls">
+											مدیران
+											{{room_name}} </a>
+
+									</nav>
+									<div class="tab-content main-chat-list">
+										<div class="tab-pane active" id="ChatList">
+											<div class="main-chat-list tab-pane">
+
+												{% for member in members %}
+												<a class="media new" href="#">
+													<div class="main-img-user online">
+														{% if user.info.image %}
+														<img alt="{{member.info.family}}"
+															 src="{{user.info.image.url }}">
+														{% else %}
+														<img
+																src="{% static 'chat/public/img/profile.png' %}" alt="{{member.info.family}}">
+														{% endif %}
+
+													</div>
+													<div class="media-body mr-3">
+														<div class="media-contact-name">
+															<span>{{member.info.name}}
+																{{member.info.family}}</span>
+                                                            <span>
+
+
+																{% if member.user_mode %}
+																<span class="dot-label bg-success"></span><small class="ml-3">برخط</small>
+																{% else %}
+																<span
+																		class="dot-label bg-danger"></span><small class="ml-3">برخط</small>
+																{% endif %}
+															</span>
+														</div>
+														<p class="h6">
+															آخرین بازدید :
+												{{member.last_time_online|to_jalali:'%Y/%m/%d|%H:%M:%S'}}
+
+
+
+                                                        </p>
+													</div>
+
+												</a>
+												{% endfor %}
+
+											</div><!-- main-chat-list -->
+										</div><!-- main-chat-list -->
+
+
+									</div>
+									<!-- main-chat-list -->
+								</div>
+
+
+
+
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-12 col-md-12 col-lg-7 col-xl-8">
+						<div class="card custom-card">
+							<div class="main-content-app pt-0">
+								<div class="main-content-body main-content-body-chat">
+									<div class="main-chat-header pt-3">
+
+										<div class="main-chat-msg-name">
+											<h6 id="author-chat">{{user.info.name}}
+												{{user.info.family}}</h6>
+											{% if user.user_mode %}
+																<span class="dot-label bg-success"></span><small class="ml-3">برخط</small>
+																{% else %}
+																<span
+																		class="dot-label bg-danger"></span><small class="ml-3">برخط</small>
+																{% endif %}
+										</div>
+
+									</div><!-- main-chat-header -->
+									<div class="main-chat-body" id="ChatBody">
+
+									</div>
+									<div class="main-chat-footer">
+
+										<input class="form-control" id="chat-message-input"
+											   placeholder="پیام خود را اینجا بنویسید ..." type="text">
+
+										<a id="chat-message-submit" class="main-msg-send" href="#"><i
+												class="far fa-paper-plane"></i></a>
+										{{ room_name|json_script:"room-name" }}
+										{{ room_pk|json_script:"room-pk" }}
+
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+<!-- End Row -->
+
+
+{% endblock %}
+
+
+{% block script_chat %}
+<script>
+       var mobile = {{mobile}}
+const roomName = JSON.parse(document.getElementById('room-name').textContent);
+const room_pk = {{room_pk}}
+console.log(roomName+' '+room_pk+' '+mobile);
+const chatSocket = new ReconnectingWebSocket(
+    'ws://'
+    + window.location.host
+    + '/ws/chat/'
+    + room_pk
+    + '/'
+);
+
+
+chatSocket.onopen = function(e){
+    console.log('=========================onOpen Start================================');
+    chatSocket.send(JSON.stringify({
+        'command': "fetch_message",
+        'room_name': roomName,
+        'room_pk': room_pk
+    }));
+}
+
+chatSocket.onmessage = function(e) {
+    console.log('=========================onMessage Start================================');
+    const data = JSON.parse(e.data);
+
+    if (data['command'] == 'fetch_message'){
+        console.log('=========================onMessage Fetch Start================================');
+        for(let i=data['message'].length-1; i>=0;i--){
+         create_message(data['message'][i]);
+        }
+    }
+    else {
+        console.log('=========================onMessage NewMessage Start================================');
+       create_message(data);
+    }
+
+
+};
+
+chatSocket.onclose = function(e) {
+    console.log('=========================onClose================================');
+    console.error('Chat socket closed unexpectedly');
+};
+
+document.querySelector('#chat-message-input').focus();
+document.querySelector('#chat-message-input').onkeyup = function(e) {
+    if (e.key === 'Enter') {  // enter, return
+        console.log('=========================Clicked!================================');
+        document.querySelector('#chat-message-submit').click();
+    }
+};
+
+document.querySelector('#chat-message-submit').onclick = function(e) {
+    const messageInputDom = document.querySelector('#chat-message-input');
+    const message = messageInputDom.value;
+    console.log('=========================onMessage To Websocket================================');
+    console.log('Message is : ' + message);
+
+    chatSocket.send(JSON.stringify({
+        'message': message,
+        'command': "new_message",
+        'mobile': mobile,
+        'room_name': roomName,
+        'room_pk': room_pk
+    }));
+    messageInputDom.value = '';
+};
+
+function create_message(data){
+    console.log('=========================Create Message================================');
+    const textarea = document.getElementById('ChatBody');
+    var author = data['__str__'];
+    var timestamp = data['time_persian'];
+    var content = document.createElement('div');
+    content.className = 'content-inner';
+    var msgDivTag = document.createElement('div');
+    var msgDivTag2 = document.createElement('div');
+    var msgDivTag3 = document.createElement('div');
+    var msgSpan = document.createElement('span');
+    msgDivTag.className = 'media';
+    content.appendChild(msgDivTag);
+    msgDivTag.appendChild(msgDivTag2);
+    msgDivTag2.className = 'media-body mr-3';
+    msgDivTag2.appendChild(msgDivTag3);
+    msgDivTag2.appendChild(msgSpan);
+    msgSpan.className = 'custom_span_chat';
+    msgDivTag3.className = 'main-msg-wrapper';
+    msgDivTag3.textContent = data.content;
+    msgSpan.textContent = timestamp;
+    if (author === mobile){
+        msgDivTag.className = 'media';
+    }else{
+        msgDivTag.className = 'media flex-row-reverse';
+    }
+    document.querySelector('#ChatBody').appendChild(content);
+    textarea.scrollTo(0,textarea.scrollHeight)
+}
+    </script>
+
+
+{% endblock %}

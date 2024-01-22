@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="rtl" >
+
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta name="description" content="ربو - تولدی دوباره">
+    <meta name="author" content="محمدسعید فداالدینی">
+    <meta name="keywords" content="سامانه خرید و فروش خرما">
+        <!-- Favicon -->
+    <link rel="icon" href="{% static 'catalogue/assets/img/brand/favicon.ico' %}" type="image/x-icon"/>
+		<!-- Title -->
+    <title>{% block title %}  {% endblock %}</title>
+		<!-- Bootstrap index-->
+    <link rel="stylesheet" href="{% static 'catalogue/assets/plugins/bootstrap/css/bootstrap.min.css' %}">
+		<!-- Icons index-->
+    <link rel="stylesheet" href="{% static 'catalogue/assets/plugins/web-fonts/icons.css' %}">
+    <link rel="stylesheet" href="{% static 'catalogue/assets/plugins/web-fonts/plugin.css' %}">
+		<!-- Style index-->
+    <link rel="stylesheet" href="{% static 'catalogue/assets/css-rtl/style/style.css' %}">
+    <link rel="stylesheet" href="{% static 'catalogue/assets/css-rtl/skins.css' %}">
+    <link rel="stylesheet" href="{% static 'catalogue/assets/css-rtl/dark-style.css' %}">
+    <link rel="stylesheet" href="{% static 'catalogue/assets/css-rtl/colors/default.css' %}">
+    <!-- Select2 index -->
+    <link href="{% static 'catalogue/assets/plugins/select2/css/select2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'catalogue/assets/plugins/multipleselect/multiple-select.css' %}" rel="stylesheet">
+    <link href="{% static 'catalogue/assets/css-rtl/sidemenu/sidemenu.css' %}" rel="stylesheet">
+    <!-- Color css-->
+    <link href="{% static 'catalogue/assets/css-rtl/colors/color.css' %}" id="theme" rel="stylesheet" type="text/css" media="all">
+
+
+    {% block styles %}  {% endblock %}
+	</head>
+
+<body class="main-body">
+
+<div class="page">
+
+
+    {% block sidemenu %}  {% endblock %}
+    	<div class="main-content side-content pt-0">
+		<div class="container-fluid">
+{% include 'menu.html' %}
+
+
+
+{% block content %}  {% endblock %}
+
+<!-- Back-to-top -->
+<a href="#top" id="back-to-top"><i class="fe fe-arrow-up"></i></a>
+
+<!-- Jquery js-->
+<script src="{% static 'catalogue/assets/plugins/jquery/jquery.min.js' %}"></script>
+
+<!-- Bootstrap js-->
+<script src="{% static 'catalogue/assets/plugins/bootstrap/js/popper.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/bootstrap/js/bootstrap-rtl.js' %}"></script>
+
+<!-- Perfect-scrollbar js -->
+<script src="{% static 'catalogue/assets/plugins/perfect-scrollbar/perfect-scrollbar.min-rtl.js' %}"></script>
+
+<!-- Sidemenu js -->
+<script src="{% static 'catalogue/assets/plugins/sidemenu/sidemenu-rtl.js' %}"></script>
+
+<!-- Sidebar js -->
+<script src="{% static 'catalogue/assets/plugins/sidebar/sidebar-rtl.js' %}"></script>
+
+<!-- Select2 js-->
+<script src="{% static 'catalogue/assets/plugins/select2/js/select2.min.js' %}"></script>
+<!-- Internal Select2 js-->
+<script src="{% static 'catalogue/assets/js/select2.js' %}"></script>
+<!-- Internal Jquery-Ui js-->
+
+<!-- Sticky js -->
+<script src="{% static 'catalogue/assets/js/sticky.js' %}"></script>
+
+<!-- Custom js -->
+<script src="{% static 'catalogue/assets/js/custom.js' %}"></script>
+
+<!-- Switcher js -->
+<script src="{% static 'catalogue/assets/switcher/js/switcher-rtl.js' %}"></script>
+<script>
+    $(document).ready(function(){
+        $('ul li').click(function(){
+            $('li').removeClass("active");
+            $(this).addClass("active show");
+        });
+    });
+</script>
+    {% block javas %}  {% endblock %}
+        </div>
+        </div>
+</div>
+</body>
+</html>

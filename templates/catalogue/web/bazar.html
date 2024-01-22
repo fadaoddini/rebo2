@@ -1,0 +1,88 @@
+{% extends 'baseweb.html' %}
+{% load widget_tweaks %}
+{% load jalali_tags %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/css/tablestyle.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | بازار
+{% endblock %}
+
+
+{% block content %}
+
+<section class="connect-wallet-area pt-130 pb-120">
+    <div class="container">
+        <div class="connect-wallet-wrapper">
+            <div class="row">
+
+                {% for type in mytypes%}
+
+
+
+                <div class="col-xl-4 col-lg-4 col-md-6">
+                    <div class="box-card-single box-card-wallet wallet-torus mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+
+                            <h4 class="box-card-title">{{type.title}}</h4>
+
+                            <div class="box-card-btn">
+                                <a href="{% url 'bazar-sell-web' pk=type.pk %}" class="fill-btn">نمایش گزارش</a>
+                                <a href="{% url 'bazar-web-in' pk=type.pk %}"
+                                   class="fill-btn-orange">نمایش بازار</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                {% endfor %}
+
+
+
+
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+
+
+{% endblock %}

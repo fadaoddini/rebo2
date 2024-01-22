@@ -1,0 +1,117 @@
+{% extends 'baseweb.html' %}
+{% load widget_tweaks %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/css/tablestyle.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | انتقال اعتبار
+{% endblock %}
+
+
+{% block content %}
+
+<section class="connect-wallet-area pt-130 pb-120">
+    <div class="container">
+        <div class="connect-wallet-wrapper">
+            <div class="row">
+                <div class="col-xl-8 col-lg-8 col-md-6">
+                    <div class="box-card-single box-card-wallet mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/wallet/wallet4.png' %}" alt="wallet-img">
+                            </div>
+                            <h4 class="box-card-title">انتقال ریالی از کیف پول به دیگران
+
+
+                                </h4>
+                              <form class="mt-5" method="post" action="{% url 'check-mobile-receiver-wallet-web' pk=user.pk %}">
+                        {% csrf_token %}
+
+                            <div class="row row-sm">
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        مبلغ دلخواه به ریال : <span class="tx-danger">*</span>
+                                    </label>
+
+                                    <input class="form-control" name="price" type="number">
+                                </div>
+								<div class="col-lg-8 form-group">
+                                    <label class="form-label">
+                                        شماره موبایل دریافت کننده مبلغ : <span class="tx-danger">*</span>
+                                    </label>
+
+                                    <input class="form-control" name="mobile" type="number">
+									<span class="text-danger">
+										انتقال اعتبار فقط به افرادی که در سامانه ربو می باشند مقدور است
+									</span>
+                                </div>
+
+
+                            </div>
+
+
+                                          <button class="fill-btn-lightblue" type="submit">انتقال اعتبار</button>
+                    </form>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-6">
+                    <div class="box-card-single box-card-wallet wallet-metamask mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/wallet/wallet.png' %}" alt="wallet-img">
+                            </div>
+                            <h4 class="box-card-title">موجودی شما :
+
+                                <strong class="tx-18 ">
+                                    {{balance|intcomma}}
+                                </strong>
+                                ریال</h4>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+
+
+{% endblock %}

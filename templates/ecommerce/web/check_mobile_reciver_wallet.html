@@ -1,0 +1,81 @@
+{% extends 'baseweb.html' %}
+{% load category_tag %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+
+{% endblock %}
+{% block title %}
+ربو | شارژ کیف پول
+{% endblock %}
+
+
+{% block content %}
+
+<section class="connect-wallet-area pt-130 pb-120">
+    <div class="container">
+        <div class="connect-wallet-wrapper">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                    <div class="box-card-single box-card-wallet mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/wallet/wallet4.png' %}" alt="wallet-img">
+                            </div>
+                            <h4 class="box-card-title">
+
+                            شما در حال انتقال
+
+                                <strong class="text-danger">
+                                    {{amount|intcomma}}
+                                </strong>
+
+                            ریال به
+                            {{name}} {{family}}
+                            می باشید
+
+
+                                </h4>
+                            <form class="mt-5" method="post" action="{% url 'send-money-by-user' pk=user.pk %}">
+                        {% csrf_token %}
+
+
+                            <div class="row row-sm">
+                                <div class="col-lg-6 form-group">
+
+
+                                    <input class="form-control" name="price" type="hidden" value="{{amount}}" readonly>
+                                </div>
+                                <div class="col-lg-6 form-group">
+
+
+                                    <input class="form-control" name="mobile" type="hidden" value="{{mobile}}" readonly>
+
+                                </div>
+
+                            </div>
+
+
+                                          <button class="fill-btn-lightblue mt-3" type="submit">تائید می کنم، اعتبار انتقال
+                            یابد</button>
+                    </form>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+
+{% block javas %}
+
+{% endblock %}

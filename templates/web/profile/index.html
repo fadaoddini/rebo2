@@ -1,0 +1,750 @@
+{% extends 'baseweb.html' %}
+{% load widget_tweaks %}
+{% load category_tag %}
+{% load jalali_tags %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet"
+      href="{% static 'catalogue/assets/plugins/fileuploads/css/fileupload.css' %}">
+{% endblock %}
+{% block title %}
+ربو | پروفایل
+{% endblock %}
+
+
+{% block content %}
+
+<!-- creator-details area start  -->
+<section class="creator-details-area pt-0 pb-90 margintop73">
+    <div class="creator-cover-img creator-details-cover-img pos-rel wow fadeInUp">
+        <img src="{% static 'web/assets/img/profile/profile-cover/profile-cover-big-1.jpg' %}" alt="cover-img">
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-3 col-lg-6 col-md-8">
+                <div class="creator-about mb-40 wow fadeInUp">
+                    <form id="formimageinfo" method="post"
+                          action="{% url 'update-info-profile-image' %}"
+                          enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="file" name="image_info"
+                               accept="image/*"
+                               id="image_info" style="visibility:hidden">
+
+                    </form>
+                    <div class="profile-img pos-rel">
+
+                        <div onclick="openFileUpload()" class="change-photo"><i
+                                class="flaticon-photo-camera"></i></div>
+
+                        <img src=" {{ image }}" alt="rebo">
+                    </div>
+                    <h5 class="artist-name pos-rel">
+                        {{ first_name }}
+                        {{ last_name }}
+
+                        {% if user_info.info.is_active == True %}
+                        <span class="profile-verification verified">
+                           <i class="fas fa-check"></i>
+                        </span>
+                        {% else %}
+                        <span class="text12 text-danger">تایید نشده</span>
+                        {% endif %}
+
+
+                    </h5>
+                    <div class="artist-id">
+
+
+                    </div>
+
+                    <ul>
+                        <li><i class="far fa-comment-dots"></i>{{useremail}}</li>
+                        <li><i class="fa fa-mobile"></i>{{ user.mobile }} <i class="fas fa-check text-success"></i></li>
+                        <li><i class="flaticon-calendar"></i>عضویت:
+
+                            {{user.date_joined|to_jalali:'%Y/%m/%d | %A'}}
+                        </li>
+                        <li><a class="h6 text-danger" href="{% url 'wallet-user' pk=user.pk %}"><i
+                                    class="flaticon-wallet-1"></i>کیف
+                                پول</a></li>
+                            <li><a class="h6 text-danger" href="{% url 'index-web' %}"><i class="flaticon-check-mark"></i>مدیریت
+                                آموزش</a></li>
+                            <li><a class="h6 text-danger" href="{% url 'product-web' %}"><i class="flaticon-add-2"></i>مدیریت
+                                محصول</a></li>
+                    </ul>
+                    <div class="message-creator-btn w100">
+                        <a href="{% url 'logout' %}" class="fill-btn-lightred icon-left w100" style="width:100%; text-align:center;"><i
+                                class="fas fa-exclamation"></i> خروج </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-9">
+
+
+
+
+                <div class="creator-info-bar mb-30 wow fadeInUp">
+                    <div class="artist-meta-info creator-details-meta-info">
+                        <div class="artist-meta-item artist-meta-item-border">
+                            <div class="artist-meta-type">محصول</div>
+                            <div class="artist-created">16</div>
+                        </div>
+                        <div class="artist-meta-item artist-meta-item-border">
+                            <div class="artist-meta-type">درخواست</div>
+                            <div class="artist-likes">23</div>
+                        </div>
+                        <div class="artist-meta-item artist-meta-item-border">
+                            <div class="artist-meta-type">آموزش</div>
+                            <div class="artist-follwers">12</div>
+                        </div>
+
+                    </div>
+                    <div class="creator-details-action">
+
+                        <div class="artist-meta-type">امتیاز</div>
+                        <div class="artist-followed">360</div>
+
+
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="creator-info-tab wow fadeInUp">
+                    <div class="creator-info-tab-nav mb-30">
+                        <nav>
+                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                <button class="nav-link active" id="nav-created-tab" data-bs-toggle="tab"
+                                        data-bs-target="#tab-nav1" type="button" role="tab" aria-selected="true">
+                                 <span class="profile-nav-button">
+                                    <span class="artist-meta-item  artist-meta-item-border">
+                                       <span class="artist-meta-type">اطلاعات پایه</span>
+
+                                    </span>
+                                 </span>
+                                </button>
+                                <button class="nav-link" id="nav-collection-tab" data-bs-toggle="tab"
+                                        data-bs-target="#tab-nav2" type="button" role="tab" aria-selected="false">
+                                 <span class="profile-nav-button">
+                                    <span class="artist-meta-item  artist-meta-item-border">
+                                       <span class="artist-meta-type">اطلاعات تکمیلی</span>
+
+                                    </span>
+                                 </span>
+                                </button>
+                                <button class="nav-link" id="nav-featured-tab" data-bs-toggle="tab"
+                                        data-bs-target="#tab-nav3" type="button" role="tab" aria-selected="false">
+                                 <span class="profile-nav-button">
+                                    <span class="artist-meta-item  artist-meta-item-border">
+                                       <span class="artist-meta-type">محصولات</span>
+                                       <span class="artist-art-featured">{{ product_count }}</span>
+                                    </span>
+                                 </span>
+                                </button>
+                                <button class="nav-link" id="nav-sold-tab" data-bs-toggle="tab"
+                                        data-bs-target="#tab-nav4"
+                                        type="button" role="tab" aria-selected="false">
+                                 <span class="profile-nav-button">
+                                    <span class="artist-meta-item  artist-meta-item-border">
+                                       <span class="artist-meta-type">آموزش ها</span>
+                                       <span class="artist-art-sold">{{ count_learning }}</span>
+                                    </span>
+                                 </span>
+                                </button>
+                                <button class="nav-link" id="nav-bid-tab" data-bs-toggle="tab"
+                                        data-bs-target="#tab-nav5"
+                                        type="button" role="tab" aria-selected="false">
+                                 <span class="profile-nav-button">
+                                    <span class="artist-meta-item">
+                                       <span class="artist-meta-type">تراکنش ها</span>
+                                       <span class="artist-art-bids"> {{transaction_count}} </span>
+                                    </span>
+                                 </span>
+                                </button>
+                            </div>
+                        </nav>
+                    </div>
+                    <div class="creator-info-tab-contents mb-30">
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade active show" id="tab-nav1" role="tabpanel"
+                                 aria-labelledby="nav-created-tab">
+                                <div class="created-items-wrapper">
+                                    <div class="row">
+
+                                        <!--  information user-->
+
+                                        <div class="col-lg-12 col-md-12">
+                                            <div class="card custom-card">
+                                                <div class="card-body">
+
+
+                                                    <form method="post" action="{% url 'update-user' %}"
+                                                          enctype="multipart/form-data">
+                                                        {% csrf_token %}
+
+                                                        <div class="row row-sm">
+                                                            <div class="col-md-12">
+
+                                                                <div class="row">
+
+
+                                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                                                        <div class="single-input-unit">
+
+
+                                                                            <label>
+                                                              <span class="text-danger">
+                                                                *
+                                                            </span>
+                                                                                نام</label>
+                                                                            <input type="text" name="name" id="name"
+                                                                                   value="{{ user.first_name }}"
+                                                                            >
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                                                        <div class="single-input-unit">
+
+
+                                                                            <label for="family">
+
+                                                            <span class="text-danger">
+                                                                *
+                                                            </span>
+
+                                                                                نام خانوادگی</label>
+                                                                            <input type="text" name="family"
+                                                                                   id="family"
+                                                                                   value="{{ user.last_name }}"
+                                                                            >
+
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                                                        <div class="single-input-unit">
+
+
+                                                                            <label for="email2">
+
+                                                                                ایمیل</label>
+                                                                            <input type="text" name="email"
+                                                                                   id="email2"
+                                                                                   value="{{ user.email }}"
+                                                                            >
+
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        <button type="submit" class="btn ripple btn-primary w-100">
+                                                            تکمیل پروفایل
+                                                        </button>
+
+                                                    </form>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane fade" id="tab-nav2" role="tabpanel"
+                                 aria-labelledby="nav-collection-tab">
+                                <div class="collected-items-wrapper">
+                                    <form method="post" action="{% url 'update-info-profile' %}"
+                                          enctype="multipart/form-data">
+                                        {% csrf_token %}
+
+                                        <div class="row row-sm">
+                                            <div class="col-md-12">
+                                                <div class="row row-sm">
+                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                                        <div class="single-input-unit">
+
+
+                                                            {% if okmeli != True %}
+                                                            <label>کد ملی</label>
+                                                            <input type="text" name="codemeli"
+                                                                   id="codemeli"
+                                                                   value="{{ info.codemeli }}"
+                                                            >
+                                                            {% else %}
+                                                            <span>
+                                                            کد ملی :
+                                                        </span>
+                                                            <span class="text-success">
+                                                          {{ info.codemeli }}
+                                                        </span>
+
+                                                            {% endif %}
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                                        <div class="single-input-unit">
+
+
+                                                            {% if okbank != True %}
+                                                            <label>شماره شبا (بدون IR - فقط اعداد
+                                                                )</label>
+                                                            <input type="text" name="shaba"
+                                                                   id="shaba"
+                                                                   value="{{ info.shaba }}">
+                                                            {% else %}
+                                                            <span>
+                                                            شماره شبا :
+                                                        </span>
+                                                            <span class="text-success">
+                                                         {{ info.shaba }}
+                                                        </span>
+
+                                                            {% endif %}
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="row row-sm">
+
+                                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                                        <label>تصویر کارت ملی</label>
+                                                        <div class="form-group">
+                                                            <div class="browse-file-wrapper mb-30 wow fadeInUp"
+                                                                 style="visibility: visible; animation-name: fadeInUp;">
+
+                                                                {% if okmeli != True %}
+                                                                <div class="browse-file-btn">
+                                                                    <input type="file"
+                                                                           name="image_codemeli"
+                                                                           accept="image/*"
+                                                                           class="dropify"
+                                                                           id="image_codemeli">
+
+                                                                </div>
+                                                                <div class="browse-file-note">حجم
+                                                                    قابل قبول | کمتر از 1 MB
+                                                                </div>
+                                                                {% else %}
+                                                                <span class="text-success">
+                                                             تائید شده
+                                                            </span>
+
+                                                                {% endif %}
+                                                                <img style="width:100%"
+                                                                     src=" {{ image_codemeli }}"
+                                                                     alt="rebo">
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                                        <label>تصویر کارت بانکی</label>
+                                                        <div class="form-group">
+                                                            <div class="browse-file-wrapper mb-30 wow fadeInUp"
+                                                                 style="visibility: visible; animation-name: fadeInUp;">
+                                                                {% if okbank != True %}
+                                                                <div class="browse-file-btn">
+                                                                    <input type="file"
+                                                                           name="image_shaba"
+                                                                           accept="image/*"
+                                                                           class="dropify"
+                                                                           id="image_shaba">
+
+
+                                                                </div>
+                                                                <div class="browse-file-note">حجم
+                                                                    قابل قبول | کمتر از 1 MB
+                                                                </div>
+                                                                {% else %}
+                                                                <span class="text-success">
+                                                             تائید شده
+                                                            </span>
+                                                                {% endif %}
+                                                                <img style="width:100%"
+                                                                     src=" {{ image_shaba }}"
+                                                                     alt="rebo">
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <button type="submit" class="btn ripple btn-primary w-100">
+                                            تکمیل پروفایل
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+                            <div class="tab-pane fade" id="tab-nav3" role="tabpanel" aria-labelledby="nav-featured-tab">
+                                <div class="featured-items-wrapper">
+                                    <div class="row ">
+                                        {% for product in page_obj%}
+
+                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                                            <div class="art-item-single mb-30">
+                                                <div class="art-item-wraper">
+                                                    <div class="art-item-inner">
+                                                        <div class="art-item-img pos-rel">
+                                                            <div class="art-action">
+                                                                <button class="art-action-like"><i
+                                                                        class="flaticon-heart"></i></button>
+
+                                                                <div class="art-action-collection"><i
+                                                                        class="flaticon-plus-sign"></i></div>
+                                                            </div>
+
+                                                            {% if product.get_time %}
+                                                            <a href="{% url 'product-detail' product.pk %}"
+                                                               class="place-bid">پیشنهاد دهید</a>
+                                                            {% else %}
+                                                            <a href="#" class="place-bid">پایان اعتبار</a>
+                                                            {%endif %}
+                                                            <a href="{% url 'product-detail' product.pk %}">
+                                                                {% if product.images.first.image.url %}
+
+
+                                                                <img height="200" alt="{{ product.product_type }}"
+                                                                     src="{{ product.images.first.image.url }}">
+
+                                                                {% else %}
+
+                                                                <img src="{% static 'web/assets/img/img/noimg.png' %}"
+                                                                     alt="تصویر موجود نیست! ">
+                                                                {%endif %}
+
+                                                            </a>
+                                                        </div>
+                                                        <div class="art-item-content pos-rel">
+                                                            <div class="auction-time-and-btn">
+
+                                                                <div class="art-auction-ends in-art-item"
+                                                                     data-countdown="{{ product.expire_time|date:'Y/m/d'}}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="art-3dots-menu">
+                                                                <div class="art-3dots-action">
+                                                                    <ul>
+                                                                        <li><a href="#"><i class="fal fa-share-alt"></i>اشتراک</a>
+                                                                        </li>
+                                                                        <li><a href="#"><i class="fal fa-flag-alt"></i>گزارش</a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                                <button class="art-3dots-icon"><i
+                                                                        class="fal fa-ellipsis-v"></i></button>
+                                                            </div>
+                                                            <div class="artist">
+                                                                <div class="profile-img pos-rel">
+                                                                    <a href="creator-profile.html">
+                                                                        {% if product.sell_buy == 1 %}
+                                                                        <img src="{% static 'web/assets/img/img/farmer.png' %}"
+                                                                             alt="فروشنده">
+                                                                        {% else %}
+                                                                        <img src="{% static 'web/assets/img/img/buyer.png' %}"
+                                                                             alt="خریدار">
+                                                                        {% endif %}
+                                                                    </a>
+                                                                    <div class="profile-verification verified">
+                                                                        <i class="fas fa-check"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="artist-id">{{ product.user.last_name }}
+                                                                </div>
+                                                            </div>
+
+
+                                                            <h4 class="art-name"><a
+                                                                    href="{% url 'product-detail' product.pk %}">
+                                                                {{ product.product_type }}</a></h4>
+                                                            <div class="art-meta-info">
+                                                                <div class="art-meta-item">
+                                                                    <div class="art-meta-type">قیمت پایه</div>
+                                                                    <div class="art-price">
+                                                                        {{ product.price|intcomma }} (ریال)
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="art-activity-btn">
+                                                                    <a href="activity.html" class="art-activity"><i
+                                                                            class="fal fa-waveform-path"></i>تاریخچه</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor%}
+                                        {% include 'web/paginations.html' %}
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane fade" id="tab-nav4" role="tabpanel" aria-labelledby="nav-sold-tab">
+                                <div class="bids-items-wrapper mb-30">
+                                    <div class="sold-items-wrapper">
+                                        <div class="row ">
+                                            {% for learn in page_obj_learn%}
+
+                                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                                            <div class="art-item-single mb-30">
+                                                <div class="art-item-wraper">
+                                                    <div class="art-item-inner">
+                                                        <div class="art-item-img pos-rel">
+                                                            <div class="art-action">
+                                                                <button class="art-action-like"><i
+                                                                        class="flaticon-heart"></i></button>
+
+                                                                <div class="art-action-collection"><i
+                                                                        class="flaticon-plus-sign"></i></div>
+                                                            </div>
+
+
+                                                            <a href="{% url 'section-web-web' learn.pk %}">
+                                                                {% if learn.image.url %}
+
+
+                                                                <img height="200" alt="{{ learn.title }}"
+                                                                     src="{{ learn.image.url }}">
+
+                                                                {% else %}
+
+                                                                <img src="{% static 'web/assets/img/img/noimg.png' %}"
+                                                                     alt="تصویر موجود نیست! ">
+                                                                {%endif %}
+
+                                                            </a>
+                                                        </div>
+                                                        <div class="art-item-content pos-rel">
+
+                                                            <div class="art-3dots-menu">
+                                                                <div class="art-3dots-action">
+                                                                    <ul>
+                                                                        <li><a href="#"><i class="fal fa-share-alt"></i>اشتراک</a>
+                                                                        </li>
+                                                                        <li><a href="#"><i class="fal fa-flag-alt"></i>گزارش</a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                                <button class="art-3dots-icon"><i
+                                                                        class="fal fa-ellipsis-v"></i></button>
+                                                            </div>
+                                                            <div class="artist">
+
+                                                                <div class="artist-id">{{ learn.user.last_name }}
+                                                                </div>
+                                                            </div>
+
+
+                                                            <h4 class="art-name"><a
+                                                                    href="#">
+                                                                {{ learn.title }}</a></h4>
+                                                            <div class="art-meta-info">
+                                                                <div class="art-meta-item">
+                                                                    <div class="art-meta-type">قیمت آموزش</div>
+                                                                    <div class="art-price">
+                                                                        {{ learn.price|intcomma }} (ریال)
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="art-activity-btn">
+                                                                    <a href="{% url 'section-web-web' learn.pk %}" class="art-activity"><i
+                                                                            class="fal fa-waveform-path"></i>نمایش بخش ها</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                            {% endfor%}
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="visibility: visible; animation-name: fadeInUp;">
+                                    <div class="col-12">
+                                        <div class="basic-pagination mt-20 mb-30">
+                                            <ul>
+                                                <li>
+                                                    {% if page_obj_learn.has_previous %}
+                                                    <a class="prev page-numbers"
+                                                       href="?page={{ page_obj_learn.previous_page_number }}">
+                                                        <i class="fal fa-angle-right"></i>
+                                                    </a>
+                                                    {% endif %}
+                                                </li>
+                                                {% for pg in paginator_learn.page_range %}
+                                                    {% if page_obj_learn.number == pg %}
+                                                    <li>
+                                                        <span aria-current="page" class="page-numbers current">{{ page_obj_learn.number }}</span>
+                                                    </li>
+
+                                                    {% elif pg > page_obj_learn.number|add:'-4' and pg < page_obj_learn.number|add:'4' %}
+
+                                                    <li><a class="page-numbers" href="?page={{pg}}">{{pg}}</a></li>
+                                                    {% endif %}
+                                                {% endfor %}
+
+
+                                                <li>
+                                                    {% if page_obj_learn.has_next %}
+                                                    <a class="next page-numbers"
+                                                       href="?page={{ page_obj_learn.next_page_number }}">
+                                                        <i class="fal fa-angle-left"></i>
+                                                    </a>
+                                                    {% endif %}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="tab-nav5" role="tabpanel" aria-labelledby="nav-bid-tab">
+                                <div class="bids-items-wrapper mb-30">
+                                    <div class="placed-bids-wrapper">
+
+                                         {% for transaction in page_obj_wallet %}
+                                            <div class="single-bid">
+                                            <div class="creator">
+                                                <div class="profile-img pos-rel">
+                                                    {% if transaction.transaction_type == 1 %}
+                                                    <a href="creator-profile.html">
+                                                        <img
+                                                            src="{% static 'web/assets/img/wallet/recived_money.png' %}"
+                                                            alt="{{transaction.amount}}">
+                                                    </a>
+                                                    {% else %}
+                                                     <a href="creator-profile.html">
+                                                        <img
+                                                            src="{% static 'web/assets/img/wallet/send_money.png' %}"
+                                                            alt="{{transaction.amount}}">
+                                                    </a>
+
+                                                    {% endif %}
+
+                                                </div>
+                                                <div class="creator-name-id">
+                                                    <h4 class="artist-name"><a href="creator-profile.html">
+                                                      {{transaction.user.last_name}}
+                                                    </a>
+                                                    </h4>
+                                                    <div class="artist-id">{{transaction.created_time|to_jalali:'%Y/%m/%d | %H:%M:%S'}}</div>
+
+                                                </div>
+                                            </div>
+                                            <div class="bid-items-and-price">
+
+                                                <div class="bid-pricing">
+                                                    <div class="bid-status">وضعیت : <span class="accepted">پذیرش</span>
+                                                    </div>
+                                                    <div class="bid-price">{{transaction.amount}} ریال</div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="row wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                                    <div class="col-12">
+                                        <div class="basic-pagination mt-20 mb-30">
+                                            <ul>
+                                                <li>
+                                                    {% if page_obj_wallet.has_previous %}
+                                                    <a class="prev page-numbers"
+                                                       href="?page={{ page_obj_wallet.previous_page_number }}">
+                                                        <i class="fal fa-angle-right"></i>
+                                                    </a>
+                                                    {% endif %}
+                                                </li>
+                                                {% for pg in paginator_wallet.page_range %}
+                                                    {% if page_obj_wallet.number == pg %}
+                                                    <li>
+                                                        <span aria-current="page" class="page-numbers current">{{ page_obj_wallet.number }}</span>
+                                                    </li>
+
+                                                    {% elif pg > page_obj_wallet.number|add:'-4' and pg < page_obj_wallet.number|add:'4' %}
+
+                                                    <li><a class="page-numbers" href="?page={{pg}}">{{pg}}</a></li>
+                                                    {% endif %}
+                                                {% endfor %}
+
+
+                                                <li>
+                                                    {% if page_obj_wallet.has_next %}
+                                                    <a class="next page-numbers"
+                                                       href="?page={{ page_obj_wallet.next_page_number }}">
+                                                        <i class="fal fa-angle-left"></i>
+                                                    </a>
+                                                    {% endif %}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+</section>
+<!-- creator-details area end  -->
+
+{% endblock %}
+
+
+{% block javas %}
+
+<!-- Internal Form-elements js-->
+<script src="{% static 'catalogue/assets/js/form-elements.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+<!-- Internal Fileuploads js-->
+<script src="{% static 'catalogue/assets/plugins/fileuploads/js/fileupload.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/fileuploads/js/file-upload.js' %}"></script>
+<script>
+    function openFileUpload() {
+  document.getElementById("image_info").click();
+}
+
+$('#image_info').on('change', function(){
+   var form = document.getElementById("formimageinfo");
+   form.submit();
+ })
+
+</script>
+{% endblock %}

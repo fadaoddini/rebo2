@@ -1,0 +1,25 @@
+{% extends 'login/baselogin.html' %}
+{% block titlelogin %}
+ربو | ارسال کد تایید
+{% endblock %}
+{% block formlogin %}
+<form method="post" action="{% url 'verify-otp' %}">
+        {% csrf_token %}
+    <h5 class="text-right mb-5">
+        به حساب خود وارد شوید
+    </h5>
+    <p class="mb-4 text-muted tx-13 ml-0 text-right">
+لطفا کد تائیدی را که به شماره شما ارسال شده است را ارسال کنید
+
+    </p>
+    <div class="form-group text-right">
+        <label>کد تائید</label>
+        <input name="otp" class="form-control" placeholder="کد تائید" type="text">
+    </div>
+
+    <button class="btn ripple btn-main-primary btn-block">تائید کد</button>
+</form>
+
+
+
+{% endblock %}

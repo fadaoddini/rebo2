@@ -1,0 +1,354 @@
+{% extends 'baseweb.html' %}
+{% load widget_tweaks %}
+{% load category_tag %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet"
+      href="{% static 'catalogue/assets/plugins/fileuploads/css/fileupload.css' %}">
+{% endblock %}
+{% block title %}
+ربو | اطلاعات کاربری
+{% endblock %}
+
+
+{% block content %}
+
+<section class="creator-info-area pt-130 pb-90" data-background="">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-8">
+                <div class="creator-info-details mb-40 wow fadeInUp">
+                    <form id="formimageinfo" method="post"
+                          action="{% url 'update-info-profile-image' %}"
+                          enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="file" name="image_info"
+                               accept="image/*"
+                               id="image_info" style="visibility:hidden">
+
+                    </form>
+                    <div class="creator-cover-img pos-rel">
+
+                        <img src="{% static 'web/assets/img/profile/profile-cover/profile-cover4.jpg' %}"
+                             alt="rebo">
+                    </div>
+
+                    <div class="creator-img-name">
+                        <div class="profile-img pos-rel">
+
+                            <div onclick="openFileUpload()" class="change-photo"><i
+                                    class="flaticon-photo-camera"></i></div>
+
+                            <img src=" {{ image }}" alt="rebo">
+                        </div>
+                        <div class="creator-name-id">
+
+                            <h4 class="artist-name pos-rel">
+                                {{ user_info.info.name }} {{ user_info.info.family }}
+                                {% if user_info.info.is_active == True %}
+                                <span class="profile-verification verified">
+                                 <i class="fas fa-check"></i>
+                              </span>
+
+                                {% endif %}
+
+                            </h4>
+                            {% if user_info.info.is_active == True %}
+                            <div class="artist-id">تایید شده</div>
+                            {% else %}
+                            <div class="artist-id text-danger">تایید نشده</div>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                    <div class="profile-setting-list">
+                        <ul>
+                            <li class="active"><a href="{% url 'profile' %}"><i
+                                    class="flaticon-account"></i>اطلاعات شخصی</a></li>
+                            <li><a href="{% url 'wallet-user' pk=user.pk %}"><i
+                                    class="flaticon-wallet-1"></i>کیف
+                                پول</a></li>
+                            <li><a href="{% url 'index-web' %}"><i class="flaticon-check-mark"></i>مدیریت
+                                آموزش</a></li>
+                            <li><a href="{% url 'product-web' %}"><i class="flaticon-add-2"></i>مدیریت
+                                محصول</a></li>
+                            <li><a href="{% url 'logout' %}"><i class="flaticon-logout"></i>خروج</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="creator-info-personal mb-40 wow fadeInUp">
+
+                    <div class="row">
+
+
+                        <div class="col-lg-12 col-md-12">
+                            <div class="card custom-card">
+                                <div class="card-body">
+                                    <div>
+                                        <h6 class="mb-1"> اطلاعات پروفایل</h6>
+                                        <hr>
+
+                                        <p class="text-muted card-sub-title">
+                                            <span>
+                                                            موبایل تایید شده :
+                                                        </span>
+                                            <span class="text-success">
+                                                          {{ user.mobile }}
+                                                        </span>
+                                        </p>
+
+                                    </div>
+
+
+                                    <div class="alert alert-warning mb-4 text-center">لطفا با نهایت
+                                        دقت این اطلاعات را
+                                        وارد نمائید
+                                        (تصاویر ارسالی باید وضوح خوبی را دارا باشند) بعد از تائید
+                                        اطلاعات ارسالی شما،
+                                        تمامی امکانات
+                                        جهت معامله شما در دسترس شما قرار خواهد گرفت و این نکته را
+                                        فراموش نکنید که ثبت
+                                        نام در این
+                                        سامانه به منزله پذیرش تمام قوانین موجود در سامانه ربو می
+                                        باشد
+                                    </div>
+                                    <div class="alert alert-danger mb-4 text-center">
+
+                                        قسمت های ستاره دار اجباری می باشد
+
+                                    </div>
+
+                                    <form method="post" action="{% url 'update-info-profile' %}"
+                                          enctype="multipart/form-data">
+                                        {% csrf_token %}
+
+                                        <div class="row row-sm">
+                                            <div class="col-md-12">
+
+                                                <div class="row">
+
+
+                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                                        <div class="single-input-unit">
+
+
+                                                            <label>
+                                                              <span class="text-danger">
+                                                                *
+                                                            </span>
+                                                                نام</label>
+                                                            <input type="text" name="name" id="name"
+                                                                   value="{{ user.first_name }}"
+                                                                   >
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                                        <div class="single-input-unit">
+
+
+                                                            <label for="family">
+
+                                                            <span class="text-danger">
+                                                                *
+                                                            </span>
+
+                                                                نام خانوادگی</label>
+                                                            <input type="text" name="family"
+                                                                   id="family"
+                                                                   value="{{ user.last_name }}"
+                                                                   >
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                                 <button type="submit" class="btn ripple btn-primary w-100">
+                                            تکمیل پروفایل
+                                        </button>
+
+
+ <hr>
+                                                <div class="row row-sm">
+                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                                        <div class="single-input-unit">
+
+
+                                                            {% if okmeli != True %}
+                                                            <label>کد ملی</label>
+                                                            <input type="text" name="codemeli"
+                                                                   id="codemeli"
+                                                                   value="{{ info.codemeli }}"
+                                                                   >
+                                                            {% else %}
+                                                            <span>
+                                                            کد ملی :
+                                                        </span>
+                                                            <span class="text-success">
+                                                          {{ info.codemeli }}
+                                                        </span>
+
+                                                            {% endif %}
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                                        <div class="single-input-unit">
+
+
+                                                            {% if okbank != True %}
+                                                            <label>شماره شبا (بدون IR - فقط اعداد
+                                                                )</label>
+                                                            <input type="text" name="shaba"
+                                                                   id="shaba"
+                                                                   value="{{ info.shaba }}">
+                                                            {% else %}
+                                                            <span>
+                                                            شماره شبا :
+                                                        </span>
+                                                            <span class="text-success">
+                                                         {{ info.shaba }}
+                                                        </span>
+
+                                                            {% endif %}
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div class="row row-sm">
+
+                                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                                        <label>تصویر کارت ملی</label>
+                                                        <div class="form-group">
+                                                            <div class="browse-file-wrapper mb-30 wow fadeInUp"
+                                                                 style="visibility: visible; animation-name: fadeInUp;">
+
+                                                                {% if okmeli != True %}
+                                                                <div class="browse-file-btn">
+                                                                    <input type="file"
+                                                                           name="image_codemeli"
+                                                                           accept="image/*"
+                                                                           class="dropify"
+                                                                           id="image_codemeli">
+
+                                                                </div>
+                                                                <div class="browse-file-note">حجم
+                                                                    قابل قبول | کمتر از 1 MB
+                                                                </div>
+                                                                {% else %}
+                                                                <span class="text-success">
+                                                             تائید شده
+                                                            </span>
+
+                                                                {% endif %}
+                                                                <img style="width:100%"
+                                                                     src=" {{ image_codemeli }}"
+                                                                     alt="rebo">
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                                        <label>تصویر کارت بانکی</label>
+                                                        <div class="form-group">
+                                                            <div class="browse-file-wrapper mb-30 wow fadeInUp"
+                                                                 style="visibility: visible; animation-name: fadeInUp;">
+                                                                {% if okbank != True %}
+                                                                <div class="browse-file-btn">
+                                                                    <input type="file"
+                                                                           name="image_shaba"
+                                                                           accept="image/*"
+                                                                           class="dropify"
+                                                                           id="image_shaba">
+
+
+                                                                </div>
+                                                                <div class="browse-file-note">حجم
+                                                                    قابل قبول | کمتر از 1 MB
+                                                                </div>
+                                                                {% else %}
+                                                                <span class="text-success">
+                                                             تائید شده
+                                                            </span>
+                                                                {% endif %}
+                                                                <img style="width:100%"
+                                                                     src=" {{ image_shaba }}"
+                                                                     alt="rebo">
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <button type="submit" class="btn ripple btn-primary w-100">
+                                            تکمیل پروفایل
+                                        </button>
+
+                                    </form>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+
+{% block javas %}
+<!-- Internal Jquery-Ui js-->
+<script src="{% static 'catalogue/assets/plugins/jquery-ui/ui/widgets/datepicker.js' %}"></script>
+
+<!-- Internal Jquery.maskedinput js-->
+<script src="{% static 'catalogue/assets/plugins/jquery.maskedinput/jquery.maskedinput.js' %}"></script>
+
+<!-- Internal Specturm-colorpicker js-->
+<script src="{% static 'catalogue/assets/plugins/spectrum-colorpicker/spectrum.js' %}"></script>
+
+<!-- Internal Ion-rangeslider js-->
+<script src="{% static 'catalogue/assets/plugins/ion-rangeslider/js/ion.rangeSlider.min.js' %}"></script>
+
+<!-- Internal Form-elements js-->
+<script src="{% static 'catalogue/assets/js/form-elements.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+<!-- Internal Fileuploads js-->
+<script src="{% static 'catalogue/assets/plugins/fileuploads/js/fileupload.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/fileuploads/js/file-upload.js' %}"></script>
+
+<script>
+    function openFileUpload() {
+  document.getElementById("image_info").click();
+}
+
+$('#image_info').on('change', function(){
+   var form = document.getElementById("formimageinfo");
+   form.submit();
+ })
+
+</script>
+
+{% endblock %}

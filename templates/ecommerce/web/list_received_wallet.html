@@ -1,0 +1,119 @@
+{% extends 'baseweb.html' %}
+{% load widget_tweaks %}
+{% load jalali_tags %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/css/tablestyle.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | لیست انتقالی های من
+{% endblock %}
+
+
+{% block content %}
+
+<section class="connect-wallet-area pt-130 pb-120">
+    <div class="container">
+        <div class="connect-wallet-wrapper">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                    <div class="box-card-single box-card-wallet mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/wallet/wallet3.png' %}" alt="wallet-img">
+                            </div>
+                             <h4 class="box-card-title">
+                                 تعداد دریافتی های شما
+
+
+                                </h4>
+
+
+                             <div class="table-responsive">
+                        <table class="table" id="example1" >
+                            <thead>
+                            <tr>
+                                <th class="wd-1"></th>
+                                <th>تراکنش</th>
+                                <th>تاریخ</th>
+                                <th>ارسال کننده</th>
+                                <th>دریافت کننده</th>
+                                <th>مبلغ (ریال)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                           {% for transaction in transaction_list %}
+                            <tr class="border-bottom">
+
+                                <td>
+															<span class="crypto-icon bg-success-transparent ml-3 my-auto">
+																<img width="30" src="{% static 'web/assets/img/wallet/recived_money.png' %}" alt="rebo">
+															</span>
+                                </td>
+                                <td class="font-weight-bold"># {{transaction.id}}</td>
+                                <td>{{transaction.created_time|to_jalali:'%Y/%m/%d | %H:%M:%S'}}</td>
+                                <td>{{transaction.sender_name}}</td>
+                                <td>{{request.user.info.name}} {{request.user.info.family}}</td>
+                                <td class="text-success font-weight-bold">
+                                    {{transaction.amount}}
+                                    +
+                                </td>
+
+
+
+
+
+                            </tr>
+
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+
+
+{% endblock %}

@@ -1,0 +1,261 @@
+{% extends 'web/profile/base.html' %}
+{% load widget_tweaks %}
+{% load category_tag %}
+{% load jalali_tags %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+
+    <style>
+        .nist{
+            display: none;
+        }
+        .hast{
+            display: block;
+
+        }
+        .bg6{
+        background:#ffcc99;
+           padding : 5px;
+        }
+    </style>
+{% endblock %}
+{% block title %}
+ربو | افزودن محصول جدید
+{% endblock %}
+{% block content %}
+
+<div class="upload-area pb-90" data-background="">
+    <div class="container">
+        <div class="upload-wrapper mb-10">
+            <form id="form_add_product" method="post" action="{% url 'form-add-product-web' %}"
+                  enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="row wow fadeInUp">
+                            <div class="col-md-12">
+                                <div class="single-input-unit">
+                                    <label class="form-label">
+                                        عنوان محصول : <span class="tx-danger">*</span>
+                                    </label>
+                                    <select onchange="checkTypeProduct(this);" name="product_type"
+                                            class="currency-select selectpicker" data-live-search="true">
+
+                                        <option value="None" selected> انتخاب کنید</option>
+
+
+                                        {% for type in types%}
+                                        <option data-type-product="{{type.pk}}" value="{{type.pk}}">{{type.title}}
+                                        </option>
+                                        {% endfor%}
+
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="single-input-unit ">
+                                    <div class="attr-place single-input-unit nist">
+                                        <div class="bg6 rounded" >
+                                            <h6>ویژگی های متناسب با محصول</h6>
+                                            <div id="div-attr-product" class="row row-sm rounded">
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row wow fadeInUp mt-3">
+
+                            <div class="col-md-6">
+                                <div class="single-input-unit">
+                                    <label class="form-label">
+                                        آیا محصول شما ضمانت دارد؟ <span class="tx-danger">*</span>
+                                    </label>
+                                    <select id="warranty" name="warranty" class="currency-select" >
+
+                                        <option value="False">ضمانت ندارد</option>
+                                        <option value="True">ضمانت دارد</option>
+
+
+                                    </select>
+
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="single-input-unit">
+                                    <label class="form-label">
+                                        اعتبار آگهی : <span class="tx-danger">*</span>
+                                    </label>
+                                    <select name="expire_time" class="currency-select selectpicker">
+
+                                        <option value="1" selected>1 روز</option>
+                                        <option value="3" selected>3 روز</option>
+                                        <option value="7" selected>7 روز</option>
+                                        <option value="15" selected>15 روز</option>
+                                        <option value="30" selected>30 روز</option>
+
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="single-input-unit">
+                                    <label class="form-label">
+                                        قیمت محصول به ازای هر کیلو گرم (ریال) : <span class="tx-danger">*</span>
+                                    </label>
+                                    <input type="number" class="form-control" name="price" id="price">
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <div class="single-input-unit">
+                                    <label class="form-label">
+                                        وزن محصول قابل فروش به کیلوگرم : <span class="tx-danger">*</span>
+                                    </label>
+                                    <input type="number" class="form-control" name="weight" id="weight">
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="single-input-unit">
+                                    <label class="form-label">
+                                        اگر توضیحی راجع به محصول خود دارید بیان کنید :
+                                    </label>
+                                    <textarea type="text" rows="6" name="description" class="form-control"
+                                              id="description"></textarea>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="upload-btn wow fadeInUp">
+                            <button id="upload-btn" class="fill-btn" type="submit">بارگذاری</button>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-6 col-sm-8">
+                                <div class="browse-file-wrapper mb-30 wow fadeInUp">
+
+                                    <div class="row row-sm">
+                                        <div class="col-sm-12 col-md-12 mt-3">
+                                            <h6>تصاویر محصول را قرار دهید</h6>
+                                            <div id="div-img-product" class="row row-sm bg-light p-2 rounded">
+
+
+                                            </div>
+                                        </div>
+                                        <a onclick="addimage()" class="btn btn-primary btn-sm mt-1 ">+
+                                            افزودن تصویر جدید</a>
+                                    </div>
+
+
+                                    <input type="hidden" value="" id="numpic" name="numpic">
+                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <div class="browse-file-note">حجم قابل قبول | کمتر از 1 MB</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+ {% endblock %}
+
+
+{% block javas %}
+
+<script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+<script>
+addimage()
+ function checkTypeProduct(tag){
+   var pk = $(tag).find('option:selected').attr('data-type-product');
+   $.ajax({
+    url:"{% url 'check-type-product-ajax' %}",
+    type:"POST",
+    data: {
+        pk: pk
+    },
+    success:function (data) {
+        if(data.msg) {
+            $('.attr-place').removeClass('nist');
+            $('#div-attr-product').html('');
+            $.each(data.msg, function (index, val) {
+
+                title = val['title'];
+                pk = val['id'];
+
+                  var zirdaste = '<div class="col-sm-12 col-md-6"><select id="attrtag' + pk + '" name="attr' + pk + '" class="currency-select"><option  value="' + pk + '" >' + title + '</option></select></div><div style="display: contents;"><div class="col-sm-12 col-md-6"><select id="attrval' + pk + '" name="attrval' + pk + '" class="currency-select2 selectpicker"></select></div></div>';
+                  $('#div-attr-product').append(zirdaste);
+                  add_attr(pk)
+
+                  })
+        }else{
+            $('.attr-place').addClass('nist');
+            $('#div-attr-product').html('');
+        }
+    }
+})
+ }
+
+
+function addimage(){
+    var c = document.getElementById("div-img-product").children.length;
+    $('.is-dropify').removeClass('dropify');
+    $('#numpic').html('')
+    $('#numpic').val(c)
+
+    var divImage = '<div class="col-sm-12 col-md-12 mt-2" ><input class="is-dropify" type="file" name="image'+c+'" id="image'+c+'"></div>';
+    $('#div-img-product').append(divImage);
+    $('.is-dropify').dropify();
+}
+
+
+
+function add_attr(pk){
+
+    $.ajax({
+        url:"{% url 'check-attr-product-ajax' %}",
+        type:"POST",
+        data: {
+            pk: pk
+        },
+        success:function (data) {
+            if(data.msg) {
+                $.each(data.msg, function (index, val) {
+
+                    valval = val['value'];
+                    pkattr = val['id'];
+                    var newid = "#attrval"+pk;
+                    var resumeadd = '<option value="' + pkattr + '">' + valval + '</option>';
+                    $(newid).append(resumeadd);
+                    })
+
+
+            }else{
+                alert("2")
+            }
+
+        }
+    })
+}
+</script>
+
+{% endblock %}

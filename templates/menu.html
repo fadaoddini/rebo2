@@ -1,0 +1,23 @@
+{% load static %}
+{% block topmenu %}
+<div class="main-header side-header sticky sticky-pin" style="margin-bottom: -64px;">
+    {% include 'menu/menu_header.html' %}
+</div>
+
+{% endblock %}
+
+
+{% block sidemenu %}
+
+<!-- Sidemenu -->
+<div class="main-sidebar main-sidebar-sticky side-menu">
+
+       {% include 'menu/sidemenu.html' %}
+</div>
+<!-- End Sidemenu -->
+
+{% endblock %}
+
+<div class="row row-sm  mt-lg-4">
+       {% include 'menu/top_main_menu.html' %}
+</div>

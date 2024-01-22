@@ -1,0 +1,59 @@
+{% extends 'baseweb.html' %}
+{% load category_tag %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+
+{% endblock %}
+{% block title %}
+ربو | تائید شارژ کیف پول ربو
+{% endblock %}
+
+
+{% block content %}
+
+<section class="connect-wallet-area pt-130 pb-120">
+    <div class="container">
+        <div class="connect-wallet-wrapper">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                    <div class="box-card-single box-card-wallet mb-40 wow fadeInUp">
+                        <div class="box-card-inner text-center">
+                            <div class="box-card-icon">
+                                <img src="{% static 'web/assets/img/wallet/wallet4.png' %}" alt="wallet-img">
+                            </div>
+                            <h4 class="box-card-title">
+
+                                {% if is_paid%}
+                                پرداخت موفقیت آمیز
+
+                                کد رهگیری :
+                                {{ref_id}}
+                                {% else %}
+
+                                پرداخت ناقص و ناموفق
+
+
+                                {% endif%}
+
+
+                            </h4>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+
+{% block javas %}
+
+{% endblock %}

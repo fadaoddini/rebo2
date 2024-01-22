@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+{% load category_tag %}
+{% load widget_tweaks %}
+{% load static %}
+{% block styles %}
+<!-- InternalFileupload css-->
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/fileuploads/css/fileupload.css' %}">
+
+    <style>
+        .nist{
+            display: none;
+        }
+        .hast{
+            display: block;
+        }
+    </style>
+
+{% endblock %}
+{% block title %}
+ربو | افزودن درخواست محصول
+{% endblock %}
+{% block content %}
+<div class="inner-body">
+    <div class="row row-sm">
+        <div class="col-xl-12 col-lg-12 col-md-12">
+            <div class="card custom-card">
+                <div class="card-body">
+                    <div>
+                        <h6 class="main-content-label mb-1">افزودن درخواست جدید جهت خرید
+
+                        </h6>
+                        <p class="text-muted card-sub-title">
+
+                            این درخواست متعلق به
+
+                            <span class="text-success">
+                                 {{user.first_name}} {{user.last_name}}
+                            </span>
+                            می باشد
+                        </p>
+                    </div>
+
+
+                    <form id="form_add_request" method="post" action="{% url 'form-add-request' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+
+                        <div class="row row-sm">
+
+                            <div class="col-lg-4">
+                                <div class="row row-sm">
+                                    <div class="col-lg-12 form-group">
+                                        <label class="form-label">
+                                            عنوان درخواست : <span class="tx-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" name="title" id="title">
+                                    </div>
+                                     <div class="col-lg-12 form-group">
+                                        <label class="form-label">
+                                            قیمت خرید به ازای هر کیلو گرم (ریال) : <span class="tx-danger">*</span>
+                                        </label>
+                                        <input type="number" class="form-control" name="price" id="price">
+                                    </div>
+                                    <div class="col-lg-12 form-group">
+                                        <label class="form-label">
+                                            وزن تقریبی مورد نیاز به کیلوگرم : <span class="tx-danger">*</span>
+                                        </label>
+                                        <input type="number" class="form-control" name="weight" id="weight">
+
+                                    </div>
+                                    <div class="col-lg-12 form-group">
+                                        <label class="form-label">
+                                            اگر توضیحی راجع به درخواست خود دارید بیان کنید :
+                                        </label>
+                                        <textarea type="text" rows="6" name="description" class="form-control"
+                                                              id="description"></textarea>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="row row-sm">
+                                    <div class="col-lg-12 form-group">
+                                        <label class="form-label">
+                                            دسته بندی محصول : <span class="tx-danger">*</span>
+                                        </label>
+                                        <select id="category" name="category" class="form-control">
+
+                                            {% for cat in categories%}
+                                            <option  value="{{cat.pk}}">{{cat.name}}</option>
+                                            {% endfor%}
+
+                                            </select>
+                                    </div>
+                                    <div class="col-lg-12 form-group">
+                                        <label class="form-label">
+                                            برند مورد نظر شما : <span class="tx-danger">*</span>
+                                        </label>
+                                        <select id="brand" name="brand" class="form-control">
+                                               {% for brand in brands%}
+                                            <option  value="{{brand.pk}}">{{brand.name}}</option>
+                                            {% endfor%}
+
+                                            </select>
+                                    </div>
+
+                                    <div class="col-lg-12 form-group">
+                                        <label class="form-label">
+                                            نوع محصول : <span class="tx-danger">*</span>
+                                        </label>
+                                        <select onchange="checkTypeProduct(this);" name="product_type" class="form-control selectpicker" data-live-search="true">
+
+                                            <option value="None"  selected> انتخاب کنید </option>
+
+
+                                            {% for type in types%}
+                                            <option data-type-product="{{type.pk}}" value="{{type.pk}}">{{type.title}}</option>
+                                            {% endfor%}
+
+
+
+
+
+                                        </select>
+                                    </div>
+
+                                    <div class="attr-place row row-sm nist">
+                                        <div class="col-sm-12 col-md-12 mt-3">
+                                            <h6>ویژگی های متناسب با محصول</h6>
+                                            <div  id="div-attr-product" class="row row-sm pt-3 rounded">
+
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+
+
+
+                                </div>
+
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="row row-sm">
+                                        <div class="col-sm-12 col-md-12 mt-3">
+                                            <h6>نمونه تصویر مشابه نیاز خود را قرار دهید</h6>
+                                                <div  id="div-img-product" class="row row-sm bg-light p-2 rounded">
+
+
+
+                                                </div>
+                                        </div>
+                                        <a onclick="addimage()" class="btn btn-main-primary btn-sm m-1 text-white">+ افزودن تصویر جدید</a>
+                                </div>
+
+
+                                <input type="hidden" value="" id="numpic" name="numpic">
+                                <input type="hidden" name="next" value="{{ request.path }}">
+
+
+
+                            </div>
+<button class="btn ripple btn-main-primary btn-block mt-5" type="submit">افزودن</button>
+
+
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+{% endblock %}
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+<!-- Internal Fileuploads js-->
+<script src="{% static 'catalogue/assets/plugins/fileuploads/js/fileupload.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/fileuploads/js/file-upload.js' %}"></script>
+<script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+<script>
+
+addimage()
+
+ function checkTypeProduct(tag){
+   var pk = $(tag).find('option:selected').attr('data-type-product');
+   $.ajax({
+    url:"{% url 'check-type-product-ajax' %}",
+    type:"POST",
+    data: {
+        pk: pk
+    },
+    success:function (data) {
+        if(data.msg) {
+            $('.attr-place').removeClass('nist');
+            $('#div-attr-product').html('');
+            $.each(data.msg, function (index, val) {
+
+                title = val['title'];
+                pk = val['id'];
+
+                  var zirdaste = '<div class="col-sm-12 col-md-6"><label class="form-label">ویژگی های محصول</label><select id="attrtag' + pk + '" name="attr' + pk + '" class="form-control mt-1"><option  value="' + pk + '" >' + title + '</option></select></div><div style="display: contents;"><div class="col-sm-12 col-md-6"><label class="form-label">مقدار ویژگی</label><select id="attrval' + pk + '" name="attrval' + pk + '" class="form-control"></select></div></div>';
+                  $('#div-attr-product').append(zirdaste);
+                  add_attr(pk)
+
+                  })
+        }else{
+            $('.attr-place').addClass('nist');
+            $('#div-attr-product').html('');
+        }
+    }
+})
+ }
+
+
+function addimage(){
+    var c = document.getElementById("div-img-product").children.length;
+    $('.is-dropify').removeClass('dropify');
+    $('#numpic').html('')
+    $('#numpic').val(c)
+
+    var divImage = '<div class="col-sm-12 col-md-6 mt-2" ><input class="is-dropify" type="file" name="image'+c+'" id="image'+c+'"></div>';
+    $('#div-img-product').append(divImage);
+    $('.is-dropify').dropify();
+}
+
+
+
+function add_attr(pk){
+
+    $.ajax({
+        url:"{% url 'check-attr-product-ajax' %}",
+        type:"POST",
+        data: {
+            pk: pk
+        },
+        success:function (data) {
+            if(data.msg) {
+                $.each(data.msg, function (index, val) {
+
+                    valval = val['value'];
+                    pkattr = val['id'];
+                    var newid = "#attrval"+pk;
+                    var resumeadd = '<option value="' + pkattr + '">' + valval + '</option>';
+                    $(newid).append(resumeadd);
+                    })
+
+
+            }else{
+                alert("2")
+            }
+
+        }
+    })
+}
+
+
+</script>
+
+{% endblock %}

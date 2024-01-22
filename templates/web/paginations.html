@@ -1,0 +1,35 @@
+ <div class="row wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+               <div class="col-12">
+                  <div class="basic-pagination mt-20 mb-30">
+                     <ul>
+                        <li>
+                            {% if page_obj.has_previous %}
+                            <a class="prev page-numbers" href="?page={{ page_obj.previous_page_number }}">
+                              <i class="fal fa-angle-right"></i>
+                           </a>
+                            {% endif %}
+                        </li>
+                         {% for pg in paginator.page_range %}
+                            {% if page_obj.number == pg %}
+                              <li>
+                            <span aria-current="page" class="page-numbers current">{{ page_obj.number }}</span>
+                        </li>
+
+         {% elif pg > page_obj.number|add:'-4' and pg < page_obj.number|add:'4' %}
+
+                          <li><a class="page-numbers" href="?page={{pg}}">{{pg}}</a></li>
+                            {% endif %}
+                          {% endfor %}
+
+
+                        <li>
+                            {% if page_obj.has_next %}
+                            <a class="next page-numbers" href="?page={{ page_obj.next_page_number }}">
+                              <i class="fal fa-angle-left"></i>
+                           </a>
+                            {% endif %}
+                        </li>
+                     </ul>
+                  </div>
+               </div>
+            </div>

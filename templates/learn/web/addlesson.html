@@ -1,0 +1,139 @@
+{% extends 'baseweb.html' %}
+{% load widget_tweaks %}
+{% load jalali_tags %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/css/tablestyle.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/fileuploads/css/fileupload.css' %}">
+{% endblock %}
+{% block title %}
+ربو | افزودن درس مربوط به بخش فلان از آموزش فلان
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="upload-area pt-130 pb-90" data-background="">
+    <div class="container">
+        <div class="upload-wrapper mb-10">
+            <p>
+                شما در حال ایجاد یک درس جدید در
+
+                {{mysection.learn.title}}
+                در
+
+                {{mysection.title}}
+                هستید
+            </p>
+            <form method="post" class="upload-form" action="{% url 'add-lesson-web-web' mysection.pk %}"
+                  enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="row wow fadeInUp">
+                            <div class="col-md-6">
+                                <div class="single-input-unit">
+                                    <label>عنوان</label>
+                                    {% render_field form_lesson.title %}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="single-input-unit">
+                                    <label>زیر مجموعه بخش</label>
+                                   <select name="section" id="section" class="currency-select">
+                                    <option value="{{ mysection.pk }}">{{ mysection.title }}</option>
+
+                                 </select>
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-12">
+                                <div class="single-input-unit">
+                                    <label>توضیحات</label>
+                                    {% render_field form_lesson.description  %}
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="upload-btn wow fadeInUp">
+                            <button id="upload-btn" class="fill-btn" type="submit">بارگذاری</button>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-6 col-sm-8">
+                                <div class="browse-file-wrapper mb-30 wow fadeInUp">
+                                    <div class="col-lg-12 form-group">
+                                        <label class="form-label">
+                                            تصویر مربوط به درس <span class="tx-danger">*</span>
+                                        </label>
+                                        {% render_field form_lesson.image class="dropify" %}
+                                    </div>
+
+
+
+                                    <div class="browse-file-note">حجم قابل قبول | کمتر از 1 MB</div>
+                                </div>
+
+                                <div class="browse-file-wrapper mb-30 wow fadeInUp">
+
+                                    <div class="col-lg-12 form-group">
+                                        <label class="form-label">
+                                            ویدئو و یا فایل مربوط به درس <span class="tx-danger">*</span>
+                                        </label>
+                                        {% render_field form_lesson.video class="dropify" %}
+                                    </div>
+
+
+                                    <div class="browse-file-note">حجم قابل قبول | کمتر از 50 MB</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+<!-- Internal Fileuploads js-->
+<script src="{% static 'catalogue/assets/plugins/fileuploads/js/fileupload.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/fileuploads/js/file-upload.js' %}"></script>
+
+{% endblock %}

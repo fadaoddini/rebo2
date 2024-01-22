@@ -1,0 +1,414 @@
+{% extends 'base.html' %}
+{% load category_tag %}
+{% load static %}
+{% block styles %}
+
+{% endblock %}
+{% block title %}
+ربو | پروفایل
+{% endblock %}
+
+
+{% block topmenu %}
+
+
+{% endblock %}
+
+{% block content %}
+
+<div class="inner-body">
+
+    <!-- Page Header -->
+    <div class="page-header">
+					<div>
+						<h2 class="main-content-title tx-24 mg-b-5">حساب</h2>
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="#">تجارت الکترونیک</a></li>
+							<li class="breadcrumb-item active" aria-current="page">حساب</li>
+						</ol>
+					</div>
+					<div class="d-flex">
+						<div class="justify-content-center">
+							<button type="button" class="btn btn-white btn-icon-text my-2 ml-2">
+								وارد كردن<i class="fe fe-download mr-2"></i>
+							</button>
+							<button type="button" class="btn btn-white btn-icon-text my-2 ml-2">
+								فیلتر<i class="fe fe-filter ml-2"></i>
+							</button>
+							<button type="button" class="btn btn-primary my-2 btn-icon-text">
+								گزارش را بارگیری کنید<i class="fe fe-download-cloud mr-2"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+    <!-- End Page Header -->
+
+    <!-- Row -->
+    <div class="row row-sm">
+					<div class="col-xl-3 col-lg-12 col-md-12">
+						<div class="card custom-card">
+							<div class="card-header">
+								<h3 class="main-content-label">حساب من</h3>
+							</div>
+							<div class="card-body text-center item-user">
+								<div class="profile-pic">
+									<div class="profile-pic-img">
+										<span class="bg-success dots" data-toggle="tooltip" data-placement="top" title="برخط"></span>
+										<img src="assets/img/users/1.jpg" class="rounded-circle" alt="کاربر">
+									</div>
+									<a href="#" class="text-dark"><h5 class="mt-3 mb-0 font-weight-semibold">سونیا تیلور</h5></a>
+								</div>
+							</div>
+							<ul class="item1-links nav nav-tabs  mb-0">
+								<li class="nav-item">
+									<a data-target="#orders" class="nav-link active" data-toggle="tab" role="tablist">  <i class="ti-user icon1"></i>  دستورات من </a>
+								</li>
+								<li class="nav-item">
+									<a data-target="#myaddres" class="nav-link" data-toggle="tab" role="tablist"> <i class="ti-save-alt icon1"></i> نشانی من    </a>
+								</li>
+								<li class="nav-item">
+									<a data-target="#trackorder" class="nav-link" data-toggle="tab" role="tablist"> <i class="ti-truck icon1"></i>پیگیری سفارش  </a>
+								</li>
+								<li class="nav-item">
+									<a data-target="#whishlist" class="nav-link" data-toggle="tab" role="tablist"> <i class="ti-heart icon1"></i> لیست علاقه مندیها </a>
+								</li>
+								<li class="nav-item">
+									<a data-target="#wallet" class="nav-link" data-toggle="tab" role="tablist"> <i class="ti-wallet icon1"></i> کیف پول </a>
+								</li>
+								<li class="nav-item">
+									<a data-target="#profile" class="nav-link" data-toggle="tab" role="tablist"> <i class="ti-credit-card icon1"></i> پروفایل من </a>
+								</li>
+								<li class="nav-item">
+									<a href="signin.html" class="nav-link"> <i class="ti-power-off icon1"></i> خروج </a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-xl-9 col-lg-12 col-md-12">
+						<div class="card custom-card">
+							<div class="card-body">
+								<div class="tab-content" id="myTabContent">
+									<div class="tab-pane fade show active" id="orders" role="tabpanel">
+										<div class="d-flex mb-4">
+											<label class="main-content-label my-auto">همه سفارشات</label>
+											<h6 class="mb-0 mr-auto"><button class="btn btn-success  float-right"><i class=""></i>صورتحساب</button></h6>
+										</div>
+										<div class="table-responsive">
+											<table class="table border text-md-nowrap text-nowrap">
+												<thead>
+												<tr>
+													<th>#</th>
+													<th>عکس</th>
+													<th>تولید - محصول</th>
+													<th>تعداد</th>
+													<th>قیمت</th>
+													<th class="text-right">جمع</th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr class="border-bottom">
+													<th scope="row"># 34350</th>
+													<td><img src="assets/img/pngs/17.png" class="img-sm product-image border" alt="محصول-img"></td>
+													<td>صندلی پلاستیکی در فضای باز</td>
+													<td>1</td>
+													<td>200 تومان</td>
+													<td class="text-right">200 تومان</td>
+												</tr>
+												<tr class="border-bottom">
+													<th scope="row"># 34351</th>
+													<td><img src="assets/img/pngs/18.png" class="img-sm product-image border" alt="محصول-img"></td>
+													<td>ساعت هوشمند بلک دیجیتال</td>
+													<td>2</td>
+													<td>500 تومان</td>
+													<td class="text-right">500 تومان</td>
+												</tr>
+												<tr class="border-bottom">
+													<th scope="row"># 34352</th>
+													<td><img src="assets/img/pngs/15.png" class="img-sm product-image border" alt="محصول-img"></td>
+													<td>صندل پاشنه صورتی زنانه</td>
+													<td>2</td>
+													<td>400 تومان</td>
+													<td class="text-right">400 تومان</td>
+												</tr>
+												<tr>
+													<th scope="row"># 34353</th>
+													<td><img src="assets/img/pngs/19.png" class="img-sm product-image border" alt="محصول-img"></td>
+													<td>آیفون اپل (سیاه ، 128 گیگابایتی)</td>
+													<td>2</td>
+													<td>800 تومان</td>
+													<td class="text-right">800 تومان</td>
+												</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<div class="tab-pane fade" id="myaddres" role="tabpanel">
+										<button type="button" class="btn btn-round btn-success mb-3"><i class="fe fe-plus-circle  mr-2"></i>افزودن آدرس جدید</button>
+										<div class="row">
+											<div class="col-lg-12 col-xl-6">
+												<div class="card custom-card border mb-lg-0">
+													<div class="card-header pb-3">
+														<h6 class="mb-0"><i class="ti-home mr-2"></i>آدرس پیش فرض</h6>
+													</div>
+													<div class="card-body">
+														<p>+91 08023310451</p>
+														<p>ایران - تهران - خیابان بهار</p>
+														<p class="mb-0">soniataylor344@example.com</p>
+													</div>
+													<div class="card-footer">
+														<div class="row">
+															<div class="col-6">
+																<button type="button" class="btn btn-block btn-primary mb-1"><i class="ti ti-pencil"></i></button>
+															</div>
+															<div class="col-6">
+																<button type="button" class="btn btn-block btn-outline-primary mb-1"><i class="ti ti-trash"></i></button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-lg-12 col-xl-6">
+												<div class="card custom-card border mb-0">
+													<div class="card-header pb-3">
+														<h6 class="mb-0"><i class="ti-home mr-2"></i>آدرس دفتر</h6>
+													</div>
+													<div class="card-body">
+														<p>+22 02228346362</p>
+														<p>ایران - تهران - خیابان بهار</p>
+														<p class="mb-0">john54@gmail.com</p>
+													</div>
+													<div class="card-footer">
+														<div class="row">
+															<div class="col-6">
+																<button type="button" class="btn btn-block btn-primary mb-1"><i class="ti ti-pencil"></i></button>
+															</div>
+															<div class="col-6">
+																<button type="button" class="btn btn-block btn-outline-primary mb-1"><i class="ti ti-trash"></i></button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane fade" id="trackorder" role="tabpanel">
+										<h6 class="mb-4">شناسه سفارش: <b>OD45345345435</b></h6>
+										<div class="card">
+											<div class="card-body row">
+												<div class="col-sm-12 col-md-3 mb-3 mb-md-0"> <strong>زمان تخمینی تحویل:</strong> <br> 25 بهمن 1399</div>
+												<div class="col-sm-12 col-md-3 mb-3 mb-md-0"> <strong>حمل و نقل توسط:</strong> <br> بلو  دارت |<i class="fa fa-phone"></i> +1598675986 </div>
+												<div class="col-sm-12 col-md-3 mb-3 mb-md-"> <strong>وضعیت:</strong> <br> توسط پیک انتخاب شده است</div>
+												<div class="col-sm-12 col-md-3"> <strong>شماره پیگیری:</strong> <br> BD045903594656</div>
+											</div>
+										</div>
+										<div class="track mb-5">
+											<div class="step active"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text d-none d-md-block">سفارش تأیید شد</span> </div>
+											<div class="step active"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text d-none d-md-block"> با پیک انتخاب شده است</span> </div>
+											<div class="step"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text d-none d-md-block"> در راه </span> </div>
+											<div class="step"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text d-none d-md-block">آماده وانت</span> </div>
+										</div>
+										<br>
+										<div class="row mt-3">
+											<div class="col-xl-4">
+												<figure class="itemside mb-3">
+													<div class="aside"><img src="assets/img/pngs/19.png" class="img-sm product-image border" alt="محصول-img"></div>
+													<figcaption class="info align-self-center">
+														<p class="title mb-1">آیفون اپل (مشکی ، 128 گیگابایتی) <br>8 گیگابایت RAM</p> <span class="text-muted">950 تومان </span>
+													</figcaption>
+												</figure>
+											</div>
+											<div class="col-xl-4">
+												<figure class="itemside mb-3">
+													<div class="aside"><img src="assets/img/pngs/16.png" class="img-sm product-image border" alt="محصول-img"></div>
+													<figcaption class="info align-self-center">
+														<p class="title mb-1"><br>گلدان گل تزئینی دستی طراح</p><span class="text-muted">850 تومان </span>
+													</figcaption>
+												</figure>
+											</div>
+											<div class="col-xl-4">
+												<figure class="itemside mb-3">
+													<div class="aside"><img src="assets/img/pngs/14.png" class="img-sm product-image border" alt="محصول-img"></div>
+													<figcaption class="info align-self-center">
+														<p class="title mb-1"><br>کوله پشتی ضد آب منظم (24 لیتری)</p> <span class="text-muted">650 تومان </span>
+													</figcaption>
+												</figure>
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane fade" id="whishlist" role="tabpanel">
+										<div class="d-flex mb-4">
+											<label class="main-content-label my-auto">لیست علاقه مندیها</label>
+										</div>
+										<div class="table-responsive">
+											<table class="table border text-nowrap">
+												<thead>
+												<tr>
+													<th>#</th>
+													<th>عکس</th>
+													<th>تولید - محصول</th>
+													<th>تعداد</th>
+													<th>قیمت</th>
+													<th>جمع</th>
+													<th>عمل</th>
+												</tr>
+												</thead>
+												<tbody>
+												<tr>
+													<th scope="row">1</th>
+													<td><img src="assets/img/pngs/14.png" class="img-sm product-image border" alt="محصول-img"></td>
+													<td>کوله پشتی ضد آب منظم (24 لیتری)</td>
+													<td>
+														<div class="form-group mb-0">
+															<input type="number" class="form-control cart-qty" name="cartQty1" id="cartQty1" value="1">
+														</div>
+													</td>
+													<td>10 تومان</td>
+													<td>500 تومان</td>
+													<td>
+														<button type="button" class="btn btn-primary mb-1 mr-1"><i class="ti-shopping-cart mr-2"></i>  سبد خرید</button>
+														<button type="button" class="btn btn-danger mb-1"><i class="ti-trash mr-2"></i>حذف</button>
+													</td>
+												</tr>
+												<tr>
+													<th scope="row">2</th>
+													<td><img src="assets/img/pngs/16.png" class="img-sm product-image border" alt="محصول-img"></td>
+													<td>گلدان گل تزئینی دستی طراح</td>
+													<td>
+														<div class="form-group mb-0">
+															<input type="number" class="form-control cart-qty" name="cartQty2" id="cartQty2" value="1">
+														</div>
+													</td>
+													<td>20 تومان</td>
+													<td>200 تومان</td>
+													<td>
+														<button type="button" class="btn btn-primary mb-1 mr-1"><i class="ti-shopping-cart mr-2"></i>سبد خرید</button>
+														<button type="button" class="btn btn-danger mb-1"><i class="ti-trash mr-2"></i>حذف</button>
+													</td>
+												</tr>
+												<tr>
+													<th scope="row">3</th>
+													<td><img src="assets/img/pngs/19.png" class="img-sm product-image border" alt="محصول-img"></td>
+													<td>آیفون اپل (مشکی ، 128 گیگابایتی) 8 گیگابایت RAM</td>
+													<td>
+														<div class="form-group mb-0">
+															<input type="number" class="form-control cart-qty" name="cartQty3" id="cartQty3" value="1">
+														</div>
+													</td>
+													<td>30 تومان</td>
+													<td>300 تومان</td>
+													<td>
+														<button type="button" class="btn btn-primary mb-1 mr-1"><i class="ti-shopping-cart mr-2"></i>  سبد خرید</button>
+														<button type="button" class="btn btn-danger mb-1"><i class="ti-trash mr-2"></i>حذف</button>
+													</td>
+												</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<div class="tab-pane fade" id="wallet" role="tabpanel">
+										<div class="border p-4 text-center">
+											<span class="text-uppercase tx-14 mt-4 text-muted">در دسترس</span>
+											<h1 class="my-3">245465 تومان</h1>
+											<a href="#" class="btn btn-primary"><i class="fe fe-plus mr-2"></i>اضافه کردن پول</a>
+										</div>
+										<ul class="list-group tx-13">
+											<li class="list-group-item border-top-0 pd-x-0 d-flex justify-content-between">
+												<div class="d-flex">
+													<span class="crypto-icon bg-primary-transparent ml-3"><i class="fe fe-arrow-down-left text-primary"></i></span>
+													<span class="my-auto font-weight-semibold tx-15">اخذ شده</span>
+												</div>
+												<span class="font-weight-semibold my-auto text-success tx-15">+0.00004564</span>
+											</li>
+											<li class="list-group-item pd-x-0 d-flex justify-content-between">
+												<div class="d-flex">
+													<span class="crypto-icon bg-primary-transparent ml-3"><i class="fe fe-arrow-up-right text-primary"></i></span>
+													<span class="my-auto font-weight-semibold tx-15">ارسال شد</span>
+												</div>
+												<span class="font-weight-semibold my-auto text-danger tx-15">-0.03445436</span>
+											</li>
+											<li class="list-group-item pd-x-0 d-flex justify-content-between">
+												<div class="d-flex">
+													<span class="crypto-icon bg-primary-transparent ml-3"><i class="fe fe-arrow-down-left text-primary"></i></span>
+													<span class="my-auto font-weight-semibold tx-15">اخذ شده</span>
+												</div>
+												<span class="font-weight-semibold my-auto text-success tx-15">+4.2543</span>
+											</li>
+											<li class="list-group-item pd-x-0 d-flex justify-content-between">
+												<div class="d-flex">
+													<span class="crypto-icon bg-primary-transparent ml-3"><i class="fe fe-arrow-up-right text-primary"></i></span>
+													<span class="my-auto font-weight-semibold tx-15">ارسال شد</span>
+												</div>
+												<span class="font-weight-semibold my-auto text-danger tx-15">+0.00255423</span>
+											</li>
+											<li class="list-group-item pd-x-0 d-flex justify-content-between">
+												<div class="d-flex">
+													<span class="crypto-icon bg-primary-transparent ml-3"><i class="fe fe-arrow-down-left text-primary"></i></span>
+													<span class="my-auto font-weight-semibold tx-15">اخذ شده</span>
+												</div>
+												<span class="font-weight-semibold my-auto text-success tx-15">-0.02434525</span>
+											</li>
+										</ul>
+									</div>
+									<div class="tab-pane fade" id="profile" role="tabpanel">
+										<div class="d-flex align-items-start pb-3 border-bottom"> <img src="assets/img/users/1.jpg" class="img rounded-circle avatar-xl" alt="">
+											<div class="pr-sm-4 pr-2" id="img-section"> <b>عکس پروفایل</b>
+												<p class="mb-1">نوع پرونده پذیرفته شده .png. کمتر از 1 مگابایت</p> <button class="btn button border btn-sm"><b>بارگذاری</b></button>
+											</div>
+										</div>
+										<div class="py-2">
+											<div class="row py-2">
+												<div class="col-md-6"> <label id="firstname">نام کوچک</label> <input type="text" class="form-control" placeholder="استیو"> </div>
+												<div class="col-md-6 pt-md-0 pt-3"> <label id="last-name">نام خانوادگی</label> <input type="text" class="form-control" placeholder="اسمیت"> </div>
+											</div>
+											<div class="row py-2">
+												<div class="col-md-6"> <label id="emailid">آدرس ایمیل</label> <input type="text" class="form-control" placeholder="steve_@email.com"> </div>
+												<div class="col-md-6 pt-md-0 pt-3"> <label id="phoneno">شماره تلفن</label> <input type="tel" class="form-control" placeholder="+1 213-548-6015"> </div>
+											</div>
+											<div class="row py-2">
+												<div class="col-md-6">
+													<label for="country">کشور</label>
+													<select name="country" id="country" class="select2-no-search">
+														<option value="india" selected="">هند</option>
+														<option value="usa">ایالات متحده آمریکا</option>
+														<option value="uk">بریتانیا</option>
+														<option value="uae">امارات متحده عربی</option>
+													</select>
+												</div>
+												<div class="col-md-6 pt-md-0 pt-3" id="lang"> <label for="language">زبان</label>
+													<div class="arrow">
+														<select name="language" id="language" class="select2-no-search">
+															<option value="english" selected="">انگلیسی</option>
+															<option value="english_us">ایالات متحده انگلیسی)</option>
+															<option value="enguk">انگلیسی انگلیس</option>
+															<option value="arab">عربی</option>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+    <!--End Row -->
+
+</div>
+
+
+{% endblock %}
+
+
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+<script>
+
+</script>
+
+
+{% endblock %}

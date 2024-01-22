@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block styles %}
+
+
+{% endblock %}
+{% block title %}
+ربو | تنظیمات حقوقی
+{% endblock %}
+{% block content %}
+<div class="inner-body">
+{% if setting_hoghoogh1 == "NO" %}
+    <div class="row row-sm">
+        <div class="col-xl-12 col-lg-12 col-md-12">
+            <div class="card custom-card">
+                <div class="card-body">
+                    <div>
+                        <h6 class="main-content-label mb-1">تنظیمات حقوقی شعبه
+                            {{location.name}}
+                        </h6>
+                        <p class="text-muted card-sub-title">
+
+                            تنظیمات اختصاصی برای شعبه
+
+                            {{location.name}}
+                            اعمال می گردد باید توجه داشته باشید برای هر کدام از شعبات خود می بایست این تنظیمات را
+                            اختصاصا انجام دهید
+                        </p>
+                    </div>
+                    <form method="post" action="{% url 'update-setting-hoghoogh-send' pk=pk %}">
+                        {% csrf_token %}
+                        <div class="">
+                            <div class="row row-sm">
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        مبلغ بیمه به ازای هر روز : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.price_bime_in_day class="form-control" %}
+                                </div>
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        تاریخ ابتدای ماه برای محاسبه حقوق : <span class="tx-danger">*</span>
+                                    </label>
+                                    <div class="mg-b-20">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <i class="fe fe-calendar lh--9 op-6"></i>
+                                                </div>
+                                            </div>
+         {% render_field form_setting_hoghoogh.start_end_hoghoogh class="form-control fc-datepicker" placeholder="ماه / روز / سال" type="text" %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        تعداد روز قابل محاسبه : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.num_day class="form-control" %}
+                                </div>
+
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        درصد افزایش کلی حقوق : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.darsad_all class="form-control" %}
+                                </div>
+
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        درصد درآمد از کل تولید حق سرپرست ها : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.darsad_sarparast class="form-control" %}
+                                </div>
+
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        پله اول جهت تشویق روز چندم باشد : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.pele_one_day class="form-control" %}
+                                </div>
+
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        درصد افزایش حقوق مربوط به پله اول : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.pele_one_darsad class="form-control" %}
+                                </div>
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        پله دوم جهت تشویق روز چندم باشد : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.pele_two_day class="form-control" %}
+                                </div>
+
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        درصد افزایش حقوق مربوط به پله دوم : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.pele_two_darsad class="form-control" %}
+                                </div>
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        پله سوم جهت تشویق روز چندم باشد : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.pele_three_day class="form-control" %}
+                                </div>
+
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        درصد افزایش حقوق مربوط به پله سوم : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.pele_three_darsad class="form-control" %}
+                                </div>
+
+
+                            </div>
+                            <button class="btn ripple btn-main-primary btn-block" type="submit">اعمال تنظیمات</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% else %}
+    <div class="row row-sm">
+        <div class="col-xl-12 col-lg-12 col-md-12">
+            <div class="card custom-card">
+                <div class="card-body">
+                    <div>
+                        <h6 class="main-content-label mb-1">ویرایش تنظیمات حقوقی شعبه
+                            {{location.name}}
+                        </h6>
+                        <p class="text-muted card-sub-title">
+
+                            ویرایش تنظیمات اختصاصی برای شعبه
+
+                            {{location.name}}
+                            اعمال می گردد باید توجه داشته باشید برای هر کدام از شعبات خود می بایست این تنظیمات را
+                            اختصاصا انجام دهید
+                        </p>
+                    </div>
+                    <form method="post" action="{% url 'update-setting-hoghoogh-edit' pk=pk %}">
+                        {% csrf_token %}
+                        <div class="">
+                            <div class="row row-sm">
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        مبلغ بیمه به ازای هر روز : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.price_bime_in_day class="form-control" %}
+                                </div>
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        تاریخ ابتدای ماه برای محاسبه حقوق : <span class="tx-danger">*</span>
+                                    </label>
+                                    <div class="mg-b-20">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <i class="fe fe-calendar lh--9 op-6"></i>
+                                                </div>
+                                            </div>
+         {% render_field form_setting_hoghoogh.start_end_hoghoogh class="form-control fc-datepicker" type="text" %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        تعداد روز قابل محاسبه : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.num_day class="form-control" %}
+                                </div>
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        درصد افزایش کلی حقوق : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.darsad_all class="form-control" %}
+                                </div>
+
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        درصد درآمد از کل تولید حق سرپرست ها : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.darsad_sarparast class="form-control" %}
+                                </div>
+
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        پله اول جهت تشویق روز چندم باشد : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.pele_one_day class="form-control" %}
+                                </div>
+
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        درصد افزایش حقوق مربوط به پله اول : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.pele_one_darsad class="form-control" %}
+                                </div>
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        پله دوم جهت تشویق روز چندم باشد : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.pele_two_day class="form-control" %}
+                                </div>
+
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        درصد افزایش حقوق مربوط به پله دوم : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.pele_two_darsad class="form-control" %}
+                                </div>
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        پله سوم جهت تشویق روز چندم باشد : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.pele_three_day class="form-control" %}
+                                </div>
+
+                                <div class="col-lg-4 form-group">
+                                    <label class="form-label">
+                                        درصد افزایش حقوق مربوط به پله سوم : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_setting_hoghoogh.pele_three_darsad class="form-control" %}
+                                </div>
+
+
+                            </div>
+                            <button class="btn ripple btn-main-primary btn-block" type="submit">اعمال تنظیمات</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endif%}
+</div>
+
+
+{% endblock %}
+{% block javas %}
+
+
+<!-- Internal Jquery-Ui js-->
+<script src="{% static 'catalogue/assets/plugins/jquery-ui/ui/widgets/datepicker.js' %}"></script>
+
+<!-- Internal Jquery.maskedinput js-->
+<script src="{% static 'catalogue/assets/plugins/jquery.maskedinput/jquery.maskedinput.js' %}"></script>
+
+<!-- Internal Specturm-colorpicker js-->
+<script src="{% static 'catalogue/assets/plugins/spectrum-colorpicker/spectrum.js' %}"></script>
+
+<!-- Internal Ion-rangeslider js-->
+<script src="{% static 'catalogue/assets/plugins/ion-rangeslider/js/ion.rangeSlider.min.js' %}"></script>
+
+<!-- Internal Form-elements js-->
+<script src="{% static 'catalogue/assets/js/form-elements.js' %}"></script>
+
+
+{% endblock %}

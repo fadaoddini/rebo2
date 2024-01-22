@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block styles %}
+
+
+{% endblock %}
+{% block title %}
+ربو | ویرایش نیرو
+{% endblock %}
+{% block content %}
+<div class="inner-body">
+
+    <div class="row row-sm">
+        <div class="col-xl-12 col-lg-12 col-md-12">
+            <div class="card custom-card">
+                <div class="card-body">
+                    <div>
+                        <h6 class="main-content-label mb-1">ویرایش نیرو برای شعبه ی
+                            {{location.name}}
+
+                        </h6>
+                        <p class="text-muted card-sub-title">
+
+                           شما در حال ویرایش اطلاعات
+
+                            {{staff_choose.name}}
+                            هستید
+                        </p>
+                    </div>
+                    <form method="post" action="{% url 'update-staff' pk=staff_choose.pk %}">
+                        {% csrf_token %}
+                        <div class="">
+                            <div class="row row-sm">
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="row  bg-light rounded pt-3">
+                                                <div class="col-lg-6 form-group">
+                                    <label class="form-label">
+                                        نام : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_staff.name class="form-control" %}
+                                </div>
+                                <div class="col-lg-6 form-group">
+                                    <label class="form-label">
+                                        نام خانوادگی : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_staff.family class="form-control" %}
+                                </div>
+                                                <div class="col-lg-6 form-group">
+                                    <label class="form-label">
+                                        شماره حساب بانکی :
+                                    </label>
+                                    {% render_field form_staff.card_number class="form-control" %}
+                                </div>
+                                                <div class="col-lg-6 form-group">
+                                    <label class="form-label">
+                                        نقش نیرو را مشخص کنید : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_staff.role class="form-control" %}
+                                </div>
+                                                 <div class="col-lg-6 form-group">
+                                    <label class="form-label">
+                                        کد ملی :
+                                    </label>
+                                    {% render_field form_staff.codemeli class="form-control" %}
+                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="row">
+                                                <div class="col-lg-6 form-group">
+                                    <label class="form-label">
+                                        شماره همراه :
+                                    </label>
+                                    {% render_field form_staff.mobile class="form-control" %}
+                                </div>
+                                <div class="col-lg-6 form-group">
+                                    <label class="form-label">
+                                        سن :
+                                    </label>
+                                    {% render_field form_staff.age class="form-control" %}
+                                </div>
+                                <div class="col-lg-6 form-group">
+                                    <label class="form-label">
+                                        جنسیت :
+                                    </label>
+                                    {% render_field form_staff.jens class="form-control" %}
+                                </div>
+                                <div class="col-lg-6 form-group">
+                                    <label class="form-label">
+                                        آیا متاهل هستید؟
+                                    </label>
+                                    {% render_field form_staff.is_married class="form-control" %}
+                                </div>
+
+                                <div class="col-lg-6 form-group">
+                                    <label class="form-label">
+                                        آیا بیمه می باشد؟ <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_staff.insurance class="form-control" %}
+                                </div>
+                                <div class="col-lg-6 form-group">
+                                    <label class="form-label">
+                                        آیا حق بیمه از حقوق کسر شود؟ <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_staff.insurance_status class="form-control" %}
+                                </div>
+                                <div class="col-lg-6 form-group">
+                                    <label class="form-label">
+                                        حقوق ثابت (ریال) : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_staff.fix_salary class="form-control" %}
+                                </div>
+                                <div class="col-lg-6 form-group">
+                                    <label class="form-label">
+                                        شماره سالن : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_staff.salon class="form-control" %}
+                                </div>
+                                <div class="col-lg-6 form-group">
+                                    <label class="form-label">
+                                        وضعیت : <span class="tx-danger">*</span>
+                                    </label>
+                                    {% render_field form_staff.status class="form-control" %}
+                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+
+
+
+
+                            </div>
+                            <button class="btn ripple btn-main-primary btn-block" type="submit">افزودن</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock %}
+{% block javas %}
+
+
+<!-- Internal Jquery-Ui js-->
+<script src="{% static 'catalogue/assets/plugins/jquery-ui/ui/widgets/datepicker.js' %}"></script>
+
+<!-- Internal Jquery.maskedinput js-->
+<script src="{% static 'catalogue/assets/plugins/jquery.maskedinput/jquery.maskedinput.js' %}"></script>
+
+<!-- Internal Specturm-colorpicker js-->
+<script src="{% static 'catalogue/assets/plugins/spectrum-colorpicker/spectrum.js' %}"></script>
+
+<!-- Internal Ion-rangeslider js-->
+<script src="{% static 'catalogue/assets/plugins/ion-rangeslider/js/ion.rangeSlider.min.js' %}"></script>
+
+<!-- Internal Form-elements js-->
+<script src="{% static 'catalogue/assets/js/form-elements.js' %}"></script>
+
+
+{% endblock %}

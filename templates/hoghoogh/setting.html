@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+    <link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | تنظیمات حقوقی
+{% endblock %}
+{% block content %}
+<div class="inner-body">
+
+
+		<div class="row row-sm">
+					<div class="col-lg-12">
+						<div class="card custom-card overflow-hidden">
+							<div class="card-body">
+								<div>
+									<h6 class="main-content-label mb-1">تنظیمات حقوقی برای شعبات شرکت
+									{{request.user.company}}
+									</h6>
+									<p class="text-muted card-sub-title">
+
+										 اطلاعات کامل شعبات شما در لیست زیر قابل مشاهده می باشد، دکمه ای در جدول با نام
+
+
+                                      <span class="text-danger font-weight-bold">تنظیمات</span>
+
+
+
+                                        قابل مشاهده است با کلیک روی تنظیمات شعبه دلخواه می توانید
+
+                                        تغییرات مد نظر خود را بابت آن شعبه اعمال نمائید
+
+									</p>
+								</div>
+								<div class="table-responsive">
+									<table id="exportexample" class="table table-bordered border-t0 key-buttons text-nowrap w-100">
+										<thead>
+										<tr>
+											<th>کد شعبه</th>
+											<th>نام شعبه</th>
+
+											<th>بیمه روزانه (ریال)</th>
+											<th>شروع محاسبه</th>
+											<th>تعداد روز قابل محاسبه</th>
+											<th>درصد کلی افزایش حقوق</th>
+											<th>درصد سرپرست ها</th>
+											<th>روز پله اول</th>
+											<th>درصد پله اول</th>
+											<th>روز پله دوم</th>
+											<th>درصد پله دوم</th>
+											<th>روز پله سوم</th>
+											<th>درصد پله سوم</th>
+
+											<th>تنظیمات</th>
+										</tr>
+										</thead>
+										<tbody>
+										{% for location in locations%}
+										<tr>
+											<td>{{ location.pk }}</td>
+											<td>{{ location.name }}</td>
+											{% if location.settinghoghoogh %}
+											<td>{{ location.settinghoghoogh.price_bime_in_day }}</td>
+											<td>{{ location.settinghoghoogh.start_end_hoghoogh }}</td>
+											<td>{{ location.settinghoghoogh.num_day }}</td>
+											<td>{{ location.settinghoghoogh.darsad_all }}</td>
+											<td>{{ location.settinghoghoogh.darsad_sarparast }}</td>
+											<td>{{ location.settinghoghoogh.pele_one_day }}</td>
+											<td>{{ location.settinghoghoogh.pele_one_darsad }}</td>
+											<td>{{ location.settinghoghoogh.pele_two_day }}</td>
+											<td>{{ location.settinghoghoogh.pele_two_darsad }}</td>
+											<td>{{ location.settinghoghoogh.pele_three_day }}</td>
+											<td>{{ location.settinghoghoogh.pele_three_darsad }}</td>
+											{% else %}
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											{% endif %}
+											<td><a href="{% url 'update-setting-hoghoogh' pk=location.pk  %}" class="btn ripple btn-primary btn-sm">تنظیمات</a></td>
+										</tr>
+										{% endfor %}
+
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+</div>
+
+
+{% endblock %}
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+{% endblock %}

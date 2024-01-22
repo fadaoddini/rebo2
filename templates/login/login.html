@@ -1,0 +1,31 @@
+{% extends 'login/baselogin.html' %}
+{% block titlelogin %}
+{{ setting.title }} | ورود
+{% endblock %}
+{% block formlogin %}
+
+
+
+<form method="post" action="{% url 'login-mobile' %}">
+    {% csrf_token %}
+    <h5 class="text-right mb-5">
+        به حساب خود وارد شوید
+    </h5>
+
+    <div class="form-group text-right">
+        <label>تلفن همراه</label>
+        <input name="mobile" class="form-control" placeholder="شماره تلفن همراه" type="text">
+    </div>
+
+    <button class="btn ripple btn-main-primary btn-block">ارسال کد</button>
+</form>
+<div class="text-right mt-5 ml-0">
+    <div>ثبت نام در این سامانه به منزله پذیرش تمامی شرایط و قوانین حاکم بر این سامانه می باشد،
+        لطفا قبل از ثبت نام آن را مطالعه نموده و در صورت پذیرش مفاد آن نسبت به ثبت نام در این سامانه اقدام نمائید
+
+        <a href="#">شرایط و قوانین ربو </a>
+    </div>
+</div>
+
+
+{% endblock %}

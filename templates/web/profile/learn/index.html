@@ -1,0 +1,130 @@
+{% extends 'web/profile/base.html' %}
+{% load widget_tweaks %}
+{% load category_tag %}
+{% load jalali_tags %}
+{% load humanize %}
+{% load static %}
+
+{% block content %}
+
+  <div class="tab-pane fade active show" id="tab-nav4" role="tabpanel" aria-labelledby="nav-sold-tab">
+                                <div class="bids-items-wrapper mb-30">
+                                    <div class="sold-items-wrapper">
+                                        <div class="row ">
+                                            {% for learn in page_obj_learn%}
+
+                                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                                            <div class="art-item-single mb-30">
+                                                <div class="art-item-wraper">
+                                                    <div class="art-item-inner">
+                                                        <div class="art-item-img pos-rel">
+                                                            <div class="art-action">
+                                                                <button class="art-action-like"><i
+                                                                        class="flaticon-heart"></i></button>
+
+                                                                <div class="art-action-collection"><i
+                                                                        class="flaticon-plus-sign"></i></div>
+                                                            </div>
+
+
+                                                            <a href="{% url 'section-web-web' learn.pk %}">
+                                                                {% if learn.image.url %}
+
+
+                                                                <img height="200" alt="{{ learn.title }}"
+                                                                     src="{{ learn.image.url }}">
+
+                                                                {% else %}
+
+                                                                <img src="{% static 'web/assets/img/img/noimg.png' %}"
+                                                                     alt="تصویر موجود نیست! ">
+                                                                {%endif %}
+
+                                                            </a>
+                                                        </div>
+                                                        <div class="art-item-content pos-rel">
+
+                                                            <div class="art-3dots-menu">
+                                                                <div class="art-3dots-action">
+                                                                    <ul>
+                                                                        <li><a href="#"><i class="fal fa-share-alt"></i>اشتراک</a>
+                                                                        </li>
+                                                                        <li><a href="#"><i class="fal fa-flag-alt"></i>گزارش</a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                                <button class="art-3dots-icon"><i
+                                                                        class="fal fa-ellipsis-v"></i></button>
+                                                            </div>
+                                                            <div class="artist">
+
+                                                                <div class="artist-id">{{ learn.user.last_name }}
+                                                                </div>
+                                                            </div>
+
+
+                                                            <h4 class="art-name"><a
+                                                                    href="#">
+                                                                {{ learn.title }}</a></h4>
+                                                            <div class="art-meta-info">
+                                                                <div class="art-meta-item">
+                                                                    <div class="art-meta-type">قیمت آموزش</div>
+                                                                    <div class="art-price">
+                                                                        {{ learn.price|intcomma }} (ریال)
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="art-activity-btn">
+                                                                    <a href="{% url 'section-web-web' learn.pk %}" class="art-activity"><i
+                                                                            class="fal fa-waveform-path"></i>نمایش بخش ها</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                            {% endfor%}
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="visibility: visible; animation-name: fadeInUp;">
+                                    <div class="col-12">
+                                        <div class="basic-pagination mt-20 mb-30">
+                                            <ul>
+                                                <li>
+                                                    {% if page_obj_learn.has_previous %}
+                                                    <a class="prev page-numbers"
+                                                       href="?page={{ page_obj_learn.previous_page_number }}">
+                                                        <i class="fal fa-angle-right"></i>
+                                                    </a>
+                                                    {% endif %}
+                                                </li>
+                                                {% for pg in paginator_learn.page_range %}
+                                                    {% if page_obj_learn.number == pg %}
+                                                    <li>
+                                                        <span aria-current="page" class="page-numbers current">{{ page_obj_learn.number }}</span>
+                                                    </li>
+
+                                                    {% elif pg > page_obj_learn.number|add:'-4' and pg < page_obj_learn.number|add:'4' %}
+
+                                                    <li><a class="page-numbers" href="?page={{pg}}">{{pg}}</a></li>
+                                                    {% endif %}
+                                                {% endfor %}
+
+
+                                                <li>
+                                                    {% if page_obj_learn.has_next %}
+                                                    <a class="next page-numbers"
+                                                       href="?page={{ page_obj_learn.next_page_number }}">
+                                                        <i class="fal fa-angle-left"></i>
+                                                    </a>
+                                                    {% endif %}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+ {% endblock %}

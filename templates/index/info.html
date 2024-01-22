@@ -1,0 +1,117 @@
+{% load widget_tweaks %}
+<div class="col-lg-6 col-md-12">
+    <div class="card custom-card">
+        <div class="card-body">
+            <div>
+                <h6 class="main-content-label mb-1">تکمیل اطلاعات پروفایل</h6>
+                <p class="text-muted card-sub-title">برای استفاده از امکانات این سامانه باید این قسمت را با دقت
+                    تکمیل نمائید</p>
+            </div>
+            <div class="">
+                <a class="btn ripple btn-main-primary" data-target="#modaldemo1" data-toggle="modal" href="#">تکمیل
+                    پروفایل</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modaldemo1">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <button aria-label="بستن" class="close pos-absolute t-15 r-20 tx-26" data-dismiss="modal"
+                        type="button"><span aria-hidden="true">×</span></button>
+                <h5 class="modal-title mb-4 text-center">تکمیل اطلاعات پروفایل</h5>
+                <div class="alert alert-warning mb-4 text-center">لطفا با نهایت دقت این اطلاعات را وارد نمائید
+                    (تصاویر ارسالی باید وضوح خوبی را دارا باشند) بعد از تائید اطلاعات ارسالی شما، تمامی امکانات
+                    جهت معامله شما در دسترس شما قرار خواهد گرفت و این نکته را فراموش نکنید که ثبت نام در این
+                    سامانه به منزله پذیرش تمام قوانین موجود در سامانه ربو می باشد
+                </div>
+                <form method="post" action="{% url 'update-info' %}" enctype="multipart/form-data" >
+                    {% csrf_token %}
+
+                    <div class="row row-sm">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>نام</label>
+
+                                {% render_field form_info.name class="form-control" placeholder="نام کوچک"  %}
+
+
+                            </div>
+                            <div class="form-group">
+                                <label>نام خانوادگی</label>
+                                {% render_field form_info.family class="form-control" placeholder="نام خانوادگی"  %}
+                            </div>
+
+                            <div class="form-group">
+                                <label>کد ملی</label>
+                                {% render_field form_info.codemeli class="form-control" placeholder="کد ملی"  %}
+
+                            </div>
+                            <div class="form-group">
+                                <label>شماره شبا (بدون IR - فقط اعداد )</label>
+                                {% render_field form_info.shaba class="form-control" placeholder="شماره شبا"  %}
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>تصویر پرسنلی</label>
+                                <div class="input-group file-browser">
+
+                                    <input  type="text" class="form-control border-left-0 browse-file"
+                                           placeholder="انتخاب کنید" readonly="">
+                                    <label class="input-group-btn mb-0">
+                                            <span class="btn btn-primary">
+
+                                                انتخاب
+                                                {% render_field form_info.image style="display: none;"  %}
+
+
+                                            </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>تصویر کارت ملی</label>
+                                <div class="input-group file-browser">
+
+                                    <input type="text" class="form-control border-left-0 browse-file"
+                                           placeholder="انتخاب کنید" readonly="">
+                                    <label class="input-group-btn mb-0">
+                                            <span class="btn btn-primary">
+                                                انتخاب
+
+                                                  {% render_field form_info.image_codemeli style="display: none;"  %}
+                                            </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>تصویر کارت بانکی (متصل به شبای ارائه شده)</label>
+                                <div class="input-group file-browser">
+
+                                    <input type="text" class="form-control border-left-0 browse-file"
+                                           placeholder="انتخاب کنید" readonly="">
+                                    <label class="input-group-btn mb-0">
+                                            <span class="btn btn-primary">
+                                                انتخاب
+
+                                               {% render_field form_info.image_shaba style="display: none;"  %}
+                                            </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn ripple btn-primary btn-block">تکمیل پروفایل</button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>

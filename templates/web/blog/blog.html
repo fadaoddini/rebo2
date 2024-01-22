@@ -1,0 +1,93 @@
+{% extends 'baseweb.html' %}
+{% load category_tag %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+
+{% endblock %}
+{% block title %}
+ربو |
+{{ category.name }}
+{% endblock %}
+
+
+{% block content %}
+
+
+      <!-- popular-collections area start  -->
+      <section class="popular-collections-area pt-110 pb-100">
+         <div class="container">
+            <div class="row wow fadeInUp">
+               <div class="col-lg-12">
+                  <div class="section-title1 pos-rel text-center mb-40">
+                     <h2 class="section-main-title1">{{ category.name }}</h2>
+                     <p>کلیه مطالب مرتبط با حوزه خرما را در ربو دنبال کنید</p>
+                  </div>
+               </div>
+            </div>
+            <div class="row wow fadeInUp">
+                {% for blog in blogs%}
+
+
+
+               <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                  <div class="category-collections-wrapper mb-30">
+                     <div class="category-collections-inner">
+                        <div class="row">
+                           <div class="col-12">
+                              <div class="art-item-single">
+                                 <div class="art-item-wraper">
+                                    <div class="art-item-inner">
+                                       <div class="art-item-img pos-rel">
+
+                                          <a href="{% url 'blog-single-web' pk=blog.pk %}"><img src="{{ blog.image.url }}"
+                                                alt="{{ blog.title }}"></a>
+
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="collection-content pos-rel">
+                           <div class="art-3dots-menu">
+                              <div class="art-3dots-action">
+                                 <ul>
+                                    <li><a href="#"><i class="flaticon-share-1"></i>اشتراک </a>
+                                    </li>
+                                 </ul>
+                              </div>
+                              <button class="art-3dots-icon"><i class="fal fa-ellipsis-v"></i></button>
+                           </div>
+                           <div class="collection-category">
+                              <h4 class="category-name">
+                                 <a href="{% url 'blog-single-web' pk=blog.pk %}">{{ blog.title }}
+
+                                 </a>
+                              </h4>
+
+                                 <div class="resource-created">
+                                    نویسنده :
+                                    {{ blog.user.info.family }}</div>
+
+
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+                {% endfor %}
+            </div>
+         </div>
+      </section>
+      <!-- popular-collections area end  -->
+
+ 
+
+{% endblock %}
+
+
+{% block javas %}
+
+{% endblock %}

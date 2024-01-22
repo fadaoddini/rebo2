@@ -1,0 +1,377 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/css/tablestyle.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | تاییدیه نهایی حقوق
+{% endblock %}
+{% block content %}
+<style>
+
+
+</style>
+<div class="inner-body">
+
+
+    <div class="row row-sm">
+        <div class="col-xl-12 col-lg-12 col-md-12">
+            <div class="card custom-card">
+                <div class="card-body">
+                    <table class="table table-bordered">
+
+                        <tr>
+                            <td class="font-weight-bold" colspan="2" rowspan="5">
+                                {{staff.name}}
+                                {{staff.family}}
+                                <br>
+                                {{staff.location}}
+                            </td>
+                            <td class="font-weight-bold" colspan="2">کد انحصاری</td>
+                            <td colspan="2">{{staff.id}}</td>
+                            <td class="font-weight-bold" colspan="2">تاریخ</td>
+                            <td colspan="2">{{year}} - {{month}}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold" colspan="2">شماره موبایل</td>
+                            <td colspan="2">{{staff.mobile}}</td>
+                            <td class="font-weight-bold" colspan="2">شماره حساب</td>
+                            <td colspan="2">{{staff.card_number}}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold" colspan="2">بیمه</td>
+                            <td colspan="2">{{check_bime}}</td>
+                            <td class="font-weight-bold" colspan="2">کسر بیمه از حقوق</td>
+                            <td colspan="2">{{check_bime_status}}</td>
+                        </tr>
+
+                        <tr>
+                            <td class="font-weight-bold" colspan="2">پله تشویقی</td>
+                            <td colspan="2">
+                                {{darsad_pele}}
+                             درصد
+                            </td>
+                            <td class="font-weight-bold" colspan="2">تعداد روز فعال</td>
+                            <td colspan="2">{{day_ok}}
+                                روز
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="font-weight-bold" colspan="2">حق سرپرستی</td>
+                            <td colspan="2">
+                                {{role}}
+
+                            </td>
+                            <td class="font-weight-bold" colspan="4">
+                                 <a  class="btn btn-sm btn-success w-100">
+                                    تائید نهایی
+                                </a>
+
+
+                            </td>
+
+                        </tr>
+
+                        <tr >
+                            <td class="font-weight-bold text-danger" colspan="10" style="height:100px;">
+                                انسان ها اگر به بهایی بیندیشند که برای رسیدن به آرزوها می پردازند، بر بسیاری از آرزوهای خود خط خواهند کشید.
+
+                            </td>
+                        </tr>
+
+                        <!-- <tr>
+                             <td class="font-weight-bold">ردیف</td>
+                             <td class="font-weight-bold" colspan="5">عنوان آیتم فعالیت</td>
+                             <td class="font-weight-bold">تعداد</td>
+                             <td class="font-weight-bold">قیمت واحد</td>
+                             <td class="font-weight-bold" colspan="2">جمع کل</td>
+
+                         </tr>
+                         {% for test in amar %}
+                         <tr>
+
+                             <td>{{test.id}}</td>
+                             <td colspan="5">{{test.name}}</td>
+                             <td>{{test.tedad}}</td>
+                             <td>{{test.price}}</td>
+                             <td colspan="2">{{test.tarikh}}</td>
+                         </tr>
+                         {% endfor %}-->
+
+                        <tr>
+                            <td colspan="6"> جمع درآمد کلی از آیتم ها
+                                {{sumitemprice}}
+                                ریال
+                                و حقوق ثابت
+                            {{fix_salary_staff}}
+                            ریال
+                            </td>
+                            <td class="font-weight-bold" colspan="2">جمع کل درآمد ناخالص</td>
+
+
+                            <td colspan="2">
+                                {{sumamar}}
+                                ریال
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6"> {{day_ok}} روز فعالیت و به ازای هر روز
+                                {{bime_day}}
+                                ریال </td>
+                            <td class="font-weight-bold" colspan="2">حق بیمه</td>
+
+
+                            <td colspan="2">
+                                {{price_bime_sum}}
+                                ریال
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6"></td>
+                            <td class="font-weight-bold" colspan="2">قسط وام</td>
+
+
+                            <td colspan="2">{{vam}}
+                                ریال
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6"></td>
+                            <td class="font-weight-bold" colspan="2">مساعده</td>
+
+
+                            <td colspan="2">
+                                {{mosaede}}
+                                ریال
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6"></td>
+                            <td class="font-weight-bold" colspan="2">تشویقی</td>
+
+
+                            <td colspan="2">
+                                {{tashvighi}}
+                                ریال
+                            </td>
+                        </tr>
+                        <tr>
+                             <td colspan="6">
+
+                                 {{day_sarparasti}}
+
+                                 روز فعالیت سرپرست و به ازای هر روز
+
+                                 {{one_sarparasti_price}}
+
+                                 ریال
+
+                             </td>
+                            <td class="font-weight-bold" colspan="2">حق سرپرستی</td>
+
+
+                            <td colspan="2">
+                                {{sarparasti}}
+                                ریال
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6"></td>
+                            <td class="font-weight-bold" colspan="2">جمع کل درآمد خالص</td>
+
+
+                            <td colspan="2">
+                                {{sum_first}}
+                                ریال
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6"></td>
+                            <td class="font-weight-bold" colspan="2">مبلغ افزایش حقوق
+                                بابت پله تشویقی
+                            </td>
+
+
+                            <td colspan="2">
+                                {{price_darsad_pele}}
+                                ریال
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6"></td>
+                            <td class="font-weight-bold" colspan="2">جمع کل قابل پرداخت</td>
+
+
+                            <td colspan="2">
+                                {{sum_pay}}
+                                ریال
+                            </td>
+                        </tr>
+
+
+
+                    </table>
+                    <table class="table table-bordered">
+                         <tr>
+
+                            <td colspan="2">
+                                <a onclick="return confirm('آیا کلیه اطلاعات مربوط به فیش مورد نظر حذف شود؟');" href="{% url 'delete-all-amar_staff' pk=staff.id  %}" class="btn btn-sm btn-danger">
+                                    حذف کل اطلاعات فیش
+                                </a>
+</td>
+                            <td colspan="2"></td>
+                            <td colspan="2"></td>
+                            <td colspan="2"><a class="btn btn-sm btn-info">
+                                    پرینت فیش حقوقی
+                                </a>
+</td>
+                            <td colspan="2">
+
+                            </td>
+
+
+
+
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+
+<script>
+    var active = 0;
+    //$('.tblnavigate td').each(function(idx){$(this).html(idx);});
+    rePosition();
+
+    $(document).keydown(function(e) {
+        var inp = String.fromCharCode(e.keyCode);
+        if ((!(/[a-zA-Z0-9-_ ]/.test(inp) || e.keyCode == 96)) && e.keyCode != 8){
+            reCalculate(e);
+            rePosition();
+            // if key is an arrow key, don't type the test input.
+            // if it is any other key (a, b, c, etc)
+            // edit the text
+            if (e.keyCode > 36 && e.keyCode < 41) {
+                return false;
+            }
+        }
+    });
+    //$( ".tblnavigate" ).on( "mousedown", function( event ) {
+    $('td').click(function() {
+        active = $('table td').index(this);
+        rePosition();
+    });
+
+
+    function reCalculate(e) {
+        var rows = $('.tblnavigate tbody tr').length;
+        var columns = $('.tblnavigate tbody tr:eq(0) td').length;
+        var temp;
+
+        if (e.keyCode == 39) { //move left or wrap
+            temp = active;
+            while (temp > 0) {
+                temp = temp - 1;
+                // only advance if there is an input field in the td
+                if ($('.tblnavigate tbody tr td').eq(temp).find('input').length != 0) {
+                    active = temp;
+                    break;
+                }
+            }
+        }
+        if (e.keyCode == 38) { // move up
+            temp = active;
+            while (temp - columns >= 0) {
+                temp = temp - columns;
+                // only advance if there is an input field in the td
+                if ($('.tblnavigate tbody tr td').eq(temp).find('input').length != 0) {
+                    active = temp;
+                    break;
+                }
+            }
+        }
+        if (e.keyCode == 37) { // move right or wrap
+            temp = active;
+            while (temp < (columns * rows) - 1) {
+                temp = temp + 1;
+                // only advance if there is an input field in the td
+                if ($('.tblnavigate tbody tr td').eq(temp).find('input').length != 0) {
+                    active = temp;
+                    break;
+                }
+            }
+        }
+        if (e.keyCode == 40) { // move down
+            temp = active;
+            while (temp + columns <= (rows * columns) - 1) {
+                temp = temp + columns;
+                // only advance if there is an input field in the td
+                if ($('.tblnavigate tbody tr td').eq(temp).find('input').length != 0) {
+                    active = temp;
+                    break;
+                }
+            }
+        }
+    }
+
+    function rePosition() {
+        console.log(active);
+        $('.active').removeClass('active');
+        $('.tblnavigate tbody tr td').eq(active).addClass('active');
+        $('.tblnavigate tbody tr td').find('input').removeClass('textClass');
+        $('.tblnavigate tbody tr td').eq(active).find('input').addClass('textClass');
+        $('.tblnavigate tbody tr td').eq(active).find('input').select();
+        var input = $('.tblnavigate tbody tr td').eq(active).find('input').focus();
+        scrollInView();
+    }
+
+    function scrollInView() {
+        var target = $('.tblnavigate tbody tr td:eq(' + active + ')');
+        if (target.length) {
+            var top = target.offset().top;
+
+            $('html,body').stop().animate({
+                scrollTop: top - 100
+            }, 400);
+            return false;
+        }
+    }
+
+
+</script>
+{% endblock %}

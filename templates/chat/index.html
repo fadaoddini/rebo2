@@ -1,0 +1,52 @@
+{% extends 'chat/basechat.html' %}
+{% load static %}
+{% load jalali_tags %}
+{% block titlelogin %}
+{{ setting.title }} | تالارهای تخصصی
+{% endblock %}
+
+{% block headchat %}
+
+
+				<!-- Page Header -->
+				<div class="page-header">
+					<div>
+						<a href="{% url 'index' %}" class="logo">
+                            <img width="100" src="{{ setting.logo.url }}" alt="{{ setting.title }}">
+                        </a>
+					</div>
+
+				</div>
+				<!-- End Page Header -->
+
+
+<div class="container">
+    <div class="inner-body">
+        <div class="row row-sm">
+
+                    {% for room in rooms %}
+					    <div class="col-sm-6 col-md-6 col-xl-3">
+						<div class="card custom-card">
+							<div class="card-body user-card text-center">
+								<div class="main-img-user avatar-lg online text-center">
+									<img src="{% static 'chat/public/img/profile.png' %}"
+                                         alt="انجمن">
+								</div>
+								<div class="mt-2">
+									<h5 class="mb-1">{{room.room_name}}</h5>
+									<p class="mb-1 tx-inverse">فعالان انجمن</p>
+									<span class="text-muted"><i class="far fa-check-circle text-success ml-1"></i>
+                                    {{room.count_member}}
+                                    نفر
+                                    </span>
+								</div>
+								<a href="{% url 'room' pk=room.pk %}"
+                                   class="btn ripple btn-primary mt-3">ورود</a>
+							</div>
+						</div>
+					</div>
+                    {% endfor %}
+				</div>
+    </div>
+</div>
+{% endblock %}

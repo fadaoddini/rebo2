@@ -1,0 +1,78 @@
+{% load humanize %}
+<section class="related-items-area pt-110 pb-100">
+    <div class="container">
+        <div class="row justify-content-center wow fadeInUp">
+            <div class="col-lg-8">
+                <div class="section-title1 text-center">
+                    <h2 class="section-main-title1">آموزش های مرتبط</h2>
+                    <p class="mb-40">
+                        آموزش های پیشنهادی و جذاب محور فعالیت ها و انتخاب های شما در این سامانه
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row wow fadeInUp">
+            {% for learn in learns %}
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                <div class="art-item-single mb-30">
+                    <div class="art-item-wraper">
+                        <div class="art-item-inner">
+                            <div class="art-item-img pos-rel">
+                                <div class="art-action">
+                                    <button class="art-action-like"><i class="flaticon-heart"></i></button>
+                                    <div class="art-action-like-count">2.5k+</div>
+                                    <div class="art-action-collection"><i class="flaticon-plus-sign"></i></div>
+                                </div>
+
+                                <a href="art-details.html">
+                                    <img style="max-height: fit-content;"
+                                         alt="{{ learn.title }}"
+                                         src="{{ learn.image.url }}">
+                                </a>
+                            </div>
+                            <div class="art-item-content pos-rel">
+
+                                <div class="art-3dots-menu">
+                                    <div class="art-3dots-action">
+                                        <ul>
+                                            <li><a href="#"><i class="fal fa-share-alt"></i>اشتراک</a>
+                                            </li>
+                                            <li><a href="#"><i class="fal fa-flag-alt"></i>گزارش</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <button class="art-3dots-icon"><i class="fal fa-ellipsis-v"></i></button>
+                                </div>
+                                <div class="artist">
+                                    <div class="profile-img pos-rel">
+                                        <a href="creator-profile.html">
+                                            مدرس :
+                                        </a>
+                                        <div class="profile-verification verified">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                    </div>
+                                    <div class="artist-id">{{ learn.auther }}</div>
+                                </div>
+                                <h4 class="art-name"><a href="{% url 'section-web-web' learn.pk %}">{{ learn.title }}</a></h4>
+                                <div class="art-meta-info">
+                                    <div class="art-meta-item">
+                                        <div class="art-meta-type">قیمت آموزش</div>
+                                        <div class="art-price">{{ learn.price|intcomma }} ریال</div>
+                                    </div>
+                                    <div class="art-activity-btn">
+                                        <a href="activity.html" class="art-activity">
+                                            تعداد بخش ها :
+                                            {{ learn.sections.count }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

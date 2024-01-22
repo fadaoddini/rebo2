@@ -1,0 +1,36 @@
+{% load type_tag %}
+{% get_type as alltype%}
+<div class="row wow fadeInUp">
+               <div class="col-lg-4">
+                  <div class="section-title1">
+                     <h2 class="section-main-title1 mb-40">ربو مرکز خرید و فروش خرما</h2>
+                  </div>
+               </div>
+               <div class="col-lg-8">
+                  <form action="{% url 'index-search' %}" method="get" class="artwork-filter-row mb-40 top-form">
+                     <select name="bazar" id="s-t-select" class="sale-type-select">
+                        <option value="None">نوع بازار</option>
+                        <option value="2">خریداران</option>
+                        <option value="1">فروشندگان</option>
+
+                     </select>
+                     <select name="type" id="cat-select" class="category-select">
+                        <option value="None">دسته بندی</option>
+                        {% for type in alltype%}
+                        <option value="{{type.pk}}">{{type.title}}</option>
+
+                        {% endfor %}
+
+
+
+                     </select>
+
+                     <select name="price" id="pr-select" class="price-select">
+                        <option value="None">قیمت</option>
+                        <option value="top">بیشترین</option>
+                        <option value="low">کمترین</option>
+                     </select>
+                     <button id="upload-btn" class="fill-btn" type="submit">جستجو</button>
+                  </form>
+               </div>
+            </div>

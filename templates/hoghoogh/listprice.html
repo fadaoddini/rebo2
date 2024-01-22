@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+    <link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | آیتم های حقوق
+{% endblock %}
+{% block content %}
+<div class="inner-body">
+
+
+    <div class="row row-sm">
+					<div class="col-xl-12 col-lg-12 col-md-12">
+						<div class="card custom-card">
+							<div class="card-body">
+								<div>
+									<h6 class="main-content-label mb-1">افزودن آیتم حقوقی برای شعبه
+
+										{{location.name}}
+
+									</h6>
+									<p class="text-muted card-sub-title">
+                                        شما می توانید تمامی آیتم های مربوط به شعبات خود را مدیریت کنید، دست شما برای مدیریت آیتم های حقوقی باز است
+                                    </p>
+								</div>
+								 <form method="post" action="{% url 'add-listprice' pk=pk %}"  >
+                    				{% csrf_token %}
+									<div class="">
+										<div class="row row-sm">
+											<div class="col-lg-4 form-group">
+												<label class="form-label">نام آیتم : <span class="tx-danger">*</span></label>
+												   {% render_field form_listprice.name class="form-control" placeholder="نام آیتم "  %}
+											</div>
+											<div class="col-lg-4 form-group">
+												<label class="form-label">قیمت واحد (ریال) : <span class="tx-danger">*</span></label>
+												{% render_field form_listprice.price class="form-control" placeholder="قیمت واحد "  %}
+											</div>
+											<div class="col-lg-4 form-group">
+												<label class="form-label">نوع آیتم : <span class="tx-danger">*</span></label>
+												{% render_field form_listprice.value_type class="form-control"  %}
+											</div>
+										</div>
+										<button class="btn ripple btn-main-primary btn-block" type="submit">افزودن آیتم</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+
+		<div class="row row-sm">
+					<div class="col-lg-12">
+						<div class="card custom-card overflow-hidden">
+							<div class="card-body">
+								<div>
+									<h6 class="main-content-label mb-1">نرخنامه حقوق و دستمزد شعبه
+									{{location.name}}
+									</h6>
+									<p class="text-muted card-sub-title">
+
+										نرخنامه این شعبه در لیست زیر قابل مشاهده می باشد
+
+									</p>
+								</div>
+								<div class="table-responsive">
+									<table id="exportexample" class="table table-bordered border-t0 key-buttons text-nowrap w-100">
+										<thead>
+										<tr>
+											<th>کد شناسه (یکتا)</th>
+											<th>نوع آیتم</th>
+											<th>نام آیتم</th>
+											<th>قیمت (ریال)</th>
+											<th>وضعیت</th>
+										</tr>
+										</thead>
+										<tbody>
+										{% for listprice in listprices%}
+										<tr>
+											<td>{{ listprice.pk }}</td>
+											<td>{{ listprice.value_type }}</td>
+											<td>{{ listprice.name }}</td>
+											<td>{{ listprice.price }}</td>
+											<td>{{ listprice.is_active }}</td>
+										</tr>
+										{% endfor %}
+
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+</div>
+
+
+{% endblock %}
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+{% endblock %}
