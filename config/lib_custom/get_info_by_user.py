@@ -75,6 +75,8 @@ class GetInfoByUser:
 
         context['limit_number_wallet'] = new_context_wallet['limit_number']
         context['num_pages_wallet'] = new_context_wallet['num_pages']
+        context['okmeli'] = False
+        context['okbank'] = False
 
         information = Info.objects.filter(user=user).first()
         if information:
