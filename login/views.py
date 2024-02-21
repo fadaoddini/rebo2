@@ -34,12 +34,7 @@ def verify_otp(request):
             user.save()
             login(request, user)
             if user.is_active is True:
-
-                information = Info.objects.filter(user_id=user.id).exists()
-
-                if information:
-                    if user.info.okmeli is True and user.info.okbank is True:
-                        return HttpResponseRedirect(reverse_lazy('index'))
+                return HttpResponseRedirect(reverse_lazy('index'))
             return HttpResponseRedirect(reverse_lazy('profile'))
         context['mobile'] = mobile
         return render(request, 'login/verify.html', context=context)

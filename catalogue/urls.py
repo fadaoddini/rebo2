@@ -5,7 +5,7 @@ from catalogue.views import product_list, ProductDetail, category_products, bran
     form_add_request, bazar_sell, bazar_buy, ProductApi, ProductSingleApi, create_chart_top, ProductWeb, AllProductWeb, \
     form_add_product_web, add_product_web, AllRequestWeb, add_request_web, form_add_request_web, \
     AllProductAndRequestWeb, form_add_bid_web, form_bid_ok, form_bid_no, bazar_sell_web, BazarWeb, \
-    InBazarWeb, AddProduct, AddRequest, RequestDetail
+    InBazarWeb, AddProduct, AddRequest, RequestDetail, TestApi, TypesApi
 
 urlpatterns = [
     path('product/list/', product_list, name='product-list'),
@@ -40,4 +40,5 @@ urlpatterns = [
     path('all/request/web/', AllRequestWeb.as_view(), name='request-web-web'),
     path('sortby', ProductApi.as_view(), name='all-product-api'),
     path('single', ProductSingleApi.as_view(), name='single-product-api'),
+    path('all_types', TypesApi.as_view(), name='statistic')
 ]

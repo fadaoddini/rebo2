@@ -16,7 +16,7 @@ from rest_framework.response import Response
 
 from bid.models import Bid
 from catalogue.models import Product, Category, ProductType, Brand, ProductAttribute, ProductAttributeValue
-from catalogue.serializers import ProductSellSerializer, ProductSingleSerializer
+from catalogue.serializers import ProductSellSerializer, ProductSingleSerializer, TypesSerializer
 from catalogue.utils import check_user_active
 from company.forms import CompanyForm
 from company.models import Company
@@ -681,6 +681,15 @@ def brand_products(request, pk):
         return HttpResponse("متاسفانه چیزی پیدا نشد!")
 
 
+class TypesApi(APIView):
+    # permission_classes = (IsAuthenticated, )
+    def get(self, request, *args, **kwargs):
+        context = dict()
+        types = ProductType.objects.all()
+        serializer = TypesSerializer(types, many=True)
+        return Response(serializer.data, content_type='application/json; charset=UTF-8')
+
+
 class ProductApi(APIView):
 
     # permission_classes = (IsAuthenticated, )
@@ -713,6 +722,14 @@ class ProductApi(APIView):
 
         serializer = ProductSellSerializer(product, many=True)
         return Response(serializer.data, content_type='application/json; charset=UTF-8')
+
+
+class TestApi(APIView):
+    def post(self, request, *args, **kwargs):
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        products = Product.objects.all().data
+        return Response(products, content_type='application/json; charset=UTF-8')
 
 
 class ProductSingleApi(APIView):
@@ -759,7 +776,7 @@ class InBazarWeb(View):
             .filter(expire_time__gt=datetime.now())
         context['sellers'] = sellers.order_by('price')[:30]
 
-         # buyer
+        # buyer
         buyers = Product.objects.filter(sell_buy=2).filter(product_type_id=pk)\
             .filter(expire_time__gt=datetime.now())
         context['buyers'] = buyers.order_by('-price')[:30]

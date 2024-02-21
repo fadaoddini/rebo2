@@ -17,7 +17,7 @@ from learn.serializers import LearnDetailSerializer, LearnAllSerializer, Section
 
 
 class LearningById(APIView):
-    #permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     def get(self, request, pk, *args, **kwargs):
         learn = get_object_or_404(Learn, **{'pk': pk})
         serializer = LearnDetailSerializer(learn)
@@ -27,7 +27,7 @@ class LearningById(APIView):
 class LearningByCat(APIView):
     # permission_classes = (IsAuthenticated,)
     def get(self, request, pk, *args, **kwargs):
-        #pk --> id category
+        # pk --> id category
         category = Category.objects.filter(pk=pk).first()
         learns = category.learns
         serializer = LearnDetailSerializer(learns, many=True)
@@ -35,7 +35,7 @@ class LearningByCat(APIView):
 
 
 class Learning(APIView):
-    #permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         learns = Learn.objects.all()
         serializer = LearnAllSerializer(learns, many=True)

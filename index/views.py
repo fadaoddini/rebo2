@@ -1,15 +1,21 @@
 import datetime
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.contrib.auth import get_user_model as user_model
 from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views import View
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from blog.models import Blog
 from catalogue.models import Product
 from company.forms import CompanyForm
 from company.models import Company
+from index.models import SettingApp
+from index.serializers import SettingsSerializer
 from info.forms import InfoUserForm, FarmerForm, ServiceForm, BrokerForm, StorageForm
 from django.views.decorators.http import require_http_methods
 from info.models import Info, Farmer
@@ -399,3 +405,20 @@ def update_info_image(request):
         information.save()
     return HttpResponseRedirect(reverse_lazy('profile'))
 
+
+class Api(View):
+    template_name = 'api/index.html'
+
+    def get(self, request, *args, **kwargs):
+        context = dict()
+        context['api_login'] = "api_login"
+        return render(request, template_name=self.template_name, context=context,
+                      content_type=None, status=None, using=None)
+
+
+class SettingsApi(APIView):
+    @staticmethod
+    def get(*args, **kwargs):
+        settings = SettingApp.objects.first()
+        serializer = SettingsSerializer(settings)
+        return Response(serializer.data, content_type='application/json; charset=UTF-8')

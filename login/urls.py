@@ -8,5 +8,5 @@ urlpatterns = [
     path('verify/', verify_otp, name='verify-otp'),
     path('logout/', logouti, name='logout'),
     path('sendOtp', SendOtp.as_view(), name='send-otp'),
-    path('verifyCode', VerifyCode.as_view(), name='send-otp'),
+    path('verifyCode', VerifyCode.as_view(), name='verify'),
 ]
