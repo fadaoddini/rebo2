@@ -20,6 +20,8 @@ urlpatterns = [
     path('chat/', include('chat.urls')),
     path('learn/', include('learn.urls')),
     path('law/', include('law.urls')),
+    path('rebo/shop/', include('shop.urls')),
+    path('cart/', include('cart.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

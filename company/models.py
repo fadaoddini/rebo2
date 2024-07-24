@@ -337,8 +337,6 @@ class TransferWarehouse(models.Model):
     def __str__(self):
         return f"{self.sender_transfer} - {self.quantity} - {self.received_transfer}"
 
-        return customer_balance_all_type.get('balance', 0)
-
     @classmethod
     def transfer(cls, sender, receiver, typedate, quantity, driver):
 

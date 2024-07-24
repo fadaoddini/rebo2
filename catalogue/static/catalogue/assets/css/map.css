@@ -1,0 +1,35 @@
+.map{
+    margin: 0 auto;
+    width: 80%;
+    text-align: center;
+    direction: rtl;
+}
+
+#introduce{
+    display: block;
+    width: 100%;
+    font-size: 35px;
+    font-weight: bold;
+    color: white;
+    padding-bottom: 5px;
+    background-color: #4CAF50;
+    text-decoration: none;
+    margin-bottom: 15px;
+}
+
+
+/* Page Style */
+svg path {
+    transition: 200ms;
+    transition-timing-function: ease-in-out;
+    -webkit-transition: 200ms;
+    -webkit-transition-timing-function: ease-in-out;
+    stroke: #000;
+    stroke-width: 1px;
+    stroke-linejoin: round;
+    cursor: pointer
+}
+
+svg path:hover {
+    fill: #1cc7c9;
+}

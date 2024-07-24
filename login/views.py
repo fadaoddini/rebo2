@@ -156,18 +156,18 @@ class VerifyCode(APIView):
         user = MyUser.objects.filter(mobile=mobile)
         if user.exists():
             user = user.first()
-            if not helper.check_otp_expiration(mobile):
-                messege = f"کد شما اعتبار زمانی خود را از دست داده است لطفا مجددا سعی نمائید!"
-                status = "failed"
-                refresh_token = "poooooch"
-                access_token = "poooooch"
-                data = {
-                    'status': status,
-                    'messege': messege,
-                    'refresh_token': refresh_token,
-                    'access_token': access_token,
-                }
-                return Response(data, content_type='application/json; charset=UTF-8')
+            # if not helper.check_otp_expiration(mobile):
+            #     messege = f"کد شما اعتبار زمانی خود را از دست داده است لطفا مجددا سعی نمائید!"
+            #     status = "failed"
+            #     refresh_token = "poooooch"
+            #     access_token = "poooooch"
+            #     data = {
+            #         'status': status,
+            #         'messege': messege,
+            #         'refresh_token': refresh_token,
+            #         'access_token': access_token,
+            #     }
+            #     return Response(data, content_type='application/json; charset=UTF-8')
             if user.otp != int(code):
                 messege = f"در وارد کردن کد ارسال شده بیشتر دقت کنید گویا اشتباه وارد می کنید!"
                 status = "failed"

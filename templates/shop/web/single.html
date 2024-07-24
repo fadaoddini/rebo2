@@ -1,0 +1,175 @@
+{% extends 'baseweb.html' %}
+{% load widget_tweaks %}
+{% load jalali_tags %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/css/tablestyle.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | {{ product.title }}
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- art-details area start  -->
+<section class="art-details-area pt-130 pb-3">
+    <div class="container">
+        <div class="art-details-wrapper">
+
+            <div class="row">
+                <div class="col-xl-6 col-lg-5">
+                    <div class="art-item-img pos-rel art-details-img wow fadeInUp">
+                        {% if product.images_shop.first.image.url %}
+
+                        <a class="image-popups" href="{{ product.images_shop.first.image.url }}">
+                            <img style="max-height: fit-content;" alt="{{ product.title }}"
+                                 src="{{ product.images_shop.first.image.url }}">
+                        </a>
+
+                        {% else %}
+
+                        <img style="max-height: fit-content;" src="{% static 'web/assets/img/img/noimg.png' %}"
+                             alt="تصویر موجود نیست! ">
+                        {%endif %}
+
+
+                        <div class="created-by">
+
+                        </div>
+                        <div class="creator mb-30">
+                            <div class="profile-img pos-rel">
+                                <a href="creator-profile.html">
+
+                                    <img src="{% static 'web/assets/img/img/rebo-logo.png' %}" alt="محصول اختصاصی ربو">
+
+
+                                </a>
+                                <div class="profile-verification verified">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <div class="creator-name-id">
+                                <h4 class="artist-name"><a href="creator-profile.html"> محصول اختصاصی</a></h4>
+                                <div class="artist-id">
+                                    ربو
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="col-xl-6 col-lg-7">
+                    <h4 class=" mb-25">{{ product.title }}
+
+                    </h4>
+                    <div class="art-name-details">
+
+                        <p>
+
+                            {{ product.description }}
+
+                        </p>
+                    </div>
+
+                    <div class="art-details-content wow fadeInUp">
+
+                        <div class="artist-meta-info art-details-meta-info">
+                            <h5 class="mb-2">قیمت: <span class="text-muted ml-2"><del>
+                                                    {{ product.price|intcomma }}
+                                                    ریال </del></span>
+                                <b>
+                                    {{ product.total_price|intcomma }}
+                                    ریال </b></h5>
+                            <h6 class="text-success text-uppercase">
+                                {{ product.discount }}
+                                %
+                                تخفیف</h6>
+
+
+                        </div>
+                        <div class="artist-meta-info art-details-meta-info">
+                            <div class="col-md-4">
+                                <div class="single-input-unit">
+                                    <label class="form-label">
+                                        تعداد  <span class="tx-danger">*</span>
+                                    </label>
+                                    <select id="warranty" name="warranty" class="currency-select" >
+
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+
+
+                                    </select>
+
+
+                                </div>
+                            </div>
+                        </div>
+                         <a onclick="add_to_basket()" class="btn btn-success btn-sm mt-1 ">+
+                                            افزودن به سبد خرید</a>
+
+                        <a href="{% url 'shop-cart-web' pk=1 %}"  class="btn btn-primary btn-sm mt-1 ">+
+                                            مشاهده سبد خرید</a>
+
+
+                        <div class="add_to_cart">
+                            <form method="post" action="{% url 'cart-add-web' product.id %}">
+                                {% csrf_token %}
+                                {{cart_add}}
+                                <input type="submit" class="btn btn-success btn-sm mt-1" value="افزودن به سبد خرید">
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- art-details area end  -->
+
+
+{% endblock %}
+
+
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+<script>
+function add_to_basket(){
+    var c = document.getElementById("div-img-product").children.length;
+    $('#add-product-form').submit();
+}
+</script>
+
+{% endblock %}

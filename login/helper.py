@@ -39,6 +39,7 @@ def send_otp(mobile, otp):
 def check_otp_expiration(mobile):
     try:
         user = models.MyUser.objects.get(mobile=mobile)
+
         now = datetime.datetime.now()
         otp_time = user.otp_create_time
 

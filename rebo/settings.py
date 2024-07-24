@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'chat.apps.ChatConfig',
     'learn.apps.LearnConfig',
     'law.apps.LawConfig',
+    'shop.apps.ShopConfig',
+    'cart.apps.CartConfig',
     'bid.apps.BidConfig',
     'hoghoogh.apps.HoghooghConfig',
     'widget_tweaks',
@@ -76,6 +78,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cart.context_processors.cart',
+                'cart.context_processors.location_cart',
             ],
         },
     },
@@ -196,3 +200,6 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+
+CART_SESSION_ID = 'cart'
+ADDRESS_SHIPPING = 'location'

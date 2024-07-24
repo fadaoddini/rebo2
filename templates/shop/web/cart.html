@@ -1,0 +1,248 @@
+{% extends 'baseweb.html' %}
+{% load widget_tweaks %}
+{% load jalali_tags %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min-rtl.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/responsivebootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.css' %}">
+
+
+{% endblock %}
+{% block title %}
+ربو | سبد خرید
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- art-details area start  -->
+<section class="art-details-area pt-130 pb-3">
+    <div class="container">
+        <div class="art-details-wrapper">
+
+            <!-- Row -->
+            <div class="row row-sm">
+                <div class="col-lg-12 col-xl-9 col-md-12">
+                    <div class="card custom-card">
+                        <div class="card-header1">
+                            <h5 class="mb-3 font-weight-bold tx-14">سبد خرید</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive3">
+                                <table class="table border table-hover text-nowrap table-shopping-cart mb-0">
+                                    <thead class="text-muted">
+                                    <tr class="small text-uppercase">
+                                        <th scope="col">تصویر</th>
+                                        <th scope="col">نام محصول</th>
+                                        <!-- <th scope="col">قیمت واحد</th>
+                                         <th scope="col">قیمت واحد با تخفیف</th>-->
+                                        <th scope="col" class="wd-120">تعداد</th>
+                                        <th scope="col" class="wd-100">وزن کل</th>
+                                        <th scope="col" class="wd-120">قیمت کل</th>
+                                        <th scope="col" class="text-center ">عملیات</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for item in cart %}
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <div class="card-aside-img">
+
+                                                    <img src="{{ item.product.images_shop.first.image.url }}"
+                                                         class="img-sm" alt="محصول اختصاصی ربو">
+                                                </div>
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h6 class="font-weight-semibold mt-0 text-uppercase">
+
+                                                {{item.product.title}}
+                                            </h6>
+                                        </td>
+                                        <!-- <td>
+                                              <p class="text-success small mb-0 mt-1 tx-12">{{item.price}}</p>
+                                         </td>
+
+                                         <td>
+                                             <p class="text-danger small mb-0 mt-1 tx-12">{{item.new_price}} ریال</p>
+                                         </td>-->
+                                        <td>
+
+                                            <form id="form_update_{{item.product.id}}" method="post"
+                                                  action="{% url 'cart-add-web' item.product.id %}">
+                                                {% csrf_token %}
+
+                                                <select onchange="update_form(this)" name="product_count" id="id_product_count_{{item.product.id}}"
+                                                        style="display: none;">
+                                                    <option value="1" {% if item.product_count == 1 %}selected{% endif %}>1</option>
+
+                                                    <option value="2" {% if item.product_count == 2 %}selected{% endif %}>2</option>
+
+
+                                                </select>
+
+                                                {{ item.update_product_count_form.update}}
+
+
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <div class="price-wrap"><span class="price tx-12">
+                                                {{item.total_weight }} گرم
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="price-wrap"><span class="price font-weight-bold tx-16">
+                                                {{item.total_price|intcomma }}
+                                                ریال</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{% url 'cart-remove-product-web' item.product.id %}"
+                                               class="remove-list text-danger tx-20 remove-button"
+                                               data-abc="true"><i class="fa fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+
+                                    {% endfor%}
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-xl-3 col-md-12">
+                    <div class="card custom-card">
+                        <div class="card-body">
+                            <form>
+                                <div class="form-group mb-0"><label>کد تخفیف دارید؟</label>
+                                    <div class="input-group"><input type="text" class="form-control coupon"
+                                                                    placeholder="کد تخفیف"> <span
+                                            class="input-group-append"> <button
+                                            class="btn btn-primary btn-apply coupon">بررسی</button> </span></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card custom-card cart-details">
+                        <div class="card-body">
+                            <h5 class="mb-3 font-weight-bold tx-14">جزئیات سفارش</h5>
+                            <dl class="dlist-align">
+                                <dt class="">
+
+                                    مبلغ کل:
+
+                                </dt>
+                                <dd class="text-right mr-auto">
+                                    {{ cart.get_total_price_before|intcomma  }}
+
+                                    ریال
+                                </dd>
+                            </dl>
+                            <dl class="dlist-align">
+                                <dt>تخفیف:</dt>
+                                <dd class="text-right text-danger mr-auto">
+                                    {{ cart.get_price_discount|intcomma  }}
+                                    ریال
+                                </dd>
+                            </dl>
+ <hr>
+                            <dl class="dlist-align">
+                                <dt class="">
+
+                                    جمع با تخفیف:
+
+                                </dt>
+                                <dd class="text-right mr-auto">
+                                    {{ cart.get_total_price_after|intcomma  }}
+
+                                    ریال
+                                </dd>
+                            </dl>
+
+                            <dl class="dlist-align">
+                                <dt>هزینه ارسال:</dt>
+                                <dd class="text-right text-success mr-auto">
+
+                                    {{ cart.get_total_weight_price|intcomma  }}
+                                    ریال
+                                </dd>
+                            </dl>
+                            <hr>
+                            <dl class="dlist-align">
+                                <dt>جمع کل:</dt>
+                                <dd class="text-right  mr-auto"><strong>
+{{ cart.get_total_price_after_and_post|intcomma  }}
+
+                                    ریال</strong></dd>
+                            </dl>
+                            <div class="step-footer">
+                                <a href="#" class="btn btn-primary btn-block">
+                                    به خرید ادامه
+                                    دهید
+                                </a>
+                                <a href="{% url 'checkout-web' %}" class="btn btn-success btn-block">
+                                    بررسی نهایی
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Row -->
+
+        </div>
+    </div>
+</section>
+<!-- art-details area end  -->
+
+
+{% endblock %}
+
+
+{% block javas %}
+<!-- Internal Chartjs charts js-->
+
+<script src="{% static 'index/js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'index/js/chart.chartjs.js' %}"></script>
+<script src="{% static 'index/js/form-layouts.js' %}"></script>
+
+
+<!-- Internal Data Table js -->
+<script src="{% static 'catalogue/assets/plugins/datatable/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/jszip.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/pdfmake.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/vfs_fonts.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.html5.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.print.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/plugins/datatable/fileexport/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'catalogue/assets/js/table-data.js' %}"></script>
+
+<script>
+
+function update_form(obj){
+    var idid = obj.id;
+
+    var id_form = $(obj).closest('form').attr('id');
+    $("#"+id_form).submit();
+
+}
+
+
+
+</script>
+{% endblock %}

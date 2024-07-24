@@ -1,0 +1,450 @@
+{% extends 'baseweb.html' %}
+{% load widget_tweaks %}
+{% load jalali_tags %}
+{% load humanize %}
+{% load static %}
+{% block styles %}
+
+
+<link rel="stylesheet" href="{% static 'web/assets/css/vendor/owl.carousel.min.css' %}">
+<link rel="stylesheet" href="{% static 'web/assets/css/vendor/jquery.horizontalmenu.css' %}">
+<link rel="stylesheet" href="{% static 'web/assets/css/vendor/nice-select.css' %}">
+<link rel="stylesheet" href="{% static 'web/assets/css/vendor/nouislider.min.css' %}">
+<link rel="stylesheet" href="{% static 'web/assets/didikala/css/main.css' %}">
+
+{% endblock %}
+{% block title %}
+ربو | آدرس و گیرنده
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- art-details area start  -->
+<section class="art-details-area pt-130 pb-3">
+    <div class="container shopping-page">
+
+            <!-- Row -->
+            <div class="row row-sm">
+
+                <div class="col-lg-9 col-xl-9 col-md-9">
+
+                    <div class="card custom-card">
+                         <div class="address-section">
+                        <div  class="checkout-contact dt-sn dt-sn--box px-0 pt-0 pb-0" >
+
+                                    <div class="checkout-contact-content">
+                                        <ul class="checkout-contact-items">
+                                            <li class="checkout-contact-item">
+                                                گیرنده:
+                                                <span class="full-name">{{ location_cart.show_address_choose.name }} {{ location_cart.show_address_choose.family }}</span>
+                                            </li>
+                                            <li class="checkout-contact-item">
+                                                <div class="checkout-contact-item checkout-contact-item-mobile">
+                                                    شماره تماس:
+                                                    <span class="mobile-phone">{{ location_cart.show_address_choose.mobile }}</span>
+                                                </div>
+                                                <div class="checkout-contact-item-message">
+                                                    کد پستی:
+                                                    <span class="post-code">{{ location_cart.show_address_choose.codeposti }}</span>
+                                                </div>
+                                                <br>
+                                                استان
+                                                <span class="state">{{ location_cart.show_address_choose.ostan }}</span>
+                                                ، ‌شهر
+                                                <span class="city">{{ location_cart.show_address_choose.shahr }}</span>
+                                                ،
+                                                <span class="address-part">{{ location_cart.show_address_choose.address }}</span>
+                                            </li>
+                                        </ul>
+
+
+
+                                        <div class="checkout-contact-badge">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+
+
+                                    </div>
+
+
+                                </div>
+                         </div>
+                        <hr>
+                        <div class="card-header1">
+                            <h5 class="mb-3 font-weight-bold tx-14">آدرس دریافت کننده کالا را انتخاب نمائید</h5>
+<a class="checkout-contact-location-add" data-toggle="modal"
+                           data-target="#modal-location">
+                            افزودن آدرس جدید
+                        </a>
+                        </div>
+
+
+                        <!-- Start Modal location new -->
+                        <div class="modal fade" id="modal-location" role="dialog"
+                             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-lg send-info modal-dialog-centered"
+                                 role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            <i class="now-ui-icons location_pin"></i>
+                                            افزودن آدرس جدید
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12">
+
+
+                                                <form method="post" action="{% url 'location-add-web' %}">
+                                                    {% csrf_token %}
+
+                                                    <div class="row row-sm">
+                                                        <div class="col-md-12">
+
+                                                            <div class="row">
+                                                                <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                                                    <div class="single-input-unit">
+
+
+                                                                        <label>
+                                                              <span class="text-danger">
+                                                                *
+                                                            </span>
+                                                                            نام گیرنده</label>
+                                                                        <input type="text" name="name" id="name"
+                                                                               value="{{ user.first_name }}"
+                                                                        >
+
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                                                    <div class="single-input-unit">
+
+
+                                                                        <label for="family">
+
+                                                            <span class="text-danger">
+                                                                *
+                                                            </span>
+
+                                                                            نام خانوادگی گیرنده</label>
+                                                                        <input type="text" name="family"
+                                                                               id="family"
+                                                                               value="{{ user.last_name }}"
+                                                                        >
+
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                                                    <div class="single-input-unit">
+
+
+                                                                        <label for="mobile">
+
+                                                            <span class="text-danger">
+                                                                *
+                                                            </span>
+
+                                                                            تلفن همراه گیرنده</label>
+                                                                        <input type="number" name="mobile"
+                                                                               id="mobile"
+                                                                               value="{{ user.mobile }}"
+                                                                        >
+
+                                                                    </div>
+
+                                                                </div>
+
+
+                                                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                                                    <div class="single-input-unit">
+
+
+                                                                        <label>
+                                                              <span class="text-danger">
+                                                                *
+                                                            </span>
+                                                                            آدرس پستی</label>
+                                                                        <textarea type="text" rows="1" name="address"
+                                                                                  class="form-control"
+                                                                                  id="address"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                                                    <div class="single-input-unit">
+
+
+                                                                        <label for="ostan">
+
+                                                            <span class="text-danger">
+                                                                *
+                                                            </span>
+
+                                                                            استان *</label>
+                                                                        <input type="text" name="ostan"
+                                                                               id="ostan">
+
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                                                    <div class="single-input-unit">
+
+
+                                                                        <label for="shahr">
+
+                                                            <span class="text-danger">
+                                                                *
+                                                            </span>
+
+                                                                            شهر</label>
+                                                                        <input type="text" name="shahr"
+                                                                               id="shahr">
+
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                                                    <div class="single-input-unit">
+
+
+                                                                        <label for="codeposti">
+
+                                                            <span class="text-danger">
+                                                                *
+                                                            </span>
+
+                                                                            کدپستی</label>
+                                                                        <input type="text" name="codeposti"
+                                                                               id="codeposti">
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                            <button type="submit" class="btn ripple btn-primary w-100">
+                                                                افزودن آدرس
+                                                            </button>
+
+
+                                                        </div>
+
+                                                    </div>
+                                                    <input type="hidden" name="next" value="{{ request.path }}">
+
+                                                </form>
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Modal location new -->
+                        <div class="card-body">
+
+                            <div>
+
+                                {% for location in locations %}
+
+                                <div  class="checkout-contact dt-sn dt-sn--box px-0 pt-0 pb-0" id="id_location_count_{{location.id}}">
+
+                                    <div class="checkout-contact-content">
+                                        <ul class="checkout-contact-items">
+                                            <li class="checkout-contact-item">
+                                                گیرنده:
+                                                <span class="full-name">{{ location.name }}  {{ location.family }}</span>
+                                            </li>
+                                            <li class="checkout-contact-item">
+                                                <div class="checkout-contact-item checkout-contact-item-mobile">
+                                                    شماره تماس:
+                                                    <span class="mobile-phone">{{ location.mobile }}</span>
+                                                </div>
+                                                <div class="checkout-contact-item-message">
+                                                    کد پستی:
+                                                    <span class="post-code">{{ location.codeposti }}</span>
+                                                </div>
+                                                <br>
+                                                استان
+                                                <span class="state">{{ location.ostan }}</span>
+                                                ، ‌شهر
+                                                <span class="city">{{ location.shahr }}</span>
+                                                ،
+                                                <span class="address-part">{{ location.address }}</span>
+                                            </li>
+                                        </ul>
+
+                                        <button onclick="update_form({{location.id}})" class="checkout-contact-location">به این آدرس ارسال شود</button>
+                                        <button class="checkout-contact-location-remove" data-toggle="modal"
+                                                                            data-target="#remove-location">حذف این آدرس</button>
+
+                                        <div class="checkout-contact-badge">
+
+                                        </div>
+
+                                         <!-- Start Modal remove-location -->
+                                    <div class="modal fade" id="remove-location" tabindex="-1" role="dialog"
+                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title mb-3" id="exampleModalLabel">آیا مطمئنید که
+                                                        این آدرس حذف شود؟</h5>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button"
+                                                            class="remodal-general-alert-button remodal-general-alert-button--cancel"
+                                                            data-dismiss="modal">خیر
+                                                    </button>
+                                                    <button onclick="delete_form({{location.id}})" type="button"
+                                                            class="remodal-general-alert-button remodal-general-alert-button--approve">
+                                                        بله
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End Modal remove-location -->
+                                    </div>
+
+
+                                </div>
+                                            <form id="form_update_{{location.id}}" method="post"
+                                                  action="{% url 'location-add-web-to-cart' location.id %}">
+                                                {% csrf_token %}
+                                                {{ update_location_form.location_count}}
+                                                {{ update_location_form.update}}
+
+
+                                            </form>
+                                            <form id="form_delete_{{location.id}}" method="post"
+                                                  action="{% url 'delete_location' location.codeposti %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="next" value="{{ request.path }}">
+                                            </form>
+                            {% endfor %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="col-lg-3 col-xl-3 col-md-3">
+                    <div class="card custom-card cart-details">
+                        <div class="card-body">
+                            <h5 class="mb-3 font-weight-bold tx-14">جزئیات سفارش</h5>
+                            <dl class="dlist-align">
+                                <dt class="">
+
+                                    مبلغ کل:
+
+                                </dt>
+                                <dd class="text-right mr-auto">
+                                    {{ cart.get_total_price_before|intcomma }}
+
+                                    ریال
+                                </dd>
+                            </dl>
+                            <dl class="dlist-align">
+                                <dt>تخفیف:</dt>
+                                <dd class="text-right text-danger mr-auto">
+                                    {{ cart.get_price_discount|intcomma }}
+                                    ریال
+                                </dd>
+                            </dl>
+                            <hr>
+                            <dl class="dlist-align">
+                                <dt class="">
+
+                                    جمع با تخفیف:
+
+                                </dt>
+                                <dd class="text-right mr-auto">
+                                    {{ cart.get_total_price_after|intcomma }}
+
+                                    ریال
+                                </dd>
+                            </dl>
+
+                            <dl class="dlist-align">
+                                <dt>هزینه ارسال:</dt>
+                                <dd class="text-right text-success mr-auto">
+
+                                    {{ cart.get_total_weight_price|intcomma }}
+                                    ریال
+                                </dd>
+                            </dl>
+                            <hr>
+                            <dl class="dlist-align">
+                                <dt>جمع کل:</dt>
+                                <dd class="text-right  mr-auto"><strong>
+                                    {{ cart.get_total_price_after_and_post|intcomma }}
+
+                                    ریال</strong></dd>
+                            </dl>
+                            <div class="step-footer">
+
+                                <a href="{% url 'checkout-web' %}" class="btn btn-success btn-block">
+                                    پرداخت
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Row -->
+
+    </div>
+</section>
+<!-- art-details area end  -->
+
+{% endblock %}
+
+
+{% block javas %}
+<!-- Core JS Files -->
+<script src="{% static 'web/assets/didikala/js/vendor/jquery-3.4.1.min.js' %}"></script>
+<script src="{% static 'web/assets/didikala/js/vendor/popper.min.js' %}"></script>
+<script src="{% static 'web/assets/didikala/js/vendor/bootstrap.min.js' %}"></script>
+<!-- Plugins -->
+<script src="{% static 'web/assets/didikala/js/vendor/owl.carousel.min.js' %}"></script>
+<script src="{% static 'web/assets/didikala/js/vendor/jquery.horizontalmenu.js' %}"></script>
+<script src="{% static 'web/assets/didikala/js/vendor/jquery.nice-select.min.js' %}"></script>
+<script src="{% static 'web/assets/didikala/js/vendor/nouislider.min.js' %}"></script>
+<script src="{% static 'web/assets/didikala/js/vendor/wNumb.js' %}./assets/"></script>
+<script src="{% static 'web/assets/didikala/js/vendor/ResizeSensor.min.js' %}"></script>
+<script src="{% static 'web/assets/didikala/js/vendor/theia-sticky-sidebar.min.js' %}"></script>
+
+<script src="{% static 'web/assets/didikala/js/main.js' %}"></script>
+
+<script>
+
+function update_form(id){
+    var name_form = "#form_update_"+id;
+    $(name_form).submit();
+}
+
+function delete_form(id){
+    var name_form = "#form_delete_"+id;
+    $(name_form).submit();
+}
+
+
+
+</script>
+{% endblock %}

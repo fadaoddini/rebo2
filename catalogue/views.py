@@ -787,7 +787,7 @@ class InBazarWeb(View):
 
 
 class AllProductWeb(View):
-    template_name = 'catalogue/web/products.html'
+    template_name = 'catalogue/web/list.html'
 
     def get(self, request, *args, **kwargs):
         context = dict()
@@ -800,7 +800,7 @@ class AllProductWeb(View):
 
 
 class AllRequestWeb(View):
-    template_name = 'catalogue/web/products.html'
+    template_name = 'catalogue/web/list.html'
 
     def get(self, request, *args, **kwargs):
         context = dict()
@@ -812,7 +812,7 @@ class AllRequestWeb(View):
 
 
 class AllProductAndRequestWeb(View):
-    template_name = 'catalogue/web/products.html'
+    template_name = 'catalogue/web/list.html'
 
     def get(self, request, *args, **kwargs):
         context = dict()

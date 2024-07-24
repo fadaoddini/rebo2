@@ -1,6 +1,7 @@
 {% load static %}
 {% load mylocation_tag %}
 {% type_name as mytypes %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en" dir="rtl">
 
@@ -50,11 +51,11 @@
                         <div class="header-main-left">
                             <div class="header-logo header1-logo">
                                 <a href="{% url 'index' %}" class="logo-bb"><img class="heightlogo"
-                                        src="{% static 'web/assets/img/logo/rebo-logo.png' %}"
-                                        alt="rebo"></a>
+                                                                                 src="{% static 'web/assets/img/logo/rebo-logo.png' %}"
+                                                                                 alt="rebo"></a>
                                 <a href="{% url 'index' %}" class="logo-bw"><img class="heightlogo"
-                                        src="{% static 'web/assets/img/logo/rebo-logo-bw.png' %}"
-                                        alt="rebo"></a>
+                                                                                 src="{% static 'web/assets/img/logo/rebo-logo-bw.png' %}"
+                                                                                 alt="rebo"></a>
                             </div>
                         </div>
                     </div>
@@ -73,15 +74,29 @@
                                             مدیریت محصول</a>
                                         </li>
                                         <li><a href="{% url 'bazar-web' %}">تحلیل بازار</a></li>
-<!--                                        <li><a href="{% url 'index-chat' %}">اتاق ربو</a></li>-->
-<!--                                        <li><a href="#">نمایندگان</a></li>-->
-<!--                                        <li><a href="#">قوانین</a></li>-->
+                                        <li><a href="{% url 'shop-single-web' pk=1 %}">فروشگاه</a></li>
+                                        <!--                                        <li><a href="{% url 'index-chat' %}">اتاق ربو</a></li>-->
+                                        <!--                                        <li><a href="#">نمایندگان</a></li>-->
+                                        <!--                                        <li><a href="#">قوانین</a></li>-->
                                         {% endif %}
                                         </li>
                                     </ul>
                                 </nav>
                             </div>
+                            <div class="header-btn ml-20 d-none d-xxl-inline-block">
 
+                                <a href="{% url 'cart-details-web' %}" class="fill-btn">
+
+                                    {% with total_items=cart|length %}
+                                        {% if cart.get_total_price_after > 0 %}
+                                    جمع سبد خرید :
+                                            {{ cart.get_total_price_after_and_post|intcomma }} ریال
+                                        {% else %}
+                                            سبد خرید خالیه!
+                                        {% endif %}
+                                    {% endwith%}
+                                </a>
+                            </div>
                             <div class="profile-item profile-item-header ml-20 d-none d-md-inline-block pos-rel">
                                 {% if user.is_authenticated %}
                                 <div class="profile-img pos-rel">
