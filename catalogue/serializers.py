@@ -24,7 +24,7 @@ class ProductSellSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'upc', 'weight', 'price', 'name_type', 'product_type',
+        fields = ('id', 'upc', 'weight', 'price', 'name_type', 'product_type', 'sell_buy',
                   'is_active', 'user', 'description', 'create_time', 'finished_time', 'images', 'attr_value')
 
     def get_user(self, obj):
