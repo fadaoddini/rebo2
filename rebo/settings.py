@@ -14,7 +14,6 @@ from pathlib import Path
 from rebo.local_setting import *
 from django.contrib.messages import constants as messages
 
-
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
     messages.INFO: 'success',
@@ -53,6 +52,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'qr_code',
     'django.contrib.humanize',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -63,8 +63,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
-
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "https://iscode.ir",
+]
 ROOT_URLCONF = 'rebo.urls'
 
 TEMPLATES = [
@@ -86,7 +91,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'rebo.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -126,7 +130,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -139,7 +142,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = False
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -154,7 +156,7 @@ MEDIA_URL = '/media/'
 
 # default settings (optional)
 JALALI_DATE_DEFAULTS = {
-   'Strftime': {
+    'Strftime': {
         'date': '%y/%m/%d',
         'datetime': '%H:%M:%S _ %y/%m/%d',
     },
@@ -182,9 +184,7 @@ JALALI_DATE_DEFAULTS = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 LOGIN_URL = 'login-mobile'
-
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000000
 AUTHENTICATION_BACKENDS = [
