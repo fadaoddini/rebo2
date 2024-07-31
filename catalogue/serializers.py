@@ -3,7 +3,7 @@ from catalogue.models import Product, ProductImage, ProductAttribute, ProductAtt
     ProductType
 import datetime
 from datetime import timedelta
-import math
+from django.db.models import Max
 
 from learn.models import Learn
 
@@ -21,10 +21,12 @@ class ProductSellSerializer(serializers.ModelSerializer):
     name_type = serializers.SerializerMethodField()
     attr_value = serializers.SerializerMethodField()
     finished_time = serializers.SerializerMethodField()
+    top_price_bid = serializers.SerializerMethodField()
+    count_bid = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = ('id', 'upc', 'weight', 'price', 'name_type', 'product_type', 'sell_buy',
+        fields = ('id', 'upc', 'weight', 'price', 'name_type', 'product_type', 'sell_buy', 'top_price_bid', 'count_bid',
                   'is_active', 'user', 'description', 'create_time', 'finished_time', 'images', 'attr_value')
 
     def get_user(self, obj):
@@ -34,6 +36,14 @@ class ProductSellSerializer(serializers.ModelSerializer):
     def get_name_type(self, obj):
         id_type = obj.product_type
         return id_type.title
+
+    def get_count_bid(self, obj):
+        return obj.bids.count()
+
+    def get_top_price_bid(self, obj):
+
+        top_price_bid = obj.bids.aggregate(Max('price'))['price__max']
+        return top_price_bid if top_price_bid is not None else 0
 
     def get_finished_time(self, obj):
         sabt_shode = obj.create_time
