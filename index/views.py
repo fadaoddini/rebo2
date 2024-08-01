@@ -2,6 +2,7 @@ import datetime
 import json
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import render
 from django.contrib.auth import get_user_model as user_model
 from django.contrib import messages
@@ -12,6 +13,7 @@ from rest_framework.response import Response
 
 from blog.models import Blog
 from catalogue.models import Product
+from catalogue.serializers import ProductSellSerializer
 from company.forms import CompanyForm
 from company.models import Company
 from index.models import SettingApp
@@ -183,6 +185,144 @@ class MainIndexSearch(View):
             context['page_obj'] = new_context['page_obj']
             context['limit_number'] = new_context['limit_number']
             context['num_pages'] = new_context['num_pages']
+
+        return render(request, template_name=self.template_name, context=context,
+                      content_type=None, status=None, using=None)
+
+
+class BazarApiSearch(APIView):
+    def post(self, request, *args, **kwargs):
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        sbazar = body.get('bazar', 'None') # بازار برای چک کردن فروشنده و خریدار
+        stype = body.get('type', 'None') # برای چک کردن نوع دسته بندی محصول
+        sprice = body.get('price', 'None') # برای چک کردن قیمت بصورت صعودی یا نزولی
+        print(f"Received params: bazar={sbazar}, type={stype}, price={sprice}")
+        # ایجاد فیلتر اولیه
+        filters = Q(is_active=True) & Q(expire_time__gt=datetime.datetime.now())
+
+        # اضافه کردن فیلتر برای sell_buy تنها در صورتی که مقدار آن "None" نباشد
+        if sbazar != "None":
+            filters &= Q(sell_buy=sbazar)
+
+        # اضافه کردن فیلتر برای product_type تنها در صورتی که مقدار آن "None" نباشد
+        if stype != "None":
+            filters &= Q(product_type=stype)
+
+        # گرفتن تمام محصولات با فیلترهای اعمال شده
+        allproducts = Product.objects.filter(filters)
+
+        # مرتب‌سازی محصولات بر اساس قیمت
+        if sprice == "low":
+            products = allproducts.order_by('price')
+        elif sprice == "top":
+            products = allproducts.order_by('-price')
+        else:
+            products = allproducts
+
+        # سریالایز کردن محصولات و برگرداندن پاسخ
+        serializer = ProductSellSerializer(products, many=True)
+        return Response(serializer.data, content_type='application/json; charset=UTF-8')
+
+    def get(self, request, *args, **kwargs):
+        context = dict()
+        sbazar = request.GET.get('bazar')
+        stype = request.GET.get('type')
+        sprice = request.GET.get('price')
+        if sbazar == "None":
+            sbazar = None
+            tbazar = False
+        else:
+            tbazar = True
+
+        if stype == "None":
+            stype = None
+            ttype = False
+        else:
+            ttype = True
+
+        if sprice == "None":
+            sprice = None
+            tprice = False
+        else:
+            tprice = True
+
+        if tbazar:
+            if ttype:
+                if tprice:
+                    text = "همه پر هستند"
+                    allproducts = Product.objects.filter(is_active=True)\
+                        .filter(expire_time__gt=datetime.datetime.now())\
+                        .filter(sell_buy=sbazar)\
+                        .filter(product_type=stype)
+                else:
+                    text = "فقط مبلغ خالیه"
+                    allproducts = Product.objects.filter(is_active=True) \
+                        .filter(expire_time__gt=datetime.datetime.now()) \
+                        .filter(sell_buy=sbazar) \
+                        .filter(product_type=stype)
+            else:
+                if tprice:
+                    text = "نوع خالی است "
+                    allproducts = Product.objects.filter(is_active=True) \
+                        .filter(expire_time__gt=datetime.datetime.now()) \
+                        .filter(sell_buy=sbazar)
+                else:
+                    text = "نوع و قیمت خالی است "
+                    allproducts = Product.objects.filter(is_active=True) \
+                        .filter(expire_time__gt=datetime.datetime.now()) \
+                        .filter(sell_buy=sbazar)
+        else:
+            if ttype:
+                if tprice:
+                    text = "بازار خالی است "
+                    allproducts = Product.objects.filter(is_active=True) \
+                        .filter(expire_time__gt=datetime.datetime.now()) \
+                        .filter(product_type=stype)
+                else:
+                    text = "بازار و قیمت خالی هستند "
+                    allproducts = Product.objects.filter(is_active=True) \
+                        .filter(expire_time__gt=datetime.datetime.now()) \
+                        .filter(product_type=stype)
+            else:
+                if tprice:
+                    text = "بازار و نوع خالی است "
+                    allproducts = Product.objects.filter(is_active=True) \
+                        .filter(expire_time__gt=datetime.datetime.now())
+                else:
+                    text = "بازار و نوع و مبلغ خالی است "
+                    allproducts = Product.objects.filter(is_active=True) \
+                        .filter(expire_time__gt=datetime.datetime.now())
+
+        if request.user.is_anonymous:
+
+            if sprice == "low":
+                context['products'] = allproducts.order_by('price')
+            if sprice == "top":
+                context['products'] = allproducts.order_by('-price')
+            else:
+                context['products'] = allproducts
+        else:
+            if sprice == "low":
+                context['products'] = allproducts.order_by('price')
+            if sprice == "top":
+                context['products'] = allproducts.order_by('-price')
+            else:
+                context['products'] = allproducts
+
+            products = context['products']
+            context['info'] = Info.objects.filter(user=request.user).first()
+            context['company'] = Company.objects.filter(user=request.user).first()
+            form_info = InfoUserForm()
+            context['form_info'] = form_info
+            form_company = CompanyForm()
+            context['form_company'] = form_company
+            new_context = CustomPagination.create_paginator(products, 8, 3, context, request)
+            context['paginator'] = new_context['paginator']
+            context['page_obj'] = new_context['page_obj']
+            context['limit_number'] = new_context['limit_number']
+            context['num_pages'] = new_context['num_pages']
+
 
         return render(request, template_name=self.template_name, context=context,
                       content_type=None, status=None, using=None)
