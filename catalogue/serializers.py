@@ -1,18 +1,107 @@
 from rest_framework import serializers
 from catalogue.models import Product, ProductImage, ProductAttribute, ProductAttributeValue, Brand, Category, \
-    ProductType
+    ProductType, ProductAttr
 import datetime
 from datetime import timedelta
 from django.db.models import Max
-
 from learn.models import Learn
 
 
-class TypesSerializer(serializers.ModelSerializer):
+class ApiProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ['image']
+    # سریالایزر برای تبدیل مدل ProductImage به JSON و بالعکس استفاده می‌شود.
+    # فقط فیلد 'image' را شامل می‌شود.
 
+
+class ProductAttributeValueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductAttributeValue
+        fields = ['id', 'value']
+    # سریالایزر برای تبدیل مدل ProductAttributeValue به JSON و بالعکس استفاده می‌شود.
+    # فیلدهای 'id' و 'value' را شامل می‌شود.
+
+
+class ApiProductAttrSerializer(serializers.ModelSerializer):
+    value = ProductAttributeValueSerializer()  # شامل مقادیر ویژگی‌ها در سریالایزر
+
+    class Meta:
+        model = ProductAttr
+        fields = ['type', 'attr', 'value']
+
+    def create(self, validated_data):
+        value_data = validated_data.pop('value', None)
+        if value_data:
+            value_instance, created = ProductAttributeValue.objects.get_or_create(**value_data)
+            validated_data['value'] = value_instance
+        return super().create(validated_data)
+    # سریالایزر برای تبدیل مدل ProductAttr به JSON و بالعکس استفاده می‌شود.
+    # در این سریالایزر، مقادیر ویژگی‌ها (value) نیز شامل می‌شود و اگر وجود نداشته باشد، ایجاد می‌شود.
+
+
+class ApiProductSerializer(serializers.ModelSerializer):
+    images = ApiProductImageSerializer(many=True, required=False)
+    attrs = ApiProductAttrSerializer(many=True, required=False)
+
+    class Meta:
+        model = Product
+        fields = ['user', 'sell_buy', 'product_type', 'upc', 'price', 'weight', 'description', 'warranty', 'is_active', 'expire_time', 'images', 'attrs']
+
+    def create(self, validated_data):
+        images_data = validated_data.pop('images', [])
+        attrs_data = validated_data.pop('attrs', [])
+        expire_time_days = validated_data.pop('expire_time', 0)
+
+        if expire_time_days:
+            expire_time = datetime.datetime.now() + datetime.timedelta(days=int(expire_time_days))
+            validated_data['expire_time'] = expire_time
+        else:
+            validated_data['expire_time'] = None
+
+        validated_data.setdefault('is_active', True)
+
+        product = Product.objects.create(**validated_data)
+
+        for image_data in images_data:
+            ProductImage.objects.create(product=product, **image_data)
+
+        for attr_data in attrs_data:
+            ApiProductAttrSerializer().create({**attr_data, 'product': product})
+
+        return product
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name']
+    # سریالایزر برای تبدیل مدل Category به JSON و بالعکس استفاده می‌شود.
+    # فیلدهای 'id' و 'name' را شامل می‌شود.
+
+
+class ProductTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductType
+        fields = ['id', 'title']
+    # سریالایزر برای تبدیل مدل ProductType به JSON و بالعکس استفاده می‌شود.
+    # فیلدهای 'id' و 'title' را شامل می‌شود.
+
+
+class ProductAttributeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductAttribute
+        fields = ['id', 'title', 'product_type']
+    # سریالایزر برای تبدیل مدل ProductAttribute به JSON و بالعکس استفاده می‌شود.
+    # فیلدهای 'id'، 'title' و 'product_type' را شامل می‌شود.
+
+
+class TypesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductType
         fields = ('id', 'title')
+    # سریالایزر برای تبدیل مدل ProductType به JSON و بالعکس استفاده می‌شود.
+    # فیلدهای 'id' و 'title' را شامل می‌شود.
 
 
 class ProductSellSerializer(serializers.ModelSerializer):

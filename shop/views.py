@@ -16,9 +16,10 @@ from catalogue.utils import check_is_active
 from company.models import Company
 from info.models import Info
 from shop import models, forms
-from shop.models import Product, Location
+from shop.models import Product, Location, MyShop
 from django.contrib.auth import get_user_model as user_model
 from cart.forms import CartAddProductForm
+from shop.serializers import MyShopSerializer, ProductShopSerializer
 
 
 class SingleWeb(View):
@@ -89,3 +90,33 @@ def location_add_to_cart(request, location_id):
                      update_location=form_data['update']
                      )
     return redirect(reverse('checkout-web'))
+
+
+class MyShopApi(APIView):
+    def post(self, request, *args, **kwargs):
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        id = body['id']
+        my_shop = MyShop.objects.filter(pk=id).first()
+        serializer = MyShopSerializer(my_shop, many=False)
+        return Response(serializer.data, content_type='application/json; charset=UTF-8')
+
+
+class AllShopApi(APIView):
+    def get(self, request, *args, **kwargs):
+        context = dict()
+        shops = MyShop.objects.filter(is_active=True).all()
+        serializer = MyShopSerializer(shops, many=True)
+        return Response(serializer.data, content_type='application/json; charset=UTF-8')
+
+
+class AllProductsShopsApi(APIView):
+    def get(self, request, *args, **kwargs):
+        context = dict()
+        products = Product.objects.filter(is_active=True).all()
+        serializer = ProductShopSerializer(products, many=True)
+        return Response(serializer.data, content_type='application/json; charset=UTF-8')
+
+
+
+

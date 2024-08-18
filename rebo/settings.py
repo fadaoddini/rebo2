@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+from celery import Celery
 from pathlib import Path
 from rebo.local_setting import *
 from django.contrib.messages import constants as messages
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'learn.apps.LearnConfig',
     'law.apps.LawConfig',
     'shop.apps.ShopConfig',
+    'transport.apps.TransportConfig',
     'cart.apps.CartConfig',
     'bid.apps.BidConfig',
     'hoghoogh.apps.HoghooghConfig',
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'qr_code',
     'django.contrib.humanize',
     'corsheaders',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -70,6 +72,11 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://iscode.ir",
 ]
+
+# اینو یادم باشه بعدا حذف کنم
+CORS_ALLOW_CREDENTIALS = True
+
+
 ROOT_URLCONF = 'rebo.urls'
 
 TEMPLATES = [
@@ -203,3 +210,13 @@ REST_FRAMEWORK = {
 
 CART_SESSION_ID = 'cart'
 ADDRESS_SHIPPING = 'location'
+
+# آدرس broker (در اینجا Redis)
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+# تنظیمات Celery
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Tehran'  # منطقه زمانی شما

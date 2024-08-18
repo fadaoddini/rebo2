@@ -13,10 +13,14 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from rest_framework import views, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework import generics
 from bid.models import Bid
 from catalogue.models import Product, Category, ProductType, Brand, ProductAttribute, ProductAttributeValue
-from catalogue.serializers import ProductSellSerializer, ProductSingleSerializer, TypesSerializer
+from catalogue.serializers import ProductSellSerializer, ProductSingleSerializer, TypesSerializer, ApiProductSerializer, \
+    ProductTypeSerializer, ProductAttributeSerializer, ProductAttributeValueSerializer
 from catalogue.utils import check_user_active
 from company.forms import CompanyForm
 from company.models import Company
@@ -25,7 +29,73 @@ from info.forms import InfoUserForm
 from info.models import Info
 from order.utils import check_is_active, check_is_ok
 from django.http import JsonResponse
+from .serializers import CategorySerializer
 import json
+
+from shop.models import MyShop
+
+
+class ProductTypeListAPIView(generics.ListAPIView):
+    queryset = ProductType.objects.all()
+    serializer_class = ProductTypeSerializer
+    # ویو برای لیست کردن نوع محصولات
+
+
+class ProductAttributeListAPIView(generics.ListAPIView):
+    serializer_class = ProductAttributeSerializer
+
+    def get_queryset(self):
+        product_type_id = self.request.query_params.get('product_type_id')
+        if product_type_id:
+            return ProductAttribute.objects.filter(product_type_id=product_type_id)
+        return ProductAttribute.objects.none()
+    # ویو برای لیست کردن ویژگی‌های محصولات بر اساس نوع محصول
+
+
+class AttributeValueListAPIView(generics.ListAPIView):
+    serializer_class = ProductAttributeValueSerializer
+
+    def get_queryset(self):
+        attribute_id = self.request.query_params.get('attribute_id')
+        if attribute_id:
+            return ProductAttributeValue.objects.filter(product_attribute_id=attribute_id)
+        return ProductAttributeValue.objects.none()
+    # ویو برای لیست کردن مقادیر ویژگی‌های محصولات بر اساس شناسه ویژگی
+
+
+class CategoryListAPIView(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    # ویو برای لیست کردن دسته‌بندی‌ها
+
+
+class ApiProductCreateAPIView(APIView):
+    authentication_classes = [JWTAuthentication]  # احراز هویت با JWT
+    permission_classes = [IsAuthenticated]  # اجازه دسترسی فقط به کاربران احراز هویت شده
+
+    print("======================================ApiProductCreateAPIView===========================================")
+    def post(self, request, *args, **kwargs):
+        serializer = ApiProductSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                # ذخیره محصول و داده‌های مرتبط
+                product = serializer.save(user=request.user)
+                return Response({
+                    "result": "100",
+                    "message": "محصول با موفقیت ثبت شد."
+                }, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                # مدیریت استثناها برای اعتبارسنجی و پردازش داده‌ها
+                return Response({
+                    "result": "50",
+                    "message": str(e)
+                }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            # بازگشت خطاهای اعتبارسنجی
+            return Response({
+                "result": "40",
+                "errors": serializer.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 def is_ajax(request):

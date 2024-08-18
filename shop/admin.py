@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import register
 
-from shop.models import Product, ProductImage, Category, Brand, Package, Location
+from shop.models import Product, ProductImage, Category, MyShop, Package, Location
 
 
 class ProductImageInline(admin.TabularInline):
@@ -11,13 +11,13 @@ class ProductImageInline(admin.TabularInline):
 
 @register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('price', 'warranty', 'weight', 'category', 'brand', 'user', 'number_exist',
+    list_display = ('price', 'vije', 'weight', 'category', 'my_shop', 'user', 'number_exist', 'number_send',
                     'upc', 'is_active')
-    list_filter = ('is_active', 'number_exist', 'warranty', 'category', 'brand')
-    list_editable = ('is_active',)
-    search_fields = ('upc', 'user')
+    list_filter = ('is_active', 'number_exist', 'my_shop', 'category', 'vije')
+    list_editable = ('is_active', 'number_exist', 'number_send')
+    search_fields = ('upc', 'user', 'my_shop')
     actions = ('active_all', 'deactive_all')
-    inlines = [ProductImageInline,]
+    inlines = [ProductImageInline, ]
 
     def active_all(self, request, queryset):
         for queryone in queryset:
@@ -42,10 +42,10 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 
-@register(Brand)
+@register(MyShop)
 class BrandAdmin(admin.ModelAdmin):
-    list_display = ('name', 'parent')
-    search_fields = ('name',)
+    list_display = ('name_shop', 'administrator', 'mobile', 'user', 'code_posti', 'is_active')
+    search_fields = ('name_shop', 'mobile', 'code_posti')
 
 
 @register(Package)

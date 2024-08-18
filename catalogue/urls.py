@@ -1,11 +1,12 @@
-from django.urls import path, re_path
+from django.urls import path
 
 from catalogue.views import product_list, ProductDetail, category_products, brand_products, add_product, add_request, \
     my_product_list, my_request_list, form_add_product, check_type_product_ajax, check_attr_product_ajax, \
     form_add_request, bazar_sell, bazar_buy, ProductApi, ProductSingleApi, create_chart_top, ProductWeb, AllProductWeb, \
-    form_add_product_web, add_product_web, AllRequestWeb, add_request_web, form_add_request_web, \
+    form_add_product_web, AllRequestWeb, form_add_request_web, \
     AllProductAndRequestWeb, form_add_bid_web, form_bid_ok, form_bid_no, bazar_sell_web, BazarWeb, \
-    InBazarWeb, AddProduct, AddRequest, RequestDetail, TestApi, TypesApi
+    InBazarWeb, AddProduct, AddRequest, RequestDetail, TypesApi, ApiProductCreateAPIView, CategoryListAPIView, \
+    ProductTypeListAPIView, ProductAttributeListAPIView, AttributeValueListAPIView
 
 urlpatterns = [
     path('product/list/', product_list, name='product-list'),
@@ -40,5 +41,13 @@ urlpatterns = [
     path('all/request/web/', AllRequestWeb.as_view(), name='request-web-web'),
     path('sortby', ProductApi.as_view(), name='all-product-api'),
     path('single', ProductSingleApi.as_view(), name='single-product-api'),
-    path('all_types', TypesApi.as_view(), name='statistic')
+    path('all_types', TypesApi.as_view(), name='statistic'),
+
+    path('add_product_api/', ApiProductCreateAPIView.as_view(), name='add-product-api'),
+    path('categories_api/', CategoryListAPIView.as_view(), name='category-list-api'),
+
+    path('product_types/', ProductTypeListAPIView.as_view(), name='product-type-list-api'),
+    path('product_attributes/', ProductAttributeListAPIView.as_view(), name='product-attribute-list-api'),
+    path('attribute_values/', AttributeValueListAPIView.as_view(), name='attribute-value-list-api'),
+
 ]

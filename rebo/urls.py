@@ -15,6 +15,7 @@ urlpatterns = [
     path('catalogue/', include('catalogue.urls')),
     path('transaction/', include('transaction.urls')),
     path('company/', include('company.urls')),
+    path('transport/', include('transport.urls')),
     path('hoghoogh/', include('hoghoogh.urls')),
     path('order/', include('order.urls')),
     path('chat/', include('chat.urls')),

@@ -1,20 +1,22 @@
 import json
-from django.contrib.auth import login
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from info.models import Info
-from login import forms, helper
+
 from django.contrib import messages
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from django.contrib.auth import login
 from django.contrib.auth import logout
+from django.db import transaction as tran2
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from login import forms, helper
 from login.models import MyUser
+from login.serializers import MyUserSerializer
 from transaction.models import Transaction
 from transaction.views import add_balance_user
-from django.db import transaction as tran2
-from django.contrib.auth import get_user_model as user_model
 
 
 def verify_otp(request):
@@ -211,6 +213,50 @@ class VerifyCode(APIView):
 
 
 def logouti(request):
+    # خروج کاربر
     logout(request)
-    messages.info(request, "شما از سامانه خارج شدید ")
-    return HttpResponseRedirect(reverse_lazy('index'))
+
+    # حذف کوکی‌های توکن
+    response = HttpResponseRedirect(reverse_lazy('index'))
+    response.delete_cookie('accessToken')
+    response.delete_cookie('refreshToken')
+
+    # نمایش پیام خروج
+    messages.info(request, "شما از سامانه خارج شدید")
+
+    return response
+
+
+class VerifyNameApi(APIView):
+    def post(self, request, *args, **kwargs):
+        body = request.data  # استفاده از request.data برای دسترسی به داده‌ها
+
+        mobile = body.get('mobile')
+        first_name = body.get('first_name')
+        last_name = body.get('last_name')
+        password = body.get('password')
+
+        # اگر فقط mobile داده شده باشد، چک کردن وجود کاربر
+        if mobile and not (first_name or last_name or password):
+            my_user = MyUser.objects.filter(mobile=mobile).first()
+            if my_user:
+                serializer = MyUserSerializer(my_user)
+                return Response(serializer.data, content_type='application/json; charset=UTF-8')
+            else:
+                return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND,
+                                content_type='application/json; charset=UTF-8')
+
+        # اگر تمام پارامترها (mobile, first_name, last_name, password) داده شده باشند، بروزرسانی اطلاعات
+        if mobile and first_name and last_name and password:
+            my_user, created = MyUser.objects.get_or_create(mobile=mobile)
+            my_user.first_name = first_name
+            my_user.last_name = last_name
+            my_user.set_password(password)  # تنظیم رمز عبور
+            my_user.save()
+
+            serializer = MyUserSerializer(my_user)
+            return Response(serializer.data, status=status.HTTP_200_OK, content_type='application/json; charset=UTF-8')
+
+        # اگر پارامترهای ورودی کامل نباشند
+        return Response({'detail': 'Invalid parameters.'}, status=status.HTTP_400_BAD_REQUEST,
+                        content_type='application/json; charset=UTF-8')

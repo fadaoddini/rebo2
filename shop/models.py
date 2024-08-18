@@ -17,16 +17,31 @@ class Category(models.Model):
         return self.name
 
 
-class Brand(models.Model):
-    name = models.CharField(max_length=32)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='children_brand_shop', null=True, blank=True)
+class MyShop(models.Model):
+    ACTIVE = True
+    INACTIVE = False
+    STATUS_COMPANY = (
+        (ACTIVE, 'active'),
+        (INACTIVE, 'inactive'),
+    )
+    name_shop = models.CharField(max_length=32)
+    administrator = models.CharField(max_length=48)
+    mobile = models.CharField(max_length=20)
+    code_posti = models.CharField(max_length=20)
+    address = models.TextField()
+    User = user_model()
+    user = models.OneToOneField(User, on_delete=models.RESTRICT)
+    image = models.ImageField(upload_to='%Y/%m/%d/myshop/')
+    is_active = models.BooleanField(choices=STATUS_COMPANY, default=INACTIVE)
+    created_time = models.DateTimeField(auto_now=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Brand'
-        verbose_name_plural = "Brands"
+        verbose_name = 'MyShop'
+        verbose_name_plural = "MyShops"
 
     def __str__(self):
-        return self.name
+        return self.name_shop
 
 
 class Package(models.Model):
@@ -47,7 +62,7 @@ class Product(models.Model):
     ACTIVE = True
     INACTIVE = False
 
-    WARRANTY_PRODUCT = (
+    VIJE_PRODUCT = (
         (ACTIVE, 'true'),
         (INACTIVE, 'false'),
     )
@@ -55,18 +70,19 @@ class Product(models.Model):
     user = models.ForeignKey(User, related_name='products_shop', on_delete=models.RESTRICT)
     title = models.CharField(max_length=100)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
-    brand = models.ForeignKey(Brand, on_delete=models.PROTECT)
+    my_shop = models.ForeignKey(MyShop, on_delete=models.PROTECT)
     package = models.ForeignKey(Package, on_delete=models.PROTECT)
     upc = models.BigIntegerField(unique=True)
     price = models.PositiveBigIntegerField()
     discount = models.PositiveIntegerField(default=0)
     weight = models.PositiveIntegerField()
     description = models.TextField(blank=True)
-    warranty = models.BooleanField(choices=WARRANTY_PRODUCT, default=INACTIVE)
+    vije = models.BooleanField(choices=VIJE_PRODUCT, default=INACTIVE)
+    number_exist = models.PositiveIntegerField()
+    number_send = models.PositiveIntegerField()
     is_active = models.BooleanField(default=True)
     create_time = models.DateTimeField(auto_now_add=True)
     modified_time = models.DateTimeField(auto_now=True)
-    number_exist = models.PositiveIntegerField()
 
     class Meta:
         verbose_name = 'Product'
