@@ -42,10 +42,11 @@ class Transport(models.Model):
     iran = models.PositiveIntegerField()
     capacity = models.PositiveIntegerField()
     description = models.TextField(blank=True)
-    status = models.BooleanField(choices=STATUS_TRANSPORT, default=ACTIVE)
+    status = models.BooleanField(choices=STATUS_TRANSPORT, default=INACTIVE)
     create_time = models.DateTimeField(auto_now_add=True)
     modified_time = models.DateTimeField(auto_now=True)
     expire_time = models.DateTimeField(blank=True, null=True)
+    is_successful = models.BooleanField(default=False)  # وضعیت موفقیت پرداخت
 
     class Meta:
         verbose_name = 'Transport'
@@ -73,12 +74,13 @@ class TransportReq(models.Model):
     distance = models.CharField(max_length=42, blank=True, null=True)
     price = models.PositiveBigIntegerField()
     description = models.TextField(blank=True)
-    status = models.BooleanField(choices=STATUS_REQ, default=ACTIVE)
+    status = models.BooleanField(choices=STATUS_REQ, default=INACTIVE)
     barnameh = models.CharField(max_length=100, choices=STATUS_CHOICES, default='ONE_ME')
     my_transport = models.ForeignKey(Transport, related_name='transportreqs', on_delete=models.PROTECT)
     create_time = models.DateTimeField(auto_now_add=True)
     modified_time = models.DateTimeField(auto_now=True)
     expire_time = models.DateTimeField(blank=True, null=True)
+    is_successful = models.BooleanField(default=False)  # وضعیت موفقیت پرداخت
 
     class Meta:
         verbose_name = 'TransportReq'

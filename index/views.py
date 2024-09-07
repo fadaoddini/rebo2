@@ -6,11 +6,12 @@ from django.db.models import Q
 from django.shortcuts import render
 from django.contrib.auth import get_user_model as user_model
 from django.contrib import messages
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from rest_framework.pagination import PageNumberPagination
 from blog.models import Blog
 from catalogue.models import Product
 from catalogue.serializers import ProductSellSerializer
@@ -192,37 +193,74 @@ class MainIndexSearch(View):
 
 class BazarApiSearch(APIView):
     def post(self, request, *args, **kwargs):
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        sbazar = body.get('bazar', 'None') # بازار برای چک کردن فروشنده و خریدار
-        stype = body.get('type', 'None') # برای چک کردن نوع دسته بندی محصول
-        sprice = body.get('price', 'None') # برای چک کردن قیمت بصورت صعودی یا نزولی
-        print(f"Received params: bazar={sbazar}, type={stype}, price={sprice}")
-        # ایجاد فیلتر اولیه
-        filters = Q(is_active=True) & Q(expire_time__gt=datetime.datetime.now())
+        # دریافت بدنه‌ی درخواست و تبدیل آن به دیکشنری
+        try:
+            body_unicode = request.body.decode('utf-8')
+            body = json.loads(body_unicode)
+        except json.JSONDecodeError:
+            return Response({"error": "Invalid JSON"}, status=400)
 
-        # اضافه کردن فیلتر برای sell_buy تنها در صورتی که مقدار آن "None" نباشد
-        if sbazar != "None":
+        # دریافت پارامترها از درخواست و مدیریت مقادیر "None" به عنوان رشته
+        sbazar = body.get('bazar')
+        stype = body.get('type')
+        sprice = body.get('price')
+        page_number = body.get('page', 1)
+
+        # تبدیل مقادیر رشته‌ای "None" به None
+        sbazar = None if sbazar == "None" else sbazar
+        stype = None if stype == "None" else stype
+        sprice = None if sprice == "None" else sprice
+
+        # اطمینان از اینکه شماره صفحه به صورت عدد صحیح است
+        try:
+            page_number = int(page_number)
+        except ValueError:
+            return Response({"error": "Page number must be an integer"}, status=400)
+
+        print(f"Received params: bazar={sbazar}, type={stype}, price={sprice}, page={page_number}")
+
+        # ایجاد فیلتر اولیه
+        filters = Q(is_active=True) & Q(expire_time__gt=timezone.now())
+
+        # اضافه کردن فیلتر برای sell_buy تنها در صورتی که مقدار آن None نباشد
+        if sbazar is not None:
             filters &= Q(sell_buy=sbazar)
 
-        # اضافه کردن فیلتر برای product_type تنها در صورتی که مقدار آن "None" نباشد
-        if stype != "None":
+        # اضافه کردن فیلتر برای product_type تنها در صورتی که مقدار آن None نباشد
+        if stype is not None:
             filters &= Q(product_type=stype)
 
         # گرفتن تمام محصولات با فیلترهای اعمال شده
-        allproducts = Product.objects.filter(filters)
+        all_products = Product.objects.filter(filters)
+        print(f"Total products after filters: {all_products.count()}")
 
         # مرتب‌سازی محصولات بر اساس قیمت
         if sprice == "low":
-            products = allproducts.order_by('price')
+            products = all_products.order_by('price', 'id')  # اضافه کردن 'id' برای اطمینان از ترتیب ثابت
         elif sprice == "top":
-            products = allproducts.order_by('-price')
+            products = all_products.order_by('-price', 'id')  # اضافه کردن 'id' برای اطمینان از ترتیب ثابت
         else:
-            products = allproducts
+            products = all_products.order_by('id')  # ترتیب پیش‌فرض بر اساس شناسه
+
+        # تنظیم صفحه‌بندی
+        paginator = PageNumberPagination()
+        paginator.page_size = 12
+
+        # تنظیم شماره صفحه
+        request.query_params._mutable = True
+        request.query_params['page'] = page_number
+        request.query_params._mutable = False
+
+        # صفحه‌بندی بر اساس شماره صفحه دریافتی
+        result_page = paginator.paginate_queryset(products, request)
+        print(f"Paginator page size: {paginator.page_size}")
+        print(f"Paginator current page: {page_number}")
+        print(f"Result page count: {paginator.page.paginator.num_pages}")
+        print(f"Result page items count: {len(result_page)}")
 
         # سریالایز کردن محصولات و برگرداندن پاسخ
-        serializer = ProductSellSerializer(products, many=True)
-        return Response(serializer.data, content_type='application/json; charset=UTF-8')
+        serializer = ProductSellSerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     def get(self, request, *args, **kwargs):
         context = dict()

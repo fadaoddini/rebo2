@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'transport.apps.TransportConfig',
     'cart.apps.CartConfig',
     'bid.apps.BidConfig',
+    'divar.apps.DivarConfig',
     'hoghoogh.apps.HoghooghConfig',
     'widget_tweaks',
     'jalali_date',
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
     'qr_code',
     'django.contrib.humanize',
     'corsheaders',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -71,11 +73,11 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://iscode.ir",
+    "http://iscode.ir",
 ]
 
 # اینو یادم باشه بعدا حذف کنم
 CORS_ALLOW_CREDENTIALS = True
-
 
 ROOT_URLCONF = 'rebo.urls'
 
@@ -115,7 +117,7 @@ DATABASES = {
 
 ZARRINPAL = {
     'gateway_request_url': 'https://www.zarinpal.com/pg/services/WebGate/wsdl',
-    'gateway_callback_url': 'https://rebo.ir/order/verify',
+    'gateway_callback_url': 'http://localhost:3000/payment/verify/',  # تغییر به آدرس محلی
     'merchant_id': ZARRINPAL_MERCHANT_ID
 }
 
@@ -210,3 +212,5 @@ REST_FRAMEWORK = {
 
 CART_SESSION_ID = 'cart'
 ADDRESS_SHIPPING = 'location'
+
+ADDRESS_SERVER = 'https://iscode.ir'

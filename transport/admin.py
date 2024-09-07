@@ -16,8 +16,8 @@ class TransportTypeAdmin(admin.ModelAdmin):
 
 
 @register(Transport)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ('car_name', 'transport_type', 'pelak', 'capacity', 'user', 'status')
+class TransportAdmin(admin.ModelAdmin):
+    list_display = ('car_name', 'transport_type', 'pelak', 'capacity', 'user', 'status', 'is_successful')
     list_filter = ('pelak', 'status')
     list_editable = ('status', )
     search_fields = ('car_name', 'user', 'pelak')
@@ -38,7 +38,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 @register(TransportReq)
 class TransportReqAdmin(admin.ModelAdmin):
-    list_display = ('origin', 'destination', 'distance', 'price', 'barnameh', 'my_transport', 'status')
+    list_display = ('origin', 'destination', 'distance', 'price', 'barnameh', 'my_transport', 'status', 'is_successful')
     list_filter = ('origin', 'destination')
     list_editable = ('status', )
     search_fields = ('origin', 'destination', 'my_transport')

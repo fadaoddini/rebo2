@@ -2,29 +2,27 @@ from rest_framework import serializers
 from catalogue.models import Product, ProductImage, ProductAttribute, ProductAttributeValue, Brand, Category, \
     ProductType, ProductAttr
 import datetime
+import json
 from datetime import timedelta
 from django.db.models import Max
 from learn.models import Learn
+import random
 
 
 class ApiProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
         fields = ['image']
-    # سریالایزر برای تبدیل مدل ProductImage به JSON و بالعکس استفاده می‌شود.
-    # فقط فیلد 'image' را شامل می‌شود.
 
 
 class ProductAttributeValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductAttributeValue
         fields = ['id', 'value']
-    # سریالایزر برای تبدیل مدل ProductAttributeValue به JSON و بالعکس استفاده می‌شود.
-    # فیلدهای 'id' و 'value' را شامل می‌شود.
 
 
 class ApiProductAttrSerializer(serializers.ModelSerializer):
-    value = ProductAttributeValueSerializer()  # شامل مقادیر ویژگی‌ها در سریالایزر
+    value = ProductAttributeValueSerializer()  # شامل مقادیر ویژگی‌ها
 
     class Meta:
         model = ProductAttr
@@ -36,35 +34,39 @@ class ApiProductAttrSerializer(serializers.ModelSerializer):
             value_instance, created = ProductAttributeValue.objects.get_or_create(**value_data)
             validated_data['value'] = value_instance
         return super().create(validated_data)
-    # سریالایزر برای تبدیل مدل ProductAttr به JSON و بالعکس استفاده می‌شود.
-    # در این سریالایزر، مقادیر ویژگی‌ها (value) نیز شامل می‌شود و اگر وجود نداشته باشد، ایجاد می‌شود.
 
 
 class ApiProductSerializer(serializers.ModelSerializer):
     images = ApiProductImageSerializer(many=True, required=False)
-    attrs = ApiProductAttrSerializer(many=True, required=False)
+    attrs = serializers.JSONField(required=False)  # استفاده از JSONField برای ویژگی‌های محصول
 
     class Meta:
         model = Product
-        fields = ['user', 'sell_buy', 'product_type', 'upc', 'price', 'weight', 'description', 'warranty', 'is_active', 'expire_time', 'images', 'attrs']
+        fields = ['sell_buy', 'product_type', 'price', 'weight', 'description', 'warranty', 'is_active',
+                  'expire_time', 'images', 'attrs']
 
     def create(self, validated_data):
         images_data = validated_data.pop('images', [])
         attrs_data = validated_data.pop('attrs', [])
-        expire_time_days = validated_data.pop('expire_time', 0)
 
+        # مدیریت expire_time
+        expire_time_days = validated_data.pop('expire_time', 0)
         if expire_time_days:
-            expire_time = datetime.datetime.now() + datetime.timedelta(days=int(expire_time_days))
+            expire_time = datetime.datetime.now() + timedelta(days=int(expire_time_days))
             validated_data['expire_time'] = expire_time
         else:
             validated_data['expire_time'] = None
 
         validated_data.setdefault('is_active', True)
-
         product = Product.objects.create(**validated_data)
 
+        # ایجاد تصاویر
         for image_data in images_data:
             ProductImage.objects.create(product=product, **image_data)
+
+        # پردازش ویژگی‌ها
+        if isinstance(attrs_data, str):
+            attrs_data = json.loads(attrs_data)  # تبدیل رشته JSON به لیست دیکشنری‌ها
 
         for attr_data in attrs_data:
             ApiProductAttrSerializer().create({**attr_data, 'product': product})
@@ -106,6 +108,7 @@ class TypesSerializer(serializers.ModelSerializer):
 
 class ProductSellSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
+    upc = serializers.SerializerMethodField()
     images = serializers.SerializerMethodField()
     name_type = serializers.SerializerMethodField()
     attr_value = serializers.SerializerMethodField()
@@ -116,11 +119,15 @@ class ProductSellSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ('id', 'upc', 'weight', 'price', 'name_type', 'product_type', 'sell_buy', 'top_price_bid', 'count_bid',
-                  'is_active', 'user', 'description', 'create_time', 'finished_time', 'images', 'attr_value')
+                  'is_active', 'is_successful', 'user', 'description', 'create_time', 'finished_time', 'images', 'attr_value')
 
     def get_user(self, obj):
         name2 = obj.user.first_name + " " + obj.user.last_name
         return name2
+
+    def get_upc(self, obj):
+            upc = str(obj.upc)
+            return upc
 
     def get_name_type(self, obj):
         id_type = obj.product_type
@@ -135,9 +142,7 @@ class ProductSellSerializer(serializers.ModelSerializer):
         return top_price_bid if top_price_bid is not None else 0
 
     def get_finished_time(self, obj):
-        sabt_shode = obj.create_time
-
-        finish_time = sabt_shode+timedelta(days=30)
+        finish_time = obj.expire_time
         now = datetime.datetime.now()
         days_left = finish_time - now  # seconds
         # rooz = days_left/86400

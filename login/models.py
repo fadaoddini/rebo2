@@ -18,10 +18,13 @@ class MyUser(AbstractUser):
     username = None
     mobile = models.CharField(max_length=11, unique=True)
     otp = models.PositiveIntegerField(blank=True, null=True)
+
     otp_create_time = models.DateTimeField(auto_now=True)
     last_time_online = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to='image_profile/' + str(uuid.uuid4()) + "/", null=True,
                               blank=True)
+    num_bid = models.PositiveBigIntegerField(blank=True, null=True, default=0)
+    bider = models.BooleanField(default=False)
     objects = MyUserManager()
     USERNAME_FIELD = 'mobile'
     REQUIRED_FIELDS = []

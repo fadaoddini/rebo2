@@ -54,15 +54,17 @@ class Gateway(models.Model):
         return json.loads(self.auth_data)
 
 
-# Create your models here.
 class Payment(models.Model):
     faktor_number = models.UUIDField(unique=True)
     amount = models.PositiveIntegerField(editable=True)
-    gateway = models.CharField(max_length=40)
+    gateway = models.CharField(max_length=40, default='zarinpal')  # درگاه پیش‌فرض
     is_paid = models.BooleanField(default=False)
     payment_log = models.TextField(blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
     authority = models.CharField(max_length=64, blank=True)
+    product = models.ForeignKey('catalogue.Product', null=True, blank=True, on_delete=models.SET_NULL)
+    transport = models.ForeignKey('transport.TransportReq', null=True, blank=True, on_delete=models.SET_NULL)
+    num_bids = models.PositiveIntegerField(default=0)  # اضافه کردن فیلد num_bids
 
     class Meta:
         verbose_name = 'Payment'
@@ -77,9 +79,11 @@ class Payment(models.Model):
 
     @property
     def bank_page(self):
-        handler = self.gateway.get_request_handler()
-        if handler is not None:
-            return handler(self.gateway, self)
+        if self.gateway == 'zarinpal':
+            # بازگرداندن URL درخواست برای درگاه zarinpal
+            return f"https://www.zarinpal.com/pg/StartPay/{self.authority}"
+        # اضافه کردن سایر درگاه‌ها در اینجا اگر لازم است
+        return None
 
     @property
     def title(self):
@@ -89,14 +93,22 @@ class Payment(models.Model):
         return self.is_paid != self._b_is_paid
 
     def verify(self, data):
-        handler = self.gateway.get_verify_handler()
-        if not self.is_paid and handler is not None:
-            handler(self, data)
-        return self.is_paid
+        if self.gateway == 'zarinpal':
+            # منطق بررسی پرداخت برای درگاه zarinpal
+            return self.verify_zarinpal(data)
+        # اضافه کردن منطق بررسی برای سایر درگاه‌ها در اینجا اگر لازم است
+        return False
 
-    def get_gateway(self):
-        gateway = Gateway.objects.filter(is_enable=True).first()
-        return gateway.gateway_code
+    def verify_zarinpal(self, data):
+        authority = data.get('authority')
+        payment_status = data.get('status')
+
+        # پیاده‌سازی منطق تأیید پرداخت از درگاه zarinpal
+        if authority == self.authority and payment_status == 'OK':
+            self.is_paid = True
+            self.save()
+            return True
+        return False
 
     def save_log(self, data, scope='Request handler', save=True):
         generated_log = "[{}][{}] {}\n".format(timezone.now(), scope, data)
@@ -108,13 +120,16 @@ class Payment(models.Model):
             self.save()
 
     @classmethod
-    def create_payment(cls, authority, amount, user):
+    def create_payment(cls, authority, amount, user, product=None, num_bids=0, transport=None):  # اضافه کردن num_bids به عنوان پارامتر اختیاری
         return cls.objects.create(
             faktor_number=uuid.uuid4(),
             authority=authority,
             amount=amount,
             gateway="zarinpal",
-            user=user
+            user=user,
+            product=product,  # اضافه کردن product به رکورد ایجاد شده
+            num_bids=num_bids,  # ذخیره کردن تعداد بیدها
+            transport=transport
         )
 
 

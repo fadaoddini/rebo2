@@ -20,7 +20,6 @@ from django.http import JsonResponse
 import json
 
 
-
 def transaction_list(request):
     return HttpResponse("transaction list")
 

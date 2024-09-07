@@ -1,5 +1,7 @@
 import json
 import math
+from datetime import timedelta
+from django.db import transaction
 from django.utils import timezone
 from django.contrib.auth import get_user_model as user_model
 from rest_framework import status
@@ -8,7 +10,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.shortcuts import get_object_or_404
 
+from login.models import MyUser
+from order.models import Payment, Gateway
+from order.utils import zpal_request_handler
+from rebo import settings
 from transport.forms import TransportForm, TransportReqForm
 from transport.models import Transport, TransportReq, TransportType, Location, RouteMetrics, PriceList
 from transport.serializers import TransportSerializer, TransportReqSerializer, TransportTypeSerializer, \
@@ -60,13 +67,10 @@ class CreateTransportReqApi(APIView):
 
 class AllTransportApi(APIView):
     def get(self, request, *args, **kwargs):
-        paginator = PageNumberPagination()
-        paginator.page_size = 12  # تعداد اقلام در هر صفحه
 
         transports = Transport.objects.filter(status=True).all()
-        result_page = paginator.paginate_queryset(transports, request)
-        serializer = TransportSerializer(result_page, many=True)
-        return paginator.get_paginated_response(serializer.data)
+        serializer = TransportSerializer(transports, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class AllTypeTransportApi(APIView):
@@ -77,22 +81,39 @@ class AllTypeTransportApi(APIView):
 
 
 class MyTransportApi(APIView):
-    def post(self, request, *args, **kwargs):
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        mobile = body['mobile']
-        my_user = user_model()
-        user = my_user.objects.filter(mobile=mobile).first()
-        transport = Transport.objects.filter(user=user).all()
-        serializer = TransportSerializer(transport, many=True)
-        return Response(serializer.data, content_type='application/json; charset=UTF-8')
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        print("==============***********************MyTransportApi******************======================")
+        try:
+            # کاربر از طریق request.user که توسط JWTAuthentication احراز هویت شده است
+            user = request.user
+
+            # استخراج اطلاعات حمل و نقل براساس کاربر
+            transports = Transport.objects.filter(user=user)
+            if not transports.exists():
+                return Response({'message': 'No transports found for this user.'}, status=404)
+
+            serializer = TransportSerializer(transports, many=True)
+            return Response(serializer.data)
+
+        except Transport.DoesNotExist:
+            return Response({'error': 'Transport not found'}, status=404)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
 
 
 class AllReqTransportByMobileApi(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        mobile = body['mobile']
+        user = request.user
+        print("user========================AllReqTransportByMobileApi")
+        print(user)
+        mobile = user.mobile
         my_user = user_model()
         user = my_user.objects.filter(mobile=mobile).first()
         transport = Transport.objects.filter(user=user).first()
@@ -100,6 +121,198 @@ class AllReqTransportByMobileApi(APIView):
         all_my_req = transport.transportreqs.all()
         serializer = TransportReqSerializer(all_my_req, many=True)
         return Response(serializer.data, content_type='application/json; charset=UTF-8')
+
+
+class NotPayTransportReqApi(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+
+        # حذف استفاده غیرضروری از user_model و دسترسی مستقیم به request.user
+        mobile = user.mobile
+        my_user = user_model()
+        # بهینه‌سازی پرس‌وجو
+        user = get_object_or_404(my_user, mobile=mobile)
+        transports = user.transports.select_related('transport_type').all()
+
+        # بهینه‌سازی و حذف استفاده غیرضروری از all()
+        all_my_not_pay = TransportReq.objects.filter(
+            my_transport__in=transports, is_successful=False
+        ).select_related('origin', 'destination', 'my_transport').all()
+
+        # استفاده از serializer برای تبدیل داده‌ها
+        serializer = TransportReqSerializer(all_my_not_pay, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class NotActiveTransportReqApi(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+
+        # حذف استفاده غیرضروری از user_model و دسترسی مستقیم به request.user
+        mobile = user.mobile
+        my_user = user_model()
+        user = get_object_or_404(my_user, mobile=mobile)
+
+        # استفاده از select_related برای بهینه‌سازی پرس‌وجو
+        transports = user.transports.select_related('transport_type').all()
+
+        all_my_not_active = TransportReq.objects.filter(
+            my_transport__in=transports, is_successful=True, status=False
+        ).select_related('origin', 'destination', 'my_transport')
+
+        # استفاده از serializer برای تبدیل داده‌ها
+        serializer = TransportReqSerializer(all_my_not_active, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ActiveTransportReqApi(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+
+        # حذف استفاده غیرضروری از user_model و دسترسی مستقیم به request.user
+        mobile = user.mobile
+        my_user = user_model()
+        user = get_object_or_404(my_user, mobile=mobile)
+
+        # استفاده از select_related برای بهینه‌سازی پرس‌وجو
+        transports = user.transports.select_related('transport_type').all()
+
+        all_my_active = TransportReq.objects.filter(
+            my_transport__in=transports, is_successful=True, status=True
+        ).select_related('origin', 'destination', 'my_transport')
+        print("all_my_active")
+        print(all_my_active)
+        print("all_my_active")
+        # استفاده از serializer برای تبدیل داده‌ها
+        serializer = TransportReqSerializer(all_my_active, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ApiTransportReqDelete(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        transport_req_id = request.data.get('transport_req_id')  # دریافت ID محصول از داده‌های درخواست
+        if not transport_req_id:
+            return Response({"status": "error", "message": "transport ID is required"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        transport_req = get_object_or_404(TransportReq, id=transport_req_id)
+
+        # بررسی مالکیت ترانزیت
+        if transport_req.my_transport.user != request.user:
+            return Response({"status": "error", "message": "You do not have permission to delete this transport"},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        transport_req.delete()
+
+        return Response({"status": "success", "message": "transport deleted successfully!"},
+                        status=status.HTTP_200_OK)
+
+
+class PaymentApi(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        try:
+            body = request.data
+        except Exception as e:
+            return Response({"error": f"Error parsing request data: {str(e)}"}, status=400)
+
+        user = request.user
+        transport_req_id = body.get('transport_id')
+        transport_req = TransportReq.objects.filter(id=transport_req_id).first()
+
+        if not transport_req:
+            return Response({"error": "Transport request not found."}, status=404)
+
+        amount = 450
+        mobile = user.mobile
+
+        payment_link, authority = zpal_request_handler(
+            settings.ZARRINPAL['merchant_id'],
+            amount,
+            "درخواست ترانزیت",
+            None,
+            mobile,
+            f"{settings.ADDRESS_SERVER}/payment/transport/verify/"
+        )
+
+        if payment_link:
+            Payment.create_payment(authority, amount, user, transport=transport_req)
+            return Response({
+                "status": "success",
+                "payment_link": payment_link
+            }, status=status.HTTP_201_CREATED)
+
+        return Response({
+            "status": "error",
+            "message": "خطا در ایجاد لینک پرداخت."
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PaymentVerifyApi(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        authority = request.query_params.get('authority')
+        payment_status = request.query_params.get('status')
+
+        payment = Payment.objects.filter(authority=authority).first()
+        if not payment:
+            return Response({
+                "status": "error",
+                "message": "پرداخت یافت نشد."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        gateway = Gateway.objects.filter(gateway_code="zarrinpal").first()
+        if not gateway:
+            return Response({
+                "status": "error",
+                "message": "درگاه پرداخت فعال یافت نشد."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        verified = payment.verify({
+            'authority': authority,
+            'status': payment_status
+        })
+
+        if verified and payment_status == "OK":
+            with transaction.atomic():
+                if payment.transport:
+                    transport = TransportReq.objects.filter(pk=payment.transport.pk).first()
+                    if transport:
+                        transport.is_successful = True
+                        transport.expire_time = timezone.now() + timedelta(hours=24)
+                        transport.save()
+                payment.is_paid = True
+                payment.save()
+
+            return Response({
+                "status": "success",
+                "message": "پرداخت با موفقیت انجام شد."
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            "status": "error",
+            "message": "پرداخت ناموفق بود."
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AllReqTransportByTypeApi(APIView):
@@ -138,7 +351,8 @@ class AllReqTransportApi(APIView):
         paginator.page_size = 16  # تعداد اقلام در هر صفحه
         # دریافت تاریخ و زمان فعلی
         now = timezone.now()
-        all_my_req = TransportReq.objects.filter(status=True, expire_time__gt=now).all()
+        all_my_req = TransportReq.objects.filter(status=True, expire_time__gt=now, is_successful=True).order_by(
+            'id').all()
         result_page = paginator.paginate_queryset(all_my_req, request)
         serializer = TransportReqSerializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
@@ -205,7 +419,8 @@ class CalculateRouteView(APIView):
         else:
             # اگر مسیر موجود نیست، یک مسیر جدید ایجاد می‌کنیم
             print("RouteMetrics not found, creating a new route.")
-            distance_km = calculate_distance(origin.latitude, origin.longitude, destination.latitude, destination.longitude)
+            distance_km = calculate_distance(origin.latitude, origin.longitude, destination.latitude,
+                                             destination.longitude)
             route = RouteMetrics(
                 origin=origin,
                 destination=destination,

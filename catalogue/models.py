@@ -1,11 +1,8 @@
-import random
 import datetime
-from django.contrib import messages
-from django.contrib.auth.models import User
+import random
 from django.contrib.auth import get_user_model as user_model
 from django.db import models, transaction
-from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
+from django.utils import timezone
 
 
 class ProductType(models.Model):
@@ -75,22 +72,23 @@ class Product(models.Model):
     user = models.ForeignKey(User, related_name='products', on_delete=models.RESTRICT)
     sell_buy = models.PositiveSmallIntegerField(default=SELL, choices=TYPES_SELL_OR_BUY)
     product_type = models.ForeignKey('ProductType', on_delete=models.PROTECT)
-    upc = models.BigIntegerField(unique=True)
+    upc = models.PositiveBigIntegerField(unique=True)
     price = models.PositiveBigIntegerField()
     weight = models.PositiveIntegerField()
     description = models.TextField(blank=True)
     warranty = models.BooleanField(choices=WARRANTY_PRODUCT, default=INACTIVE)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     create_time = models.DateTimeField(auto_now_add=True)
     modified_time = models.DateTimeField(auto_now=True)
     expire_time = models.DateTimeField(blank=True, null=True)
+    is_successful = models.BooleanField(default=False)  # وضعیت موفقیت پرداخت
 
     class Meta:
         verbose_name = 'Product'
         verbose_name_plural = "Products"
 
     def __str__(self):
-        return self.description
+        return f"({self.user})-{self.price}-{self.weight}"
 
     def get_time(self):
         if self.expire_time and self.expire_time > timezone.now():

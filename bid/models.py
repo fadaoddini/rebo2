@@ -1,8 +1,6 @@
 from django.db import models
 
 from catalogue.models import Product
-from django.contrib.auth import get_user_model as user_model
-
 from login.models import MyUser
 
 

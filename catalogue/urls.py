@@ -6,14 +6,16 @@ from catalogue.views import product_list, ProductDetail, category_products, bran
     form_add_product_web, AllRequestWeb, form_add_request_web, \
     AllProductAndRequestWeb, form_add_bid_web, form_bid_ok, form_bid_no, bazar_sell_web, BazarWeb, \
     InBazarWeb, AddProduct, AddRequest, RequestDetail, TypesApi, ApiProductCreateAPIView, CategoryListAPIView, \
-    ProductTypeListAPIView, ProductAttributeListAPIView, AttributeValueListAPIView
+    ProductTypeListAPIView, ProductAttributeListAPIView, AttributeValueListAPIView, ProductByIdAPIView, InBazarApi, \
+    BazarStatsApi, PaymentApi, PaymentVerifyApi, ProductNotPayMeAPIView, ProductNotActiveMeAPIView, \
+    ProductActiveMeAPIView, ApiProductDeleteAPIView
 
 urlpatterns = [
     path('product/list/', product_list, name='product-list'),
     path('bazar/sell/<int:pk>/', bazar_sell, name='bazar-sell'),
     path('bazar/sell/web/<int:pk>/', bazar_sell_web, name='bazar-sell-web'),
     path('bazar/web/', BazarWeb.as_view(), name='bazar-web'),
-    path('bazar/web/<int:pk>/', InBazarWeb.as_view(), name='bazar-web-in'),
+
     path('bazar/buy/', bazar_buy, name='bazar-buy'),
     path('chart1/', create_chart_top, name='create-chart-top'),
     path('add_product/<int:pk>/', add_product, name='add_product'),
@@ -44,10 +46,27 @@ urlpatterns = [
     path('all_types', TypesApi.as_view(), name='statistic'),
 
     path('add_product_api/', ApiProductCreateAPIView.as_view(), name='add-product-api'),
+    path('delete_product_api/', ApiProductDeleteAPIView.as_view(), name='delete-product-api'),
     path('categories_api/', CategoryListAPIView.as_view(), name='category-list-api'),
+    path('product_by_id_api/', ProductByIdAPIView.as_view(), name='product-bu-id-api'),
+
+
+    path('product_not_pay_me/', ProductNotPayMeAPIView.as_view(), name='product-not-pay-me-api'),
+    path('product_not_active_me/', ProductNotActiveMeAPIView.as_view(), name='product-not-active-me-api'),
+    path('product_active_me/', ProductActiveMeAPIView.as_view(), name='product-active-me-api'),
+
 
     path('product_types/', ProductTypeListAPIView.as_view(), name='product-type-list-api'),
     path('product_attributes/', ProductAttributeListAPIView.as_view(), name='product-attribute-list-api'),
     path('attribute_values/', AttributeValueListAPIView.as_view(), name='attribute-value-list-api'),
+
+    path('bazar/web/<int:pk>/', InBazarWeb.as_view(), name='bazar-web-in'),
+    path('bazar/api/<int:pk>/', InBazarApi.as_view(), name='bazar-api-in'),
+    path('statistic/api/<int:pk>/', BazarStatsApi.as_view(), name='statistic-api'),
+
+
+    path('payment/api/', PaymentApi.as_view(), name='payment-api'),
+    path('payment/verify/', PaymentVerifyApi.as_view(), name='payment-verify-api'),
+
 
 ]
