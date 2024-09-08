@@ -72,8 +72,11 @@ MIDDLEWARE = [
 ]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://localhost:8000",
     "https://iscode.ir",
+    "https://rebo.ir",
     "http://iscode.ir",
+    "http://rebo.ir",
 ]
 
 # اینو یادم باشه بعدا حذف کنم
@@ -213,4 +216,4 @@ REST_FRAMEWORK = {
 CART_SESSION_ID = 'cart'
 ADDRESS_SHIPPING = 'location'
 
-ADDRESS_SERVER = 'https://iscode.ir'
+ADDRESS_SERVER = 'https://localhost:3000'
