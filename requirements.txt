@@ -9,8 +9,8 @@ beautifulsoup4==4.11.1
 billiard==4.2.0
 certifi==2022.9.24
 cffi==1.16.0
-channels==3.0.5
-channels-redis==4.1.0
+channels
+channels-redis
 charset-normalizer==2.1.1
 click==8.1.7
 click-didyoumean==0.3.1
@@ -23,10 +23,10 @@ cryptography==41.0.7
 daphne==3.0.2
 dateparser==1.2.0
 Django==3.2
-django-celery-beat==2.6.0
-django-cors-headers==3.7.0
-django-filter==21.1
-django-jalali==7.0.0
+django-celery-beat
+django-cors-headers
+django-filter
+django-jalali
 django-jalali-date==1.0.1
 django-qr-code==3.1.1
 django-timezone-field==7.0
