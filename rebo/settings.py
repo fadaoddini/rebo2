@@ -216,4 +216,4 @@ REST_FRAMEWORK = {
 CART_SESSION_ID = 'cart'
 ADDRESS_SHIPPING = 'location'
 
-ADDRESS_SERVER = 'https://localhost:3000'
+ADDRESS_SERVER = 'https://iscode.ir'

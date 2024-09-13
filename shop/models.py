@@ -29,9 +29,8 @@ class MyShop(models.Model):
     mobile = models.CharField(max_length=20)
     code_posti = models.CharField(max_length=20)
     address = models.TextField()
-    User = user_model()
-    user = models.OneToOneField(User, on_delete=models.RESTRICT)
-    image = models.ImageField(upload_to='%Y/%m/%d/myshop/')
+    user = models.OneToOneField(user_model(), on_delete=models.RESTRICT)
+    image = models.ImageField(upload_to='shops/%Y/%m/%d/')
     is_active = models.BooleanField(choices=STATUS_COMPANY, default=INACTIVE)
     created_time = models.DateTimeField(auto_now=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
@@ -66,13 +65,13 @@ class Product(models.Model):
         (ACTIVE, 'true'),
         (INACTIVE, 'false'),
     )
-    User = user_model()
-    user = models.ForeignKey(User, related_name='products_shop', on_delete=models.RESTRICT)
+    user = models.ForeignKey(user_model(), related_name='products_shop', on_delete=models.RESTRICT)
     title = models.CharField(max_length=100)
-    category = models.ForeignKey(Category, on_delete=models.PROTECT)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="parents")
+    sub_category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="sub_categories")
     my_shop = models.ForeignKey(MyShop, on_delete=models.PROTECT)
     package = models.ForeignKey(Package, on_delete=models.PROTECT)
-    upc = models.BigIntegerField(unique=True)
+    upc = models.TextField(unique=True)
     price = models.PositiveBigIntegerField()
     discount = models.PositiveIntegerField(default=0)
     weight = models.PositiveIntegerField()
@@ -80,7 +79,7 @@ class Product(models.Model):
     vije = models.BooleanField(choices=VIJE_PRODUCT, default=INACTIVE)
     number_exist = models.PositiveIntegerField()
     number_send = models.PositiveIntegerField()
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     create_time = models.DateTimeField(auto_now_add=True)
     modified_time = models.DateTimeField(auto_now=True)
 
@@ -89,7 +88,7 @@ class Product(models.Model):
         verbose_name_plural = "Products"
 
     def __str__(self):
-        return self.description
+        return self.title
 
     def get_absolute_url(self):
         return reverse('shop-single-web', args=[self.pk])
@@ -98,11 +97,12 @@ class Product(models.Model):
     def add_product(cls, request, *args, **kwargs):
         result = "200"
         is_active = False
-        upc = random.randint(11111111111111111, 99999999999999999)
+        upc = str(random.randint(10**15, 10**16 - 1))
         form = request.POST
         user = request.user
 
         category = form.get('category')
+        sub_category = form.get('sub_category')
         brand = form.get('brand')
         discount = form.get('discount')
 
@@ -133,28 +133,23 @@ class Product(models.Model):
         numpic = form.get('numpic')
         numpic = int(numpic)+1
 
-        new_product = Product(user=user, category=category, brand=brand, upc=upc, discount=discount,
+        new_product = Product(user=user, category=category, sub_category=sub_category, brand=brand, upc=upc, discount=discount,
                                   price=price, weight=weight, description=description,
                                   warranty=warranty, is_active=is_active, number_exist=number_exist)
         new_product.save()
         new_product_pk = new_product.pk
         if numpic >= 0:
-
             for i in range(numpic):
-                print("request.FILES")
-                if request.FILES.get(f'image{i}') is None:
-                    pass
-                else:
-                    ali =request.FILES.get(f'image{i}')
-                    new_image = ProductImage.add_images(request.FILES[f'image{i}'], new_product)
+                if request.FILES.get(f'image{i}'):
+                    ali = request.FILES.get(f'image{i}')
+                    ProductImage.add_images(ali, new_product)
 
         return result
 
     def total_price(self):
         total_price_first = self.price * self.discount
-        total_price_second = total_price_first/100
+        total_price_second = total_price_first / 100
         total_price = self.price - total_price_second
-
         return round(total_price)
 
 
@@ -173,8 +168,7 @@ class ProductImage(models.Model):
 
 
 class Basket(models.Model):
-    User = user_model()
-    user = models.ForeignKey(User, related_name='baskets', on_delete=models.RESTRICT)
+    user = models.ForeignKey(user_model(), related_name='baskets', on_delete=models.RESTRICT)
     basket_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -182,12 +176,12 @@ class Basket(models.Model):
         verbose_name_plural = 'Baskets'
 
     def __str__(self):
-        return self.user
+        return str(self.user)
 
 
 class BasketLine(models.Model):
     basket = models.ForeignKey(Basket, related_name='baskets_line', on_delete=models.RESTRICT)
-    Product = models.ForeignKey(Product, related_name='products', on_delete=models.RESTRICT)
+    product = models.ForeignKey(Product, related_name='products', on_delete=models.RESTRICT)
     price = models.PositiveBigIntegerField()
     count = models.PositiveIntegerField()
     discount = models.PositiveIntegerField()
@@ -198,7 +192,7 @@ class BasketLine(models.Model):
         verbose_name_plural = 'BasketLines'
 
     def __str__(self):
-        return self.basket
+        return str(self.basket)
 
 
 class Invoice(models.Model):
@@ -210,27 +204,26 @@ class Invoice(models.Model):
         verbose_name_plural = 'Invoices'
 
     def __str__(self):
-        return self.basket
+        return str(self.basket)
 
 
 class Transaction(models.Model):
-
     STATUS_CHOICES = (
         ('PENDING', 'pending'),
         ('FAILED', 'failed'),
         ('COMPLETE', 'complete'),
     )
-    invoice = models.ForeignKey(Invoice, related_name='invoices', on_delete=models.RESTRICT)
+    invoice = models.ForeignKey(Invoice, related_name='transactions', on_delete=models.RESTRICT)
     transaction_date = models.DateTimeField(auto_now_add=True)
     amount = models.PositiveBigIntegerField()
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='PENDING')
 
     class Meta:
-        verbose_name = 'Invoice'
-        verbose_name_plural = 'Invoices'
+        verbose_name = 'Transaction'
+        verbose_name_plural = 'Transactions'
 
     def __str__(self):
-        return self.invoice
+        return str(self.invoice)
 
 
 class Location(models.Model):
@@ -242,8 +235,7 @@ class Location(models.Model):
     shahr = models.CharField(max_length=30)
     codeposti = models.CharField(max_length=30)
     is_active = models.BooleanField(default=False)
-    User = user_model()
-    user = models.ForeignKey(User, related_name='location', on_delete=models.RESTRICT)
+    user = models.ForeignKey(user_model(), related_name='locations', on_delete=models.RESTRICT)
 
     class Meta:
         verbose_name = 'Location'
@@ -254,7 +246,6 @@ class Location(models.Model):
 
     @classmethod
     def add_location(cls, request):
-
         form = request.POST
         user = request.user
         address = form.get('address')
@@ -268,7 +259,13 @@ class Location(models.Model):
         exist_location = Location.objects.filter(codeposti=codeposti).first()
 
         if exist_location:
+            exist_location.address = address
+            exist_location.ostan = ostan
+            exist_location.shahr = shahr
             exist_location.codeposti = codeposti
+            exist_location.name = name
+            exist_location.family = family
+            exist_location.mobile = mobile
             exist_location.save()
         else:
             new_location = Location(user=user, address=address, ostan=ostan, shahr=shahr, codeposti=codeposti,
@@ -277,11 +274,7 @@ class Location(models.Model):
 
     @classmethod
     def delete_location(cls, request, code_posti):
-        form = request.POST
-        user = request.user
         exist_location = Location.objects.filter(codeposti=code_posti).first()
 
         if exist_location:
-            exist_location.remove()
-
-
+            exist_location.delete()

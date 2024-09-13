@@ -10,6 +10,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/', include('blog.urls')),
     path('bid/', include('bid.urls')),
+    path('shop/', include('shop.urls')),
     path('divar/', include('divar.urls')),
     path('info/', include('info.urls')),
     path('', include('index.urls')),
