@@ -113,7 +113,7 @@ DATABASES = {
 
 ZARRINPAL = {
     'gateway_request_url': 'https://www.zarinpal.com/pg/services/WebGate/wsdl',
-    'gateway_callback_url': 'http://localhost:3000/payment/verify/',  # تغییر به آدرس محلی
+    'gateway_callback_url': 'https://iscode.ir/payment/verify/',  # تغییر به آدرس محلی
     'merchant_id': ZARRINPAL_MERCHANT_ID
 }
 
