@@ -11,4 +11,10 @@ urlpatterns = [
     path('payment/verify/', PaymentVerifyApi.as_view(), name='payment-bid-verify-api'),
     path('check_bid/', CheckBidApi.as_view(), name='check-bid-api'),
 
+
+
+
+
+    path('v1/add_bid_api/', BidView.as_view(), name='add-bid-api-v1'),
+
 ]

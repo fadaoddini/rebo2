@@ -14,6 +14,7 @@ class Bid(models.Model):
     )
     product = models.ForeignKey(Product, related_name='bids', on_delete=models.CASCADE)
     price = models.PositiveBigIntegerField()
+    weight = models.PositiveBigIntegerField(blank=True, null=True, default=0)
     user = models.ForeignKey(MyUser, related_name='bids', on_delete=models.RESTRICT)
     result = models.BooleanField(choices=RESULT_BID, default=OK)
 
@@ -31,6 +32,7 @@ class Bid(models.Model):
         form = request.POST
         user = request.user
         price = form.get('price')
+        weight = form.get('weight')
         if price:
             price = int(price)
         else:
@@ -42,11 +44,12 @@ class Bid(models.Model):
 
         if exist_bid:
             exist_bid.price = price
+            exist_bid.weight = weight
             exist_bid.save()
             result = "400"
         else:
 
-            new_bid = Bid(user=user, product=product, price=price, result=result1)
+            new_bid = Bid(user=user, product=product, price=price, weight=weight, result=result1)
             new_bid.save()
             result = "100"
         return result

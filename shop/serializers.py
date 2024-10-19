@@ -3,7 +3,7 @@ import random
 from datetime import timedelta
 from rest_framework import serializers
 
-from shop.models import Product, MyShop, ProductImage, Category, Package
+from shop.models import Product, MyShop, ProductImage, Category, Package, BasketLine, Basket
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -91,3 +91,17 @@ class MyShopSerializer(serializers.ModelSerializer):
     def get_finished_time(self, obj):
         return obj.created_time + timedelta(days=30)
 
+
+class BasketLineSerializer(serializers.ModelSerializer):
+    product = ProductShopSerializer()  # استفاده از ProductShopSerializer برای نمایش جزئیات محصول
+
+    class Meta:
+        model = BasketLine
+        fields = ('product', 'count', 'price', 'discount', 'total_price')
+
+class BasketSerializer(serializers.ModelSerializer):
+    basket_lines = BasketLineSerializer(many=True, source='baskets_line')
+
+    class Meta:
+        model = Basket
+        fields = ('id', 'user', 'basket_date', 'basket_lines')

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from login.models import MyUser
+from login.models import MyUser, Follow, Address
 
 
 class MyUserSerializer(serializers.ModelSerializer):
@@ -8,7 +8,7 @@ class MyUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MyUser
-        fields = ('first_name', 'last_name', 'status')
+        fields = ('first_name', 'last_name', 'status', 'image', 'mobile', 'id')
 
     def get_status(self, obj):
         status = "Nothing"
@@ -20,3 +20,15 @@ class MyUserSerializer(serializers.ModelSerializer):
         return status
 
 
+
+class FollowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Follow
+        fields = ['follower', 'followed', 'created_at']
+
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ['id','receiver_name', 'address', 'postal_code', 'phone', 'city', 'sub_city', 'is_active']

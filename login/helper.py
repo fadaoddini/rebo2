@@ -2,7 +2,7 @@ import datetime
 
 from ippanel import Client
 
-from login import models
+from login.models import MyUser
 from rebo.local_setting import API_MAX_SMS
 from random import randint
 
@@ -38,16 +38,16 @@ def send_otp(mobile, otp):
 
 def check_otp_expiration(mobile):
     try:
-        user = models.MyUser.objects.get(mobile=mobile)
-
+        user = MyUser.objects.get(mobile=mobile)
         now = datetime.datetime.now()
         otp_time = user.otp_create_time
 
         diff_time = now - otp_time
         print('diff_time is :', diff_time)
 
-        if diff_time.seconds > 90:
+        # بررسی اینکه آیا زمان اختلاف بیشتر از 120 ثانیه است یا خیر
+        if diff_time.seconds > 120:  # اگر بیشتر از دو دقیقه بود
             return False
         return True
-    except models.MyUser.DoesNotExist:
+    except MyUser.DoesNotExist:
         return False

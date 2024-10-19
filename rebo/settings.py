@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 
 from django.contrib.messages import constants as messages
-
+from datetime import timedelta
 from rebo.local_setting import *
 
 MESSAGE_TAGS = {
@@ -70,17 +70,10 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
 ]
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-    "https://iscode.ir",
-    "https://rebo.ir",
-    "http://iscode.ir",
-    "http://rebo.ir",
-]
 
-# اینو یادم باشه بعدا حذف کنم
+
 CORS_ALLOW_CREDENTIALS = True
+
 
 ROOT_URLCONF = 'rebo.urls'
 
@@ -207,13 +200,20 @@ AUTH_USER_MODEL = 'login.MyUser'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ) if DEBUG else (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
 }
+
 
 CART_SESSION_ID = 'cart'
 ADDRESS_SHIPPING = 'location'
 
-ADDRESS_SERVER = 'https://iscode.ir'
+
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # عمر توکن دسترسی
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # عمر توکن رفرش
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
+
+

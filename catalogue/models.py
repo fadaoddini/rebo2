@@ -5,8 +5,37 @@ from django.db import models, transaction
 from django.utils import timezone
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=32)
+    image = models.ImageField(upload_to='%Y/%m/%d/categories/', null=True, blank=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='children', null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Category'
+        verbose_name_plural = "Categories"
+
+    def __str__(self):
+        return f"{self.name}"
+
+
+class Brand(models.Model):
+    name = models.CharField(max_length=32)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='children', null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Brand'
+        verbose_name_plural = "Brands"
+
+    def __str__(self):
+        return self.name
+
+
 class ProductType(models.Model):
     title = models.CharField(max_length=32, blank=True, null=True)
+    name = models.CharField(max_length=42, null=True, blank=True)
+    image = models.ImageField(upload_to='%Y/%m/%d/types/', null=True, blank=True)
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True, blank=True, related_name='categories')
+    description = models.TextField(blank=True, null=True)
     create_time = models.DateTimeField(auto_now_add=True)
     modified_time = models.DateTimeField(auto_now=True)
 
@@ -15,7 +44,7 @@ class ProductType(models.Model):
         verbose_name_plural = 'Types'
 
     def __str__(self):
-        return self.title
+        return f"{self.name} - {self.title} | {self.category}"
 
 
 class ProductAttribute(models.Model):
@@ -30,29 +59,6 @@ class ProductAttribute(models.Model):
     def __str__(self):
         return self.title
 
-
-class Category(models.Model):
-    name = models.CharField(max_length=32)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='children', null=True, blank=True)
-
-    class Meta:
-        verbose_name = 'Category'
-        verbose_name_plural = "Categories"
-
-    def __str__(self):
-        return self.name
-
-
-class Brand(models.Model):
-    name = models.CharField(max_length=32)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='children', null=True, blank=True)
-
-    class Meta:
-        verbose_name = 'Brand'
-        verbose_name_plural = "Brands"
-
-    def __str__(self):
-        return self.name
 
 
 class Product(models.Model):

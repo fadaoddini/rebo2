@@ -5,6 +5,9 @@ from datetime import datetime, timedelta
 import math
 from django.conf import settings
 from django.db import transaction
+from django.db.models import Prefetch
+from bid.serializers import BidSerializer
+from login.views import CookieJWTAuthentication
 from order.models import Payment, Gateway
 from order.utils import zpal_request_handler
 from persiantools.jdatetime import JalaliDate
@@ -12,7 +15,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model as user_model
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q, Avg, Max, Min, F
+from django.db.models import Q, Avg, Max, Min, F, Sum
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -33,7 +36,8 @@ from bid.models import Bid
 from catalogue.models import Product, Category, ProductType, Brand, ProductAttribute, ProductAttributeValue, \
     ProductImage, ProductAttr
 from catalogue.serializers import ProductSellSerializer, ProductSingleSerializer, TypesSerializer, \
-    ProductTypeSerializer, ProductAttributeSerializer, ProductAttributeValueSerializer
+    ProductTypeSerializer, ProductAttributeSerializer, ProductAttributeValueSerializer, ApiProductSerializer, \
+    SingleProductSerializer, SellSingleProductSerializer, BuySingleProductSerializer
 from catalogue.utils import check_user_active
 from company.forms import CompanyForm
 from company.models import Company
@@ -82,11 +86,11 @@ class ApiProductCreateAPIView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    print("=============1================")
+
 
     def post(self, request, *args, **kwargs):
         user = request.user
-        print("=============2================")
+
         # دریافت داده‌های فرم
         price = request.data.get('price')
         weight = request.data.get('weight')
@@ -103,9 +107,8 @@ class ApiProductCreateAPIView(APIView):
             expire_time = timezone.now() + timezone.timedelta(days=int(expire_time_days))
         else:
             expire_time = None
-        print("=============3================")
-        print(sell_buy_code)
-        print("sell_buy_code")
+
+
 
         # تبدیل مقدار sell_buy از عدد به متن
         if sell_buy_code == '1':
@@ -115,7 +118,7 @@ class ApiProductCreateAPIView(APIView):
 
         # بررسی نوع محصول
         product_type = get_object_or_404(ProductType, id=product_type_id)
-        print("=============4================")
+
         # ذخیره محصول
         upc = random.randint(11111111111111111, 99999999999999999)
         product = Product(
@@ -132,24 +135,22 @@ class ApiProductCreateAPIView(APIView):
             expire_time=expire_time
         )
         product.save()
-        print("=============5================")
+
         # ذخیره تصاویر
         num_images = int(request.data.get('numpic', 0))
-        print("num_images")
-        print(num_images)
-        print("num_images")
+
         for i in range(num_images):
             image = request.FILES.get(f'image{i}')
             if image:
                 product_image = ProductImage(image=image, product=product)
                 product_image.save()
-        print("=============6================")
+
         # ذخیره ویژگی‌های محصول
         for attr in attrs:
             attribute = get_object_or_404(ProductAttribute, id=attr['attr'])
             attribute_value = get_object_or_404(ProductAttributeValue, id=attr['value'])
             ProductAttr(type=product_type, attr=attribute, value=attribute_value, product=product).save()
-        print("=============7================")
+
         return Response({"status": "success", "message": "Product added successfully!"}, status=status.HTTP_201_CREATED)
 
 
@@ -233,13 +234,10 @@ class PaymentVerifyApi(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        print("******************PaymentVerifyApi*****************")
+
         authority = request.query_params.get('authority')
         payment_status = request.query_params.get('status')  # وضعیت پرداخت از زارین‌پال
-        print("authority")
-        print(authority)
-        print("payment_status")
-        print(payment_status)
+
 
         payment = Payment.objects.filter(authority=authority).first()
         if payment:
@@ -491,12 +489,6 @@ def create_chart_top(request):
             amar['product_type_name'] = product_type.title
             result_amar = list(amar.values())
             result_chart2 = list(bazars.values())
-            print("111111111111111111111113")
-            print(result_amar)
-            print("111111111111111111111113")
-            print("222222222222222222222223")
-            print(result_chart2)
-            print("222222222222222222222223")
 
             return JsonResponse({
                 'msg': result_chart2,
@@ -935,7 +927,7 @@ def product_list(request):
     products = Product.objects.all()
     context['products'] = products
     context['category'] = category
-    print(products)
+
     return render(request, 'catalogue/product_list.html', context=context)
 
 
@@ -993,7 +985,6 @@ class RequestDetail(View):
     @method_decorator(login_required)
     def get(self, request, pk, *args, **kwargs):
         context = dict()
-        print("product")
 
         try:
             product = Product.objects.filter(Q(pk=pk) | Q(upc=pk)) \
@@ -1170,6 +1161,236 @@ class InBazarApi(APIView):
         return Response(context, status=status.HTTP_200_OK)
 
 
+
+class SellSingleBazarApi(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        product = Product.objects.filter(pk=pk).first()
+        if not product:
+            return Response({"detail": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        product_serializer = SellSingleProductSerializer(product)
+
+        return Response(product_serializer.data, status=status.HTTP_200_OK)
+
+
+class BuySingleBazarApi(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        product = Product.objects.filter(pk=pk).first()
+        if not product:
+            return Response({"detail": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        product_serializer = BuySingleProductSerializer(product)
+
+        return Response(product_serializer.data, status=status.HTTP_200_OK)
+
+
+
+class BidSingleBazarApi(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        product = Product.objects.filter(pk=pk).first()
+        bids = product.bids.order_by('-price')
+        bids_serializer = BidSerializer(bids, many=True, context={'request': request})
+
+        return Response(bids_serializer.data, status=status.HTTP_200_OK)
+
+
+class SellBidSingleBazarApi(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        product = Product.objects.filter(pk=pk).first()
+        bids = product.bids.order_by('-price')
+        bids_serializer = BidSerializer(bids, many=True, context={'request': request})
+
+        return Response(bids_serializer.data, status=status.HTTP_200_OK)
+
+
+
+class BuyBidSingleBazarApi(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        product = Product.objects.filter(pk=pk).first()
+        bids = product.bids.order_by('price')
+        bids_serializer = BidSerializer(bids, many=True, context={'request': request})
+
+        return Response(bids_serializer.data, status=status.HTTP_200_OK)
+
+
+
+class TypeByIdApi(APIView):
+    def get(self, request, id, *args, **kwargs):
+        type = ProductType.objects.filter(pk=id).first()
+
+        type_serializer = ProductTypeSerializer(type)
+        print(type_serializer.data)
+        return Response(type_serializer.data, status=status.HTTP_200_OK)
+
+
+class BidSellListApi(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        product = Product.objects.filter(pk=pk).first()
+        if not product:
+            return Response({"detail": "محصول پیدا نشد"}, status=status.HTTP_404_NOT_FOUND)
+
+        product_type = product.product_type
+        # فیلتر کردن محصولاتی که در حال فروش هستند و بیدهایشان را با قیمت مرتب می‌کنیم
+        products = Product.objects.filter(sell_buy=1, product_type=product_type).prefetch_related(
+            Prefetch('bids', queryset=Bid.objects.order_by('-price'))
+        )
+
+        bids = []
+        for prod in products:
+            # افزودن تمام بیدها به لیست
+            bids.extend(prod.bids.all())
+
+        # مرتب‌سازی بیدها بر اساس قیمت پس از تجمیع در یک لیست
+        sorted_bids = sorted(bids, key=lambda x: x.price, reverse=True)
+
+        # محدود کردن لیست به 20 بید
+        limited_bids = sorted_bids[:20]
+
+        bids_serializer = BidSerializer(limited_bids, many=True, context={'request': request})
+
+        return Response(bids_serializer.data, status=status.HTTP_200_OK)
+
+
+
+class BidBuyListApi(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        product = Product.objects.filter(pk=pk).first()
+        if not product:
+            return Response({"detail": "محصول پیدا نشد"}, status=status.HTTP_404_NOT_FOUND)
+
+        product_type = product.product_type
+        # فیلتر کردن محصولاتی که در حال فروش هستند و بیدهایشان را با قیمت مرتب می‌کنیم
+        products = Product.objects.filter(sell_buy=2, product_type=product_type).prefetch_related(
+            Prefetch('bids', queryset=Bid.objects.order_by('price'))
+        )
+
+        bids = []
+        for prod in products:
+            # افزودن تمام بیدها به لیست
+            bids.extend(prod.bids.all())
+
+        # مرتب‌سازی بیدها بر اساس قیمت پس از تجمیع در یک لیست
+        sorted_bids = sorted(bids, key=lambda x: x.price, reverse=False)
+
+        # محدود کردن لیست به 20 بید
+        limited_bids = sorted_bids[:20]
+
+        bids_serializer = BidSerializer(limited_bids, many=True, context={'request': request})
+
+        return Response(bids_serializer.data, status=status.HTTP_200_OK)
+
+
+
+
+class BidSellListChartApi(APIView):
+    def get(self, request, pk, *args, **kwargs):
+
+        product_type = pk
+        # فیلتر کردن محصولاتی که در حال فروش هستند و بیدهایشان را با قیمت مرتب می‌کنیم
+        products = Product.objects.filter(sell_buy=1, product_type=product_type).prefetch_related(
+            Prefetch('bids', queryset=Bid.objects.order_by('-price'))
+        )
+
+        bids = []
+        for prod in products:
+            # افزودن تمام بیدها به لیست
+            bids.extend(prod.bids.all())
+
+        # مرتب‌سازی بیدها بر اساس قیمت پس از تجمیع در یک لیست
+        sorted_bids = sorted(bids, key=lambda x: x.price, reverse=True)
+
+        # محدود کردن لیست به 20 بید
+        limited_bids = sorted_bids[:20]
+
+        bids_serializer = BidSerializer(limited_bids, many=True, context={'request': request})
+
+        return Response(bids_serializer.data, status=status.HTTP_200_OK)
+
+
+class CategoryNameApi(APIView):
+    def get(self, request, pk, *args, **kwargs):
+
+        productType = ProductType.objects.filter(pk=pk).first()
+        productType_serializer = ProductTypeSerializer(productType)
+        return Response(productType_serializer.data, status=status.HTTP_200_OK)
+
+
+
+class BidBuyListChartApi(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        product_type = pk
+        # فیلتر کردن محصولاتی که در حال فروش هستند و بیدهایشان را با قیمت مرتب می‌کنیم
+        products = Product.objects.filter(sell_buy=2, product_type=product_type).prefetch_related(
+            Prefetch('bids', queryset=Bid.objects.order_by('price'))
+        )
+
+        bids = []
+        for prod in products:
+            # افزودن تمام بیدها به لیست
+            bids.extend(prod.bids.all())
+
+        # مرتب‌سازی بیدها بر اساس قیمت پس از تجمیع در یک لیست
+        sorted_bids = sorted(bids, key=lambda x: x.price, reverse=False)
+
+        # محدود کردن لیست به 20 بید
+        limited_bids = sorted_bids[:20]
+
+        bids_serializer = BidSerializer(limited_bids, many=True, context={'request': request})
+
+        return Response(bids_serializer.data, status=status.HTTP_200_OK)
+
+
+
+class BidSellListByTypeApi(APIView):
+    def get(self, request, pk, *args, **kwargs):
+
+        # فیلتر کردن محصولاتی که در حال فروش هستند و بیدهایشان را با قیمت مرتب می‌کنیم
+        products = Product.objects.filter(sell_buy=1, product_type=pk).prefetch_related(
+            Prefetch('bids', queryset=Bid.objects.order_by('-price'))
+        )
+
+        bids = []
+        for prod in products:
+            # افزودن تمام بیدها به لیست
+            bids.extend(prod.bids.all())
+
+        # مرتب‌سازی بیدها بر اساس قیمت پس از تجمیع در یک لیست
+        sorted_bids = sorted(bids, key=lambda x: x.price, reverse=False)
+
+        # محدود کردن لیست به 20 بید
+        limited_bids = sorted_bids[:20]
+
+        # سریال‌سازی بیدها
+        bids_serializer = BidSerializer(limited_bids, many=True, context={'request': request})
+
+        return Response(bids_serializer.data, status=status.HTTP_200_OK)
+
+
+
+class BidBuyListByTypeApi(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        # فیلتر کردن محصولات با نوع خاص
+        products = Product.objects.filter(sell_buy=2, product_type=pk).prefetch_related(
+            Prefetch('bids', queryset=Bid.objects.order_by('price'))
+        )
+
+        bids = []
+        for prod in products:
+            # افزودن تمام بیدها به لیست
+            bids.extend(prod.bids.all())
+
+        # مرتب‌سازی بیدها بر اساس قیمت پس از تجمیع در یک لیست
+        sorted_bids = sorted(bids, key=lambda x: x.price, reverse=True)
+
+        # محدود کردن لیست به 20 بید
+        limited_bids = sorted_bids[:20]
+
+        # سریال‌سازی بیدها
+        bids_serializer = BidSerializer(limited_bids, many=True, context={'request': request})
+
+        return Response(bids_serializer.data, status=status.HTTP_200_OK)
+
+
 class InBazarWeb(View):
     template_name = 'catalogue/web/inbazar.html'
 
@@ -1227,3 +1448,143 @@ class AllProductAndRequestWeb(View):
         return render(request, template_name=self.template_name, context=context,
                       content_type=None, status=None, using=None)
 
+
+
+
+
+
+
+class ApiProductCreateAPIViewV1(APIView):
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+
+        # دریافت داده‌های فرم
+        price = request.data.get('price')
+        weight = request.data.get('weight')
+        sell_buy_code = request.data.get('sell_buy')  # دریافت مقدار sell_buy
+        warranty = request.data.get('warranty') == 'True'
+        expire_time_days = request.data.get('expire_time')
+        description = request.data.get('description')
+        product_type_id = request.data.get('product_type')
+        attrs = request.data.get('attrs')
+        attrs = json.loads(attrs) if attrs else []
+
+        # بررسی تاریخ انقضا
+        if expire_time_days:
+            expire_time = timezone.now() + timezone.timedelta(days=int(expire_time_days))
+        else:
+            expire_time = None
+
+
+
+        # تبدیل مقدار sell_buy از عدد به متن
+        if sell_buy_code == '1':
+            sell_buy = Product.SELL
+        else:
+            sell_buy = Product.BUY
+
+        # بررسی نوع محصول
+        product_type = get_object_or_404(ProductType, id=product_type_id)
+
+        # ذخیره محصول
+        upc = random.randint(11111111111111111, 99999999999999999)
+        product = Product(
+            user=user,
+            sell_buy=sell_buy,
+            product_type=product_type,
+            upc=upc,
+            price=price,
+            weight=weight,
+            description=description,
+            is_successful=True,
+            warranty=warranty,
+            is_active=True,  # محصول به صورت پیش‌فرض غیرفعال است
+            expire_time=expire_time
+        )
+        product.save()
+
+        # ذخیره تصاویر
+        num_images = int(request.data.get('numpic', 0))
+
+        for i in range(num_images):
+            image = request.FILES.get(f'image{i}')
+            if image:
+                product_image = ProductImage(image=image, product=product)
+                product_image.save()
+
+        # ذخیره ویژگی‌های محصول
+        for attr in attrs:
+            attribute = get_object_or_404(ProductAttribute, id=attr['attr'])
+            attribute_value = get_object_or_404(ProductAttributeValue, id=attr['value'])
+            ProductAttr(type=product_type, attr=attribute, value=attribute_value, product=product).save()
+
+        return Response({"status": "success", "message": "Product added successfully!"}, status=status.HTTP_201_CREATED)
+
+
+class ChartByTypeIdApi(APIView):
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id, *args, **kwargs):
+        # گرفتن محصولات مربوط به product_type مورد نظر
+        product_type = id
+
+        # محصولات فعال که زمان انقضا آن‌ها نگذشته باشد
+        products = Product.objects.filter(
+            product_type_id=product_type,
+            expire_time__gte=timezone.now(),  # محصولاتی که منقضی نشده‌اند
+            is_active=True
+        )
+
+        # جمع‌بندی داده‌ها بر اساس تاریخ و نوع (sell یا buy)
+        data_by_date = products.values('create_time__date', 'sell_buy').annotate(
+            total_weight=Sum('weight'),  # مجموع وزن‌ها
+            max_price=Max('price'),  # حداکثر قیمت
+            min_price=Min('price')  # حداقل قیمت
+        ).order_by('create_time__date')
+
+        # آماده‌سازی داده‌ها برای نمودار
+        chart_data = {}
+        for entry in data_by_date:
+            date_str = entry['create_time__date'].strftime('%Y-%m-%d')
+            sell_buy_type = entry['sell_buy']
+
+            if date_str not in chart_data:
+                chart_data[date_str] = {
+                    'maxPriceSell': 0,
+                    'minPriceSell': 0,
+                    'maxPriceBuy': 0,
+                    'minPriceBuy': 0,
+                    'volume': 0
+                }
+
+            # پر کردن داده‌ها بر اساس نوع فروش یا خرید
+            if sell_buy_type == Product.SELL:
+                chart_data[date_str]['maxPriceSell'] = entry['max_price']
+                chart_data[date_str]['minPriceSell'] = entry['min_price']
+                chart_data[date_str]['volume'] += entry['total_weight']  # اضافه‌کردن وزن فروش به حجم کل
+            elif sell_buy_type == Product.BUY:
+                chart_data[date_str]['maxPriceBuy'] = entry['max_price']
+                chart_data[date_str]['minPriceBuy'] = entry['min_price']
+                chart_data[date_str]['volume'] += entry['total_weight']  # اضافه‌کردن وزن خرید به حجم کل
+
+        # آماده‌سازی داده‌های نهایی برای نمودار
+        final_data = [
+            {
+                'date': date,
+                'maxPriceSell': data['maxPriceSell'],
+                'minPriceSell': data['minPriceSell'],
+                'maxPriceBuy': data['maxPriceBuy'],
+                'minPriceBuy': data['minPriceBuy'],
+                'volume': data['volume']
+            }
+            for date, data in chart_data.items()
+        ]
+
+        # بازگرداندن داده‌ها به صورت JSON
+        return Response(final_data, status=200)

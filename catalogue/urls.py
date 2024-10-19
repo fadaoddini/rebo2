@@ -8,7 +8,10 @@ from catalogue.views import product_list, ProductDetail, category_products, bran
     InBazarWeb, AddProduct, AddRequest, RequestDetail, TypesApi, ApiProductCreateAPIView, CategoryListAPIView, \
     ProductTypeListAPIView, ProductAttributeListAPIView, AttributeValueListAPIView, ProductByIdAPIView, InBazarApi, \
     BazarStatsApi, PaymentApi, PaymentVerifyApi, ProductNotPayMeAPIView, ProductNotActiveMeAPIView, \
-    ProductActiveMeAPIView, ApiProductDeleteAPIView
+    ProductActiveMeAPIView, ApiProductDeleteAPIView, BidSellListApi, BidBuyListApi, \
+    SellBidSingleBazarApi, BuyBidSingleBazarApi, SellSingleBazarApi, BuySingleBazarApi, ApiProductCreateAPIViewV1, \
+    TypeByIdApi, ChartByTypeIdApi, BidSellListByTypeApi, BidBuyListByTypeApi, BidSellListChartApi, BidBuyListChartApi, \
+    CategoryNameApi
 
 urlpatterns = [
     path('product/list/', product_list, name='product-list'),
@@ -68,5 +71,28 @@ urlpatterns = [
     path('payment/api/', PaymentApi.as_view(), name='payment-api'),
     path('payment/verify/', PaymentVerifyApi.as_view(), name='payment-verify-api'),
 
+
+
+
+    path('v1/all_types', TypesApi.as_view(), name='statistic'),
+    path('v1/bazar/api/<int:pk>/', InBazarApi.as_view(), name='bazar-api-in'),
+    path('v1/sell/single/<int:pk>/', SellSingleBazarApi.as_view(), name='sell-api-single'),
+    path('v1/buy/single/<int:pk>/', BuySingleBazarApi.as_view(), name='buy-api-single'),
+    path('v1/sell/bid/<int:pk>/', SellBidSingleBazarApi.as_view(), name='bid-sell-api-single'),
+    path('v1/buy/bid/<int:pk>/', BuyBidSingleBazarApi.as_view(), name='bid-buy-api-single'),
+    path('v1/sell/bid/list/<int:pk>/', BidSellListApi.as_view(), name='bid-sell-api-list'),
+    path('v1/buy/bid/list/<int:pk>/', BidBuyListApi.as_view(), name='bid-buy-api-list'),
+    path('v1/sell/bid/list/chart/<int:pk>/', BidSellListChartApi.as_view(), name='bid-sell-api-list-chart'),
+    path('v1/buy/bid/list/chart/<int:pk>/', BidBuyListChartApi.as_view(), name='bid-buy-api-list-chart'),
+    path('v1/category/name/<int:pk>/', CategoryNameApi.as_view(), name='name-cat'),
+    path('v1/all_types', TypesApi.as_view(), name='all-types-v1'),
+    path('v1/product_types/', ProductTypeListAPIView.as_view(), name='product-type-list-api-v1'),
+    path('v1/product_attributes/', ProductAttributeListAPIView.as_view(), name='product-attribute-list-api-v1'),
+    path('v1/attribute_values/', AttributeValueListAPIView.as_view(), name='attribute-value-list-api-v1'),
+    path('v1/add_product_api/', ApiProductCreateAPIViewV1.as_view(), name='add-product-api-v1'),
+    path('v1/type/<int:id>/', TypeByIdApi.as_view(), name='type-by-id-api-v1'),
+    path('v1/chart/<int:id>/', ChartByTypeIdApi.as_view(), name='chart-api-v1'),
+    path('v1/sell/bid/all/<int:pk>/', BidSellListByTypeApi.as_view(), name='bid-sell-api-all'),
+    path('v1/buy/bid/all/<int:pk>/', BidBuyListByTypeApi.as_view(), name='bid-buy-api-all'),
 
 ]

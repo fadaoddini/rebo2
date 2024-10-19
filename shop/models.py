@@ -167,16 +167,25 @@ class ProductImage(models.Model):
         return new_image
 
 
+
 class Basket(models.Model):
     user = models.ForeignKey(user_model(), related_name='baskets', on_delete=models.RESTRICT)
     basket_date = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        verbose_name = 'Basket'
-        verbose_name_plural = 'Baskets'
+    def add_product(self, product, count=1):
+        # منطق افزودن محصول به سبد خرید
+        basket_line, created = BasketLine.objects.get_or_create(
+            basket=self,
+            product=product,
+            defaults={'count': count, 'price': product.price, 'discount': product.discount}
+        )
+        if not created:
+            basket_line.count += count
+            basket_line.save()
 
-    def __str__(self):
-        return str(self.user)
+    def remove_product(self, product):
+        # منطق حذف محصول از سبد خرید
+        BasketLine.objects.filter(basket=self, product=product).delete()
 
 
 class BasketLine(models.Model):
@@ -193,6 +202,12 @@ class BasketLine(models.Model):
 
     def __str__(self):
         return str(self.basket)
+
+    def save(self, *args, **kwargs):
+        # محاسبه total_price با استفاده از قیمت و تعداد و تخفیف
+        discount_amount = (self.price * self.discount) / 100
+        self.total_price = (self.price - discount_amount) * self.count
+        super(BasketLine, self).save(*args, **kwargs)
 
 
 class Invoice(models.Model):

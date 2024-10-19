@@ -4,9 +4,11 @@ from catalogue.models import Product, ProductImage, ProductAttribute, ProductAtt
 import datetime
 import json
 from datetime import timedelta
-from django.db.models import Max
+from django.db.models import Max, Min
 from learn.models import Learn
 import random
+
+from login.serializers import MyUserSerializer
 
 
 class ApiProductImageSerializer(serializers.ModelSerializer):
@@ -34,6 +36,121 @@ class ApiProductAttrSerializer(serializers.ModelSerializer):
             value_instance, created = ProductAttributeValue.objects.get_or_create(**value_data)
             validated_data['value'] = value_instance
         return super().create(validated_data)
+
+
+class SingleProductSerializer(serializers.ModelSerializer):
+    images = ApiProductImageSerializer(many=True, read_only=True)
+    user = MyUserSerializer()
+    attrs = serializers.SerializerMethodField()  # برای گرفتن ویژگی‌ها به صورت خاص
+    lable = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+    top_price_bid = serializers.SerializerMethodField()
+    count_bid = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Product
+        fields = ['id', 'upc', 'weight', 'price', 'description', 'warranty', 'lable', 'name', 'top_price_bid', 'count_bid',
+                  'is_active', 'images', 'attrs', 'user', 'create_time', 'expire_time']
+
+    def get_attrs(self, obj):
+        attrs = ProductAttr.objects.filter(product=obj)
+        result = []
+        for attr in attrs:
+            result.append({
+                "attr": attr.attr.title if attr.attr else None,  # نمایش title ویژگی
+                "value": attr.value.value
+            })
+        return result
+
+    def get_lable(self, obj):
+        return obj.product_type.title
+
+    def get_name(self, obj):
+        return obj.product_type.name
+
+    def get_top_price_bid(self, obj):
+        top_price_bid = obj.bids.aggregate(Max('price'))['price__max']
+        return top_price_bid if top_price_bid is not None else 0
+
+    def get_count_bid(self, obj):
+        return obj.bids.count()
+
+class SellSingleProductSerializer(serializers.ModelSerializer):
+    images = ApiProductImageSerializer(many=True, read_only=True)
+    user = MyUserSerializer()
+    attrs = serializers.SerializerMethodField()  # برای گرفتن ویژگی‌ها به صورت خاص
+    lable = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+    top_price_bid = serializers.SerializerMethodField()
+    count_bid = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Product
+        fields = ['id', 'upc', 'weight', 'price', 'description', 'warranty', 'lable', 'name', 'top_price_bid', 'count_bid',
+                  'is_active', 'images', 'attrs', 'user', 'create_time', 'expire_time']
+
+    def get_attrs(self, obj):
+        attrs = ProductAttr.objects.filter(product=obj)
+        result = []
+        for attr in attrs:
+            result.append({
+                "attr": attr.attr.title if attr.attr else None,  # نمایش title ویژگی
+                "value": attr.value.value
+            })
+        return result
+
+    def get_lable(self, obj):
+        return obj.product_type.title
+
+    def get_name(self, obj):
+        return obj.product_type.name
+
+    def get_top_price_bid(self, obj):
+        top_price_bid = obj.bids.aggregate(Max('price'))['price__max']
+        return top_price_bid if top_price_bid is not None else 0
+
+    def get_count_bid(self, obj):
+        return obj.bids.count()
+
+
+
+class BuySingleProductSerializer(serializers.ModelSerializer):
+    images = ApiProductImageSerializer(many=True, read_only=True)
+    user = MyUserSerializer()
+    attrs = serializers.SerializerMethodField()  # برای گرفتن ویژگی‌ها به صورت خاص
+    lable = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+    top_price_bid = serializers.SerializerMethodField()
+    count_bid = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Product
+        fields = ['id', 'upc', 'weight', 'price', 'description', 'warranty', 'lable', 'name', 'top_price_bid', 'count_bid',
+                  'is_active', 'images', 'attrs', 'user', 'create_time', 'expire_time']
+
+    def get_attrs(self, obj):
+        attrs = ProductAttr.objects.filter(product=obj)
+        result = []
+        for attr in attrs:
+            result.append({
+                "attr": attr.attr.title if attr.attr else None,  # نمایش title ویژگی
+                "value": attr.value.value
+            })
+        return result
+
+    def get_lable(self, obj):
+        return obj.product_type.title
+
+    def get_name(self, obj):
+        return obj.product_type.name
+
+    def get_top_price_bid(self, obj):
+        top_price_bid = obj.bids.aggregate(Min('price'))['price__min']
+        return top_price_bid if top_price_bid is not None else 0
+
+    def get_count_bid(self, obj):
+        return obj.bids.count()
+
 
 
 class ApiProductSerializer(serializers.ModelSerializer):
@@ -77,7 +194,7 @@ class ApiProductSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'title', 'image']
     # سریالایزر برای تبدیل مدل Category به JSON و بالعکس استفاده می‌شود.
     # فیلدهای 'id' و 'name' را شامل می‌شود.
 
@@ -85,7 +202,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductType
-        fields = ['id', 'title']
+        fields = ['id', 'title', 'name', 'image']
     # سریالایزر برای تبدیل مدل ProductType به JSON و بالعکس استفاده می‌شود.
     # فیلدهای 'id' و 'title' را شامل می‌شود.
 
@@ -99,11 +216,21 @@ class ProductAttributeSerializer(serializers.ModelSerializer):
 
 
 class TypesSerializer(serializers.ModelSerializer):
+    category = serializers.SerializerMethodField()
+    cat_id = serializers.SerializerMethodField()
+
     class Meta:
         model = ProductType
-        fields = ('id', 'title')
-    # سریالایزر برای تبدیل مدل ProductType به JSON و بالعکس استفاده می‌شود.
-    # فیلدهای 'id' و 'title' را شامل می‌شود.
+        fields = ('id', 'name', 'title', 'image', 'category', 'cat_id')
+
+    def get_category(self, obj):
+        name = obj.category
+        return name.name
+
+
+    def get_cat_id(self, obj):
+        name = obj.category
+        return name.id
 
 
 class ProductSellSerializer(serializers.ModelSerializer):
