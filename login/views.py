@@ -345,14 +345,14 @@ class CookieJWTAuthentication(JWTAuthentication):
                     new_access_token = jwt.encode({'user_id': refresh_decoded['user_id'], 'exp': datetime.utcnow() + timedelta(minutes=5)}, settings.SECRET_KEY, algorithm='HS256')
 
                     # ساختن response جدید و ست کردن کوکی
-                    # response = JsonResponse({'status': 'success', 'message': 'Token refreshed.'})
+                    response = JsonResponse({'status': 'success', 'message': 'Token refreshed.'})
 
                     # توسعه
                     # response.set_cookie('accessToken', new_access_token, httponly=True, secure=False, samesite='Lax')
 
 
                     # پروداکشن
-                    # response.set_cookie('csrftoken', new_access_token, httponly=False, secure=True, samesite='Lax')
+                    response.set_cookie('accessToken', new_access_token, httponly=False, secure=True, samesite='Lax')
 
                     # دوباره بررسی معتبر بودن توکن جدید
                     validated_token = jwt.decode(new_access_token, settings.SECRET_KEY, algorithms=['HS256'])
