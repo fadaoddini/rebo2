@@ -1,7 +1,7 @@
 
 import os
 DEBUG = False
-ALLOWED_HOSTS = ['rebo.ir', 'www.rebo.ir', 'iscode.ir', 'www.iscode.ir']
+ALLOWED_HOSTS = ['*']
 SECRET_KEY = os.environ.get("SECRET_KEY")
 DB_NAME = os.environ.get("DB_NAME")
 DB_USER = os.environ.get("DB_USER")
@@ -15,7 +15,7 @@ SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_NAME = 'sessionid'
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-CSRF_TRUSTED_ORIGINS = ['https://rebo.ir', 'https://iscode.ir']
+CSRF_TRUSTED_ORIGINS = ['https://rebo.ir']
 
 ADDRESS_SERVER = 'https://iscode.ir'
 BACKEND_URL = 'https://rebo.ir'
@@ -23,6 +23,4 @@ BACKEND_URL = 'https://rebo.ir'
 CORS_ALLOWED_ORIGINS = [
      "https://iscode.ir",
      "https://rebo.ir",
-     "http://iscode.ir",
-     "http://rebo.ir"
 ]
