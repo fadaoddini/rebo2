@@ -18,7 +18,7 @@ from django.urls import reverse_lazy
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken, TokenError
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from login import forms, helper
 from login.models import MyUser, Follow, Address
@@ -637,3 +637,53 @@ class AddressDetailView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         address.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CheckTokenMobile(APIView):
+    permission_classes = [IsAuthenticated]  # برای اطمینان از احراز هویت اولیه
+
+    def post(self, request, *args, **kwargs):
+        access_token = request.data.get('access_token')
+        refresh_token = request.data.get('refresh_token')
+
+        # مرحله 1: چک کردن معتبر بودن access_token
+        try:
+            # اگر access_token معتبر باشد، ادامه می‌دهد
+            token = AccessToken(access_token)
+            return Response({
+                "status": "ok",
+                "message": "Access token is valid",
+                "access_token": str(token)  # توکن فعلی برمی‌گردد
+            }, status=status.HTTP_200_OK)
+
+        except TokenError as e:
+            # اگر access_token نامعتبر یا منقضی شده باشد
+            if isinstance(e, InvalidToken):
+                # مرحله 2: اگر access_token منقضی شده، بررسی refresh_token
+                try:
+                    refresh = RefreshToken(refresh_token)
+
+                    # ایجاد توکن‌های جدید
+                    new_access_token = str(refresh.access_token)
+                    new_refresh_token = str(refresh)
+
+                    # بازگشت توکن‌های جدید
+                    return Response({
+                        "status": "ok",
+                        "message": "Access token refreshed",
+                        "access_token": new_access_token,
+                        "refresh_token": new_refresh_token
+                    }, status=status.HTTP_200_OK)
+
+                except TokenError:
+                    # اگر refresh_token هم نامعتبر باشد، کاربر باید دوباره لاگین کند
+                    return Response({
+                        "status": "error",
+                        "message": "Refresh token is invalid or expired. Please log in again."
+                    }, status=status.HTTP_401_UNAUTHORIZED)
+
+        # برای هر خطای ناشناخته دیگر
+        return Response({
+            "status": "error",
+            "message": "Invalid request."
+        }, status=status.HTTP_400_BAD_REQUEST)

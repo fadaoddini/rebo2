@@ -11,7 +11,7 @@ from catalogue.views import product_list, ProductDetail, category_products, bran
     ProductActiveMeAPIView, ApiProductDeleteAPIView, BidSellListApi, BidBuyListApi, \
     SellBidSingleBazarApi, BuyBidSingleBazarApi, SellSingleBazarApi, BuySingleBazarApi, ApiProductCreateAPIViewV1, \
     TypeByIdApi, ChartByTypeIdApi, BidSellListByTypeApi, BidBuyListByTypeApi, BidSellListChartApi, BidBuyListChartApi, \
-    CategoryNameApi
+    CategoryNameApi, AllTypeApi
 
 urlpatterns = [
     path('product/list/', product_list, name='product-list'),
@@ -75,6 +75,10 @@ urlpatterns = [
 
 
     path('v1/all_types', TypesApi.as_view(), name='statistic'),
+    path('v1/all_type', AllTypeApi.as_view(), name='all-type'),
+
+
+
     path('v1/bazar/api/<int:pk>/', InBazarApi.as_view(), name='bazar-api-in'),
     path('v1/sell/single/<int:pk>/', SellSingleBazarApi.as_view(), name='sell-api-single'),
     path('v1/buy/single/<int:pk>/', BuySingleBazarApi.as_view(), name='buy-api-single'),

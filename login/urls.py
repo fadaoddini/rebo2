@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from login.views import register_user, verify_otp, SendOtp, VerifyCode, logouti, VerifyNameApi, VerifyCodeV1, \
     CheckTokenView, SetImageUser, logoutV1, GetInfo, FollowAPIView, UnFollowAPIView, IsFollowAPIView, \
-    UserDetailsFollowingAPIView, AddressListCreateView, AddressDetailView
+    UserDetailsFollowingAPIView, AddressListCreateView, AddressDetailView, CheckTokenMobile
 
 urlpatterns = [
     path('', register_user, name='login-mobile'),
@@ -15,7 +15,8 @@ urlpatterns = [
 
     path('v1/sendOtp', SendOtp.as_view(), name='send-otp-v1'),
     path('v1/verifyCode', VerifyCodeV1.as_view(), name='verify-v1'),
-    path('v1/verifyCodeMob', VerifyCode.as_view(), name='verify-mob'),
+
+
 
     path('v1/checkToken', CheckTokenView.as_view(), name='check-token'),
     path('v1/setImageUser', SetImageUser.as_view(), name='set-image-user'),
@@ -33,4 +34,9 @@ urlpatterns = [
     path('v1/address/', AddressListCreateView.as_view(), name='address-list-create-v1'),  # برای افزودن و لیست کردن آدرس‌ها
     path('v1/address/<uuid:pk>/', AddressDetailView.as_view(), name='address-detail-v1'),  # برای ویرایش و حذف یک آدرس
 
+
+
+
+    path('v1/verifyCodeMob', VerifyCode.as_view(), name='verify-mob'),
+    path('v1/checkTokenMobile', CheckTokenMobile.as_view(), name='check-token'),
 ]

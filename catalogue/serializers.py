@@ -215,6 +215,24 @@ class ProductAttributeSerializer(serializers.ModelSerializer):
     # فیلدهای 'id'، 'title' و 'product_type' را شامل می‌شود.
 
 
+class CategoryTypeSerializer(serializers.Serializer):
+    category = serializers.CharField()
+    cat_id = serializers.IntegerField()
+    types = serializers.SerializerMethodField()
+
+    def get_types(self, obj):
+        types = obj['types']
+        return TypesSerializer2(types, many=True).data
+
+
+
+class TypesSerializer2(serializers.ModelSerializer):
+    class Meta:
+        model = ProductType
+        fields = ('id', 'name', 'title', 'image')
+
+
+
 class TypesSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     cat_id = serializers.SerializerMethodField()

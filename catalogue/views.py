@@ -37,7 +37,7 @@ from catalogue.models import Product, Category, ProductType, Brand, ProductAttri
     ProductImage, ProductAttr
 from catalogue.serializers import ProductSellSerializer, ProductSingleSerializer, TypesSerializer, \
     ProductTypeSerializer, ProductAttributeSerializer, ProductAttributeValueSerializer, ApiProductSerializer, \
-    SingleProductSerializer, SellSingleProductSerializer, BuySingleProductSerializer
+    SingleProductSerializer, SellSingleProductSerializer, BuySingleProductSerializer, CategoryTypeSerializer
 from catalogue.utils import check_user_active
 from company.forms import CompanyForm
 from company.models import Company
@@ -1063,6 +1063,37 @@ class TypesApi(APIView):
         types = ProductType.objects.all()
         serializer = TypesSerializer(types, many=True)
         return Response(serializer.data, content_type='application/json; charset=UTF-8')
+
+
+class AllTypeApi(APIView):
+    # اضافه کردن احراز هویت
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        # فراخوانی تمام داده‌ها
+        types = ProductType.objects.all()
+
+        # گروه‌بندی بر اساس دسته‌بندی
+        grouped_data = self.group_by_category(types)
+
+        # سریالایزر برای داده‌های گروه‌بندی شده
+        serializer = CategoryTypeSerializer(grouped_data, many=True)
+
+        # بازگشت پاسخ با ساختار جدید
+        return Response(serializer.data, content_type='application/json; charset=UTF-8')
+
+    def group_by_category(self, product_types):
+        # تابعی برای گروه‌بندی محصولات بر اساس دسته‌بندی
+        grouped_data = defaultdict(lambda: {'category': '', 'cat_id': 0, 'types': []})
+
+        for product in product_types:
+            category_name = product.category.name
+            category_id = product.category.id
+            grouped_data[category_name]['category'] = category_name
+            grouped_data[category_name]['cat_id'] = category_id
+            grouped_data[category_name]['types'].append(product)
+
+        return list(grouped_data.values())
 
 
 class ProductApi(APIView):
