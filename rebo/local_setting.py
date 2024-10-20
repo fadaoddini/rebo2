@@ -1,3 +1,4 @@
+
 import os
 DEBUG = False
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'rebo.ir', 'iscode.ir']
@@ -10,7 +11,7 @@ DB_PORT = os.environ.get("DB_PORT")
 API_MAX_SMS = os.environ.get("API_MAX_SMS")
 API_NESHAN = os.environ.get("API_NESHAN")
 ZARRINPAL_MERCHANT_ID = os.environ.get("ZARRINPAL_MERCHANT_ID")
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_NAME = 'sessionid'
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True

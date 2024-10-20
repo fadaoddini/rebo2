@@ -312,9 +312,9 @@ class VerifyCodeV1(APIView):
             # response.set_cookie('csrftoken', csrf_token, httponly=False, secure=False, samesite='Lax')
 
             # محیط پروداکشن
-            response.set_cookie('accessToken', access_token, httponly=True, secure=True, samesite='Lax')
-            response.set_cookie('refreshToken', refresh_token, httponly=False, secure=True, samesite='Lax')
-            response.set_cookie('csrftoken', csrf_token, httponly=False, secure=True, samesite='Lax')
+            response.set_cookie('accessToken', access_token, httponly=True, secure=False, samesite='Lax')
+            response.set_cookie('refreshToken', refresh_token, httponly=False, secure=False, samesite='Lax')
+            response.set_cookie('csrftoken', csrf_token, httponly=False, secure=False, samesite='Lax')
 
             return response
         else:
@@ -352,7 +352,7 @@ class CookieJWTAuthentication(JWTAuthentication):
 
 
                     # پروداکشن
-                    response.set_cookie('accessToken', new_access_token, httponly=False, secure=True, samesite='Lax')
+                    response.set_cookie('accessToken', new_access_token, httponly=False, secure=False, samesite='Lax')
 
                     # دوباره بررسی معتبر بودن توکن جدید
                     validated_token = jwt.decode(new_access_token, settings.SECRET_KEY, algorithms=['HS256'])
@@ -409,9 +409,9 @@ class CheckTokenView(APIView):
                     # response.set_cookie('csrftoken', csrf_token, httponly=False, secure=False, samesite='Lax')
 
                     # محیط پروداکشن
-                    response.set_cookie('accessToken', new_access_token, httponly=True, secure=True, samesite='Lax')
-                    response.set_cookie('refreshToken', refresh_token, httponly=False, secure=True, samesite='Lax')
-                    response.set_cookie('csrftoken', csrf_token, httponly=False, secure=True, samesite='Lax')
+                    response.set_cookie('accessToken', new_access_token, httponly=True, secure=False, samesite='Lax')
+                    response.set_cookie('refreshToken', refresh_token, httponly=False, secure=False, samesite='Lax')
+                    response.set_cookie('csrftoken', csrf_token, httponly=False, secure=False, samesite='Lax')
 
                     return response
                 else:
