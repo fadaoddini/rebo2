@@ -15,6 +15,7 @@ urlpatterns = [
 
     path('v1/sendOtp', SendOtp.as_view(), name='send-otp-v1'),
     path('v1/verifyCode', VerifyCodeV1.as_view(), name='verify-v1'),
+    path('v1/verifyCodeMob', VerifyCode.as_view(), name='verify-mob'),
 
     path('v1/checkToken', CheckTokenView.as_view(), name='check-token'),
     path('v1/setImageUser', SetImageUser.as_view(), name='set-image-user'),

@@ -1,8 +1,6 @@
-
-
 import os
 DEBUG = False
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'rebo.ir', 'iscode.ir']
 SECRET_KEY = os.environ.get("SECRET_KEY")
 DB_NAME = os.environ.get("DB_NAME")
 DB_USER = os.environ.get("DB_USER")

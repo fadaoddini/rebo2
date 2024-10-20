@@ -50,7 +50,7 @@ class MainAdmin(View):
 
 
 class MainIndex(View):
-    template_name = 'web/index2.html'
+    template_name = 'web/index.html'
 
     def get(self, request, *args, **kwargs):
         context = dict()
