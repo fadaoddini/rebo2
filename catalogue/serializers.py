@@ -191,6 +191,7 @@ class ApiProductSerializer(serializers.ModelSerializer):
         return product
 
 
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -249,6 +250,54 @@ class TypesSerializer(serializers.ModelSerializer):
     def get_cat_id(self, obj):
         name = obj.category
         return name.id
+
+
+class ApiAllProductSerializer(serializers.ModelSerializer):
+    images = serializers.SerializerMethodField()
+    attrs = serializers.SerializerMethodField()
+    best_price_bid = serializers.SerializerMethodField()
+    count_bid = serializers.SerializerMethodField()
+    name_type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Product
+        fields = ['sell_buy', 'product_type', 'price', 'name_type', 'best_price_bid', 'count_bid', 'weight', 'description', 'warranty', 'is_active',
+                  'expire_time', 'images', 'attrs']
+
+    def get_images(self, obj):
+        # استفاده از سریالایزر برای تصاویر مرتبط
+        return ApiProductImageSerializer(obj.images.all(), many=True).data
+
+    def get_name_type(self, obj):
+        id_type = obj.product_type
+        name = id_type.name +' '+ id_type.title
+        return name
+
+    def get_count_bid(self, obj):
+        return obj.bids.count()
+
+    def get_best_price_bid(self, obj):
+        # اگر sell_buy برابر 1 بود بیشترین قیمت (top_price_bid)، و اگر برابر 2 بود کمترین قیمت (low_price_bid)
+        if obj.sell_buy == 1:
+            top_price_bid = obj.bids.aggregate(Max('price'))['price__max']
+            return top_price_bid if top_price_bid is not None else 0
+        elif obj.sell_buy == 2:
+            low_price_bid = obj.bids.aggregate(Min('price'))['price__min']
+            return low_price_bid if low_price_bid is not None else 0
+
+
+    def get_attrs(self, obj):
+        result = []
+        attrs = ProductAttribute.objects.filter(product_type=obj.product_type)
+        for attr in attrs:
+            value = ProductAttributeValue.objects.filter(product_attribute=attr.id).first()
+            if value:
+                result.append({
+                    "key": attr.title,
+                    "value": value.value
+                })
+        return result
+
 
 
 class ProductSellSerializer(serializers.ModelSerializer):

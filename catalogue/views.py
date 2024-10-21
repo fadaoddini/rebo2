@@ -37,7 +37,8 @@ from catalogue.models import Product, Category, ProductType, Brand, ProductAttri
     ProductImage, ProductAttr
 from catalogue.serializers import ProductSellSerializer, ProductSingleSerializer, TypesSerializer, \
     ProductTypeSerializer, ProductAttributeSerializer, ProductAttributeValueSerializer, ApiProductSerializer, \
-    SingleProductSerializer, SellSingleProductSerializer, BuySingleProductSerializer, CategoryTypeSerializer
+    SingleProductSerializer, SellSingleProductSerializer, BuySingleProductSerializer, CategoryTypeSerializer, \
+    ApiAllProductSerializer
 from catalogue.utils import check_user_active
 from company.forms import CompanyForm
 from company.models import Company
@@ -1169,6 +1170,20 @@ class BazarWeb(View):
         context['products'] = products
         return render(request, template_name=self.template_name, context=context,
                       content_type=None, status=None, using=None)
+
+
+
+class AllBazarApi(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, *args, **kwargs):
+
+
+        all_bazar = Product.objects.filter(expire_time__gt=datetime.now())
+        all_bazar_serializer = ApiAllProductSerializer(all_bazar.order_by('price')[:100], many=True)
+
+        return Response(all_bazar_serializer.data, status=status.HTTP_200_OK)
+
+
 
 class InBazarApi(APIView):
 

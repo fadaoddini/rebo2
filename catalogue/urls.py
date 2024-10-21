@@ -11,7 +11,7 @@ from catalogue.views import product_list, ProductDetail, category_products, bran
     ProductActiveMeAPIView, ApiProductDeleteAPIView, BidSellListApi, BidBuyListApi, \
     SellBidSingleBazarApi, BuyBidSingleBazarApi, SellSingleBazarApi, BuySingleBazarApi, ApiProductCreateAPIViewV1, \
     TypeByIdApi, ChartByTypeIdApi, BidSellListByTypeApi, BidBuyListByTypeApi, BidSellListChartApi, BidBuyListChartApi, \
-    CategoryNameApi, AllTypeApi
+    CategoryNameApi, AllTypeApi, AllBazarApi
 
 urlpatterns = [
     path('product/list/', product_list, name='product-list'),
@@ -72,11 +72,13 @@ urlpatterns = [
     path('payment/verify/', PaymentVerifyApi.as_view(), name='payment-verify-api'),
 
 
-
-
+    path('v1/all_types', TypesApi.as_view(), name='all-types-v1'),
     path('v1/all_types', TypesApi.as_view(), name='statistic'),
     path('v1/all_type', AllTypeApi.as_view(), name='all-type'),
 
+
+
+    path('v1/bazar/all_bazar/', AllBazarApi.as_view(), name='all-bazar-api'),
 
 
     path('v1/bazar/api/<int:pk>/', InBazarApi.as_view(), name='bazar-api-in'),
@@ -89,7 +91,7 @@ urlpatterns = [
     path('v1/sell/bid/list/chart/<int:pk>/', BidSellListChartApi.as_view(), name='bid-sell-api-list-chart'),
     path('v1/buy/bid/list/chart/<int:pk>/', BidBuyListChartApi.as_view(), name='bid-buy-api-list-chart'),
     path('v1/category/name/<int:pk>/', CategoryNameApi.as_view(), name='name-cat'),
-    path('v1/all_types', TypesApi.as_view(), name='all-types-v1'),
+
     path('v1/product_types/', ProductTypeListAPIView.as_view(), name='product-type-list-api-v1'),
     path('v1/product_attributes/', ProductAttributeListAPIView.as_view(), name='product-attribute-list-api-v1'),
     path('v1/attribute_values/', AttributeValueListAPIView.as_view(), name='attribute-value-list-api-v1'),
