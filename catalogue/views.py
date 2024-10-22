@@ -1068,9 +1068,19 @@ class TypesApi(APIView):
 
 class AllTypeApi(APIView):
     # اضافه کردن احراز هویت
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
+
+        print("iiiiii")
+        print("Headers: ", request.headers)
+        print("Authorization: ", request.headers.get('Authorization'))
+
+        print("request************************************")
+        print(request)
+
+
         # فراخوانی تمام داده‌ها
         types = ProductType.objects.all()
 
@@ -1095,6 +1105,51 @@ class AllTypeApi(APIView):
             grouped_data[category_name]['types'].append(product)
 
         return list(grouped_data.values())
+
+
+
+
+class AllTypeWebApi(APIView):
+    # اضافه کردن احراز هویت
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+
+        print("iiiiii")
+        print("Headers: ", request.headers)
+        print("Authorization: ", request.headers.get('Authorization'))
+
+        print("request************************************")
+        print(request)
+
+
+        # فراخوانی تمام داده‌ها
+        types = ProductType.objects.all()
+
+        # گروه‌بندی بر اساس دسته‌بندی
+        grouped_data = self.group_by_category(types)
+
+        # سریالایزر برای داده‌های گروه‌بندی شده
+        serializer = CategoryTypeSerializer(grouped_data, many=True)
+
+        # بازگشت پاسخ با ساختار جدید
+        return Response(serializer.data, content_type='application/json; charset=UTF-8')
+
+    def group_by_category(self, product_types):
+        # تابعی برای گروه‌بندی محصولات بر اساس دسته‌بندی
+        grouped_data = defaultdict(lambda: {'category': '', 'cat_id': 0, 'types': []})
+
+        for product in product_types:
+            category_name = product.category.name
+            category_id = product.category.id
+            grouped_data[category_name]['category'] = category_name
+            grouped_data[category_name]['cat_id'] = category_id
+            grouped_data[category_name]['types'].append(product)
+
+        return list(grouped_data.values())
+
+
 
 
 class ProductApi(APIView):
@@ -1173,15 +1228,32 @@ class BazarWeb(View):
 
 
 
-class AllBazarApi(APIView):
+class BazarWithOptionalSelBuyApi(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
+        sell_buy = request.GET.get('sell_buy')
+        if sell_buy:
+            all_bazar = Product.objects.filter(sell_buy=sell_buy, expire_time__gt=datetime.now())
+        else:
+            all_bazar = Product.objects.filter(expire_time__gt=datetime.now())
 
-
-        all_bazar = Product.objects.filter(expire_time__gt=datetime.now())
         all_bazar_serializer = ApiAllProductSerializer(all_bazar.order_by('price')[:100], many=True)
+        return Response(all_bazar_serializer.data, status=status.HTTP_200_OK, content_type='application/json; charset=utf-8')
 
-        return Response(all_bazar_serializer.data, status=status.HTTP_200_OK)
+
+
+class BazarWithOptionalSelBuyWebApi(APIView):
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, *args, **kwargs):
+        sell_buy = request.GET.get('sell_buy')
+        if sell_buy:
+            all_bazar = Product.objects.filter(sell_buy=sell_buy, expire_time__gt=datetime.now())
+        else:
+            all_bazar = Product.objects.filter(expire_time__gt=datetime.now())
+
+        all_bazar_serializer = ApiAllProductSerializer(all_bazar.order_by('price')[:100], many=True)
+        return Response(all_bazar_serializer.data, status=status.HTTP_200_OK, content_type='application/json; charset=utf-8')
 
 
 
@@ -1205,6 +1277,7 @@ class InBazarApi(APIView):
             'buyers': buyers_serializer.data,
         }
         return Response(context, status=status.HTTP_200_OK)
+
 
 
 
