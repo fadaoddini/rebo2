@@ -4,4 +4,4 @@
 
 *.sqlitgitge3
 
-*.local_
+local_*

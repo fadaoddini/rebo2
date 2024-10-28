@@ -4,8 +4,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 ZARRINPAL_MERCHANT_ID = 'e701a7c2-73ae-11e8-b07d-005056a205be'
 DB_NAME = 'rebo'
-DB_USER = 'rebo'
-DB_PASS = 'rebo5'
+DB_USER = 'rebo3453535'
+DB_PASS = 'rebo'
 DB_HOST = 'localhost'
 DB_PORT = 5432
 API_MAX_SMS = 'oUSMoSz9YIujHc-XyaanUMimxpSq8rpbx3KHS1nMumA='
