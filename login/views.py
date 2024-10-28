@@ -306,14 +306,9 @@ class VerifyCodeV1(APIView):
                 'user_id': user.pk,
             })
 
-            # محیط توسعه
-            # response.set_cookie('accessToken', access_token, httponly=True, secure=False, samesite='Lax')
-            # response.set_cookie('refreshToken', refresh_token, httponly=False, secure=False, samesite='Lax')
-            # response.set_cookie('csrftoken', csrf_token, httponly=False, secure=False, samesite='Lax')
 
-            # محیط پروداکشن
-            response.set_cookie('accessToken', access_token, httponly=True, secure=False, samesite='Lax')
-            response.set_cookie('refreshToken', refresh_token, httponly=False, secure=False, samesite='Lax')
+            response.set_cookie('accessToken', access_token, httponly=True, secure=True, samesite='Lax')
+            response.set_cookie('refreshToken', refresh_token, httponly=False, secure=True, samesite='Lax')
             response.set_cookie('csrftoken', csrf_token, httponly=False, secure=False, samesite='Lax')
 
             return response
@@ -347,11 +342,7 @@ class CookieJWTAuthentication(JWTAuthentication):
                     # ساختن response جدید و ست کردن کوکی
                     response = JsonResponse({'status': 'success', 'message': 'Token refreshed.'})
 
-                    # توسعه
-                    # response.set_cookie('accessToken', new_access_token, httponly=True, secure=False, samesite='Lax')
 
-
-                    # پروداکشن
                     response.set_cookie('accessToken', new_access_token, httponly=False, secure=False, samesite='Lax')
 
                     # دوباره بررسی معتبر بودن توکن جدید
@@ -403,14 +394,11 @@ class CheckTokenView(APIView):
                     # دریافت CSRF token
                     csrf_token = get_token(request)
 
-                    # محیط توسعه
-                    # response.set_cookie('accessToken', new_access_token, httponly=True, secure=False, samesite='Lax')
-                    # response.set_cookie('refreshToken', refresh_token, httponly=False, secure=False, samesite='Lax')
-                    # response.set_cookie('csrftoken', csrf_token, httponly=False, secure=False, samesite='Lax')
+
 
                     # محیط پروداکشن
-                    response.set_cookie('accessToken', new_access_token, httponly=True, secure=False, samesite='Lax')
-                    response.set_cookie('refreshToken', refresh_token, httponly=False, secure=False, samesite='Lax')
+                    response.set_cookie('accessToken', new_access_token, httponly=True, secure=True, samesite='Lax')
+                    response.set_cookie('refreshToken', refresh_token, httponly=False, secure=True, samesite='Lax')
                     response.set_cookie('csrftoken', csrf_token, httponly=False, secure=False, samesite='Lax')
 
                     return response
