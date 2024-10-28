@@ -11,7 +11,7 @@ DB_PORT = os.environ.get("DB_PORT")
 API_MAX_SMS = os.environ.get("API_MAX_SMS")
 API_NESHAN = os.environ.get("API_NESHAN")
 ZARRINPAL_MERCHANT_ID = os.environ.get("ZARRINPAL_MERCHANT_ID")
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_NAME = 'sessionid'
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
@@ -23,4 +23,8 @@ BACKEND_URL = 'https://rebo.ir'
 CORS_ALLOWED_ORIGINS = [
      "https://iscode.ir",
      "https://rebo.ir",
+]
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'Authorization',
+    'content-type',
 ]
