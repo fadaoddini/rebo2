@@ -49,10 +49,16 @@ from order.utils import check_is_active, check_is_ok
 from .serializers import CategorySerializer
 
 
+
 class ProductTypeListAPIView(generics.ListAPIView):
     queryset = ProductType.objects.all()
     serializer_class = ProductTypeSerializer
-    # ویو برای لیست کردن نوع محصولات
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, content_type='application/json; charset=utf-8', status=status.HTTP_200_OK)
+
 
 
 class ProductAttributeListAPIView(generics.ListAPIView):
@@ -63,7 +69,12 @@ class ProductAttributeListAPIView(generics.ListAPIView):
         if product_type_id:
             return ProductAttribute.objects.filter(product_type_id=product_type_id)
         return ProductAttribute.objects.none()
-    # ویو برای لیست کردن ویژگی‌های محصولات بر اساس نوع محصول
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, content_type='application/json; charset=utf-8', status=status.HTTP_200_OK)
+
 
 
 class AttributeValueListAPIView(generics.ListAPIView):
@@ -74,13 +85,24 @@ class AttributeValueListAPIView(generics.ListAPIView):
         if attribute_id:
             return ProductAttributeValue.objects.filter(product_attribute_id=attribute_id)
         return ProductAttributeValue.objects.none()
-    # ویو برای لیست کردن مقادیر ویژگی‌های محصولات بر اساس شناسه ویژگی
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, content_type='application/json; charset=utf-8', status=status.HTTP_200_OK)
+
+
+
 
 
 class CategoryListAPIView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     # ویو برای لیست کردن دسته‌بندی‌ها
+
+
+
+
 
 
 class ApiProductCreateAPIView(APIView):

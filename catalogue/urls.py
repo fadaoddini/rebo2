@@ -90,9 +90,9 @@ urlpatterns = [
     path('v1/buy/bid/list/chart/<int:pk>/', BidBuyListChartApi.as_view(), name='bid-buy-api-list-chart'),
     path('v1/category/name/<int:pk>/', CategoryNameApi.as_view(), name='name-cat'),
 
-    path('v1/product_types/', ProductTypeListAPIView.as_view(), name='product-type-list-api-v1'),
-    path('v1/product_attributes/', ProductAttributeListAPIView.as_view(), name='product-attribute-list-api-v1'),
-    path('v1/attribute_values/', AttributeValueListAPIView.as_view(), name='attribute-value-list-api-v1'),
+    path('v1/product_types', ProductTypeListAPIView.as_view(), name='product-type-list-api-v1'),
+    path('v1/product_attributes', ProductAttributeListAPIView.as_view(), name='product-attribute-list-api-v1'),
+    path('v1/attribute_values', AttributeValueListAPIView.as_view(), name='attribute-value-list-api-v1'),
     path('v1/add_product_api/', ApiProductCreateAPIViewV1.as_view(), name='add-product-api-v1'),
     path('v1/type/<int:id>/', TypeByIdApi.as_view(), name='type-by-id-api-v1'),
     path('v1/chart/<int:id>/', ChartByTypeIdApi.as_view(), name='chart-api-v1'),
