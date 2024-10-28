@@ -4,4 +4,4 @@
 
 *.sqlitgitge3
 
-local_*
+/rebo/local_setting.py
