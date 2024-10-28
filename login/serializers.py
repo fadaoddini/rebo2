@@ -5,10 +5,13 @@ from login.models import MyUser, Follow, Address
 
 class MyUserSerializer(serializers.ModelSerializer):
     status = serializers.SerializerMethodField()
+    followers_count = serializers.SerializerMethodField()
+    following_count = serializers.SerializerMethodField()
+    product_count = serializers.SerializerMethodField()
 
     class Meta:
         model = MyUser
-        fields = ('first_name', 'last_name', 'status', 'image', 'mobile', 'id')
+        fields = ('first_name', 'last_name', 'status', 'image', 'mobile', 'id', 'followers_count', 'following_count', 'product_count')
 
     def get_status(self, obj):
         status = "Nothing"
@@ -18,6 +21,15 @@ class MyUserSerializer(serializers.ModelSerializer):
             status = "Ok"
 
         return status
+
+    def get_followers_count(self, obj):
+        return obj.followers.count()
+
+    def get_following_count(self, obj):
+        return obj.following.count()
+
+    def get_product_count(self, obj):
+        return obj.products.count()
 
 
 

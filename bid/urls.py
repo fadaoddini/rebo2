@@ -1,6 +1,6 @@
 from django.urls import path
 
-from bid.views import BidView, BidByProductTypeApi, PaymentApi, PaymentVerifyApi, CheckBidApi
+from bid.views import BidView, BidByProductTypeApi, PaymentApi, PaymentVerifyApi, CheckBidApi, BidMobView
 
 urlpatterns = [
 
@@ -16,5 +16,6 @@ urlpatterns = [
 
 
     path('v1/add_bid_api/', BidView.as_view(), name='add-bid-api-v1'),
+    path('v1/add_bid_mob_api', BidMobView.as_view(), name='add-bid-api-mob-v1'),
 
 ]

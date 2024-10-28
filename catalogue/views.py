@@ -1257,6 +1257,51 @@ class BazarWithOptionalSelBuyWebApi(APIView):
 
 
 
+class BazarTypeByIdApi(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, *args, **kwargs):
+        sell_buy = request.GET.get('sell_buy')
+        pk = request.GET.get('type_id')
+        print("pk")
+        print(pk)
+        print("sell_buy")
+        print(sell_buy)
+
+        product_type = ProductType.objects.filter(id=pk).first()
+
+        print("product_type")
+        print(product_type)
+        if sell_buy:
+            all_bazar = Product.objects.filter(sell_buy=sell_buy, product_type=product_type, expire_time__gt=datetime.now())
+        else:
+            all_bazar = Product.objects.filter(product_type=product_type, expire_time__gt=datetime.now())
+
+        all_bazar_serializer = ApiAllProductSerializer(all_bazar.order_by('price')[:100], many=True)
+        return Response(all_bazar_serializer.data, status=status.HTTP_200_OK, content_type='application/json; charset=utf-8')
+
+
+
+class BazarTypeByIdWebApi(APIView):
+
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        sell_buy = request.GET.get('sell_buy')
+        pk = request.GET.get('type_id')
+        product_type = ProductType.objects.filter(pk=pk).first()
+        if sell_buy:
+            all_bazar = Product.objects.filter(sell_buy=sell_buy, product_type=product_type, expire_time__gt=datetime.now())
+        else:
+            all_bazar = Product.objects.filter(product_type=product_type, expire_time__gt=datetime.now())
+
+        all_bazar_serializer = ApiAllProductSerializer(all_bazar.order_by('price')[:100], many=True)
+
+
+        return Response(all_bazar_serializer.data, status=status.HTTP_200_OK, content_type='application/json; charset=utf-8')
+
+
+
 class InBazarApi(APIView):
 
     def get(self, request, pk, *args, **kwargs):
@@ -1276,12 +1321,96 @@ class InBazarApi(APIView):
             'sellers': sellers_serializer.data,
             'buyers': buyers_serializer.data,
         }
-        return Response(context, status=status.HTTP_200_OK)
+        return Response(context, status=status.HTTP_200_OK, content_type='application/json; charset=utf-8')
 
 
 
 
 class SellSingleBazarApi(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk, *args, **kwargs):
+        # گرفتن اطلاعات محصول
+        product = Product.objects.filter(pk=pk).first()
+        if not product:
+            return Response({"detail": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # سریالیز کردن اطلاعات محصول
+        product_serializer = SellSingleProductSerializer(product)
+
+        # پیدا کردن محصولات مشابه بر اساس نوع محصول
+        product_type = product.product_type
+        products = Product.objects.filter(sell_buy=1, product_type=product_type).prefetch_related(
+            Prefetch('bids', queryset=Bid.objects.order_by('-price'))
+        )
+
+        # جمع‌آوری بیدهای محصولات مشابه
+        bids = []
+        for prod in products:
+            bids.extend(prod.bids.all())
+
+        # مرتب‌سازی بیدها بر اساس قیمت
+        sorted_bids = sorted(bids, key=lambda x: x.price, reverse=True)
+
+        # محدود کردن لیست به 20 بید برتر
+        limited_bids = sorted_bids[:20]
+
+        # سریالیز کردن بیدها
+        bids_serializer = BidSerializer(limited_bids, many=True, context={'request': request})
+
+        # ترکیب داده‌های محصول و بیدها
+        data = {
+            'product': product_serializer.data,
+            'bids': bids_serializer.data
+        }
+
+        return Response(data, status=status.HTTP_200_OK, content_type='application/json; charset=utf-8')
+
+
+class BuySingleBazarApi(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk, *args, **kwargs):
+        # دریافت اطلاعات محصول
+        product = Product.objects.filter(pk=pk).first()
+        if not product:
+            return Response({"detail": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # سریالیز کردن اطلاعات محصول
+        product_serializer = BuySingleProductSerializer(product)
+
+        # پیدا کردن محصولات مشابه بر اساس نوع محصول
+        product_type = product.product_type
+        products = Product.objects.filter(sell_buy=2, product_type=product_type).prefetch_related(
+            Prefetch('bids', queryset=Bid.objects.order_by('price'))
+        )
+
+        # جمع‌آوری بیدهای محصولات مشابه
+        bids = []
+        for prod in products:
+            bids.extend(prod.bids.all())
+
+        # مرتب‌سازی بیدها بر اساس قیمت (صعودی)
+        sorted_bids = sorted(bids, key=lambda x: x.price)
+
+        # محدود کردن لیست به 20 بید برتر
+        limited_bids = sorted_bids[:20]
+
+        # سریالیز کردن بیدها
+        bids_serializer = BidSerializer(limited_bids, many=True, context={'request': request})
+
+        # ترکیب داده‌های محصول و بیدها
+        data = {
+            'product': product_serializer.data,
+            'bids': bids_serializer.data
+        }
+
+        return Response(data, status=status.HTTP_200_OK, content_type='application/json; charset=utf-8')
+
+
+class SellSingleBazarWebApi(APIView):
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk, *args, **kwargs):
         product = Product.objects.filter(pk=pk).first()
         if not product:
@@ -1292,7 +1421,9 @@ class SellSingleBazarApi(APIView):
         return Response(product_serializer.data, status=status.HTTP_200_OK)
 
 
-class BuySingleBazarApi(APIView):
+class BuySingleBazarWebApi(APIView):
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk, *args, **kwargs):
         product = Product.objects.filter(pk=pk).first()
         if not product:
@@ -1305,12 +1436,14 @@ class BuySingleBazarApi(APIView):
 
 
 class BidSingleBazarApi(APIView):
+
     def get(self, request, pk, *args, **kwargs):
         product = Product.objects.filter(pk=pk).first()
         bids = product.bids.order_by('-price')
         bids_serializer = BidSerializer(bids, many=True, context={'request': request})
 
         return Response(bids_serializer.data, status=status.HTTP_200_OK)
+
 
 
 class SellBidSingleBazarApi(APIView):

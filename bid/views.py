@@ -55,6 +55,50 @@ class BidView(APIView):
         return Response({'status': 'Bid created/updated'})
 
 
+
+class BidMobView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        price = request.data.get('price')
+        weight = request.data.get('weight')
+        product_id = request.data.get('product_id')
+        print("2")
+        if not product_id or not price:
+            return Response({'error': 'Price and product_id are required'}, status=400)
+        print("3")
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({'error': 'Product not found'}, status=404)
+
+        with transaction.atomic():
+            bid, created = Bid.objects.update_or_create(
+                user=user,
+                product=product,
+                defaults={'price': price, 'weight': weight, 'result': False}
+            )
+            try:
+                myUser = MyUser.objects.get(pk=user.id)
+                print("myUser.numbid**********************************************")
+                print(myUser.mobile)
+                print(myUser.num_bid)
+                print("myUser.numbid**********************************************")
+                myUser.num_bid = myUser.num_bid - 1
+                if myUser.num_bid == 0:
+                    myUser.bider = False
+                myUser.save()
+                print("5")
+            except MyUser.DoesNotExist:
+                return Response({
+                    "status": "error",
+                    "message": "کاربر یافت نشد."
+                }, status=status.HTTP_400_BAD_REQUEST)
+        print("6")
+        return Response({'status': 'Bid created/updated'})
+
+
 class BidByProductTypeApi(APIView):
     def get(self, request, pk, *args, **kwargs):
         # فیلتر کردن Bidها بر اساس نوع محصول

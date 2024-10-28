@@ -436,10 +436,8 @@ class GetInfo(APIView):
         try:
             # پس از احراز هویت موفق، کاربر به عنوان request.user در دسترس است
             user = request.user
-
             # استفاده از سریالایزر برای فرمت کردن داده‌ها
             serializer = MyUserSerializer(user)
-
             # ارسال اطلاعات کاربر
             return JsonResponse({'status': 'ok', 'user': serializer.data})
 

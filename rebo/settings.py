@@ -210,7 +210,7 @@ ADDRESS_SHIPPING = 'location'
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # عمر توکن دسترسی
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # عمر توکن دسترسی
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # عمر توکن رفرش
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,

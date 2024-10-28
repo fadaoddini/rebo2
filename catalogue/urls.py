@@ -11,7 +11,8 @@ from catalogue.views import product_list, ProductDetail, category_products, bran
     ProductActiveMeAPIView, ApiProductDeleteAPIView, BidSellListApi, BidBuyListApi, \
     SellBidSingleBazarApi, BuyBidSingleBazarApi, SellSingleBazarApi, BuySingleBazarApi, ApiProductCreateAPIViewV1, \
     TypeByIdApi, ChartByTypeIdApi, BidSellListByTypeApi, BidBuyListByTypeApi, BidSellListChartApi, BidBuyListChartApi, \
-    CategoryNameApi, AllTypeApi, BazarWithOptionalSelBuyApi, AllTypeWebApi, BazarWithOptionalSelBuyWebApi
+    CategoryNameApi, AllTypeApi, BazarWithOptionalSelBuyApi, AllTypeWebApi, BazarWithOptionalSelBuyWebApi, \
+    BazarTypeByIdApi, BazarTypeByIdWebApi, SellSingleBazarWebApi, BuySingleBazarWebApi
 
 urlpatterns = [
     path('product/list/', product_list, name='product-list'),
@@ -76,17 +77,11 @@ urlpatterns = [
     path('v1/all_types', TypesApi.as_view(), name='statistic'),
 
     path('v1/all_type', AllTypeApi.as_view(), name='all-type'),
-    path('v1/all_type_web', AllTypeWebApi.as_view(), name='all-type-web'),
 
-
-    path('v1/bazar/bazar_with_optional_sel_buy', BazarWithOptionalSelBuyApi.as_view(), name='all-bazar-api'),
-    path('v1/bazar/sell_buy_bazar', BazarWithOptionalSelBuyApi.as_view(), name='sell-buy-bazar-api'),
-    path('v1/bazar/sell_buy_bazar_web/', BazarWithOptionalSelBuyWebApi.as_view(), name='sell-buy-bazar-web-api'),
 
 
     path('v1/bazar/api/<int:pk>/', InBazarApi.as_view(), name='bazar-api-in'),
-    path('v1/sell/single/<int:pk>/', SellSingleBazarApi.as_view(), name='sell-api-single'),
-    path('v1/buy/single/<int:pk>/', BuySingleBazarApi.as_view(), name='buy-api-single'),
+
     path('v1/sell/bid/<int:pk>/', SellBidSingleBazarApi.as_view(), name='bid-sell-api-single'),
     path('v1/buy/bid/<int:pk>/', BuyBidSingleBazarApi.as_view(), name='bid-buy-api-single'),
     path('v1/sell/bid/list/<int:pk>/', BidSellListApi.as_view(), name='bid-sell-api-list'),
@@ -103,5 +98,24 @@ urlpatterns = [
     path('v1/chart/<int:id>/', ChartByTypeIdApi.as_view(), name='chart-api-v1'),
     path('v1/sell/bid/all/<int:pk>/', BidSellListByTypeApi.as_view(), name='bid-sell-api-all'),
     path('v1/buy/bid/all/<int:pk>/', BidBuyListByTypeApi.as_view(), name='bid-buy-api-all'),
+
+
+
+
+    #mobile
+    path('v1/sell/single/mob/<int:pk>', SellSingleBazarApi.as_view(), name='sell-api-single'),
+    path('v1/buy/single/mob/<int:pk>', BuySingleBazarApi.as_view(), name='buy-api-single'),
+    path('v1/bazar/bazar_with_optional_sel_buy', BazarWithOptionalSelBuyApi.as_view(), name='all-bazar-api'),
+    path('v1/bazar/sell_buy_bazar', BazarWithOptionalSelBuyApi.as_view(), name='sell-buy-bazar-api'),
+    path('v1/bazar/type', BazarTypeByIdApi.as_view(), name='type-id-bazar-api'),
+
+
+
+    # web
+    path('v1/sell/single/<int:pk>', SellSingleBazarWebApi.as_view(), name='sell-api-single'),
+    path('v1/buy/single/<int:pk>', BuySingleBazarWebApi.as_view(), name='buy-api-single'),
+    path('v1/all_type_web', AllTypeWebApi.as_view(), name='all-type-web'),
+    path('v1/bazar/sell_buy_bazar_web', BazarWithOptionalSelBuyWebApi.as_view(), name='sell-buy-bazar-web-api'),
+    path('v1/bazar/type_web', BazarTypeByIdWebApi.as_view(), name='type-id-bazar-web-api'),
 
 ]
